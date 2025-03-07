@@ -35,7 +35,7 @@ const Header = () => {
           </a>
         </div>
         <div className="menu-data order-first flex justify-between items-center h-[80px]">
-          <ul className="hidden xl:flex flex justify-center items-center text-base  uppercase font-semibold text-gray-700 h-full">
+          <ul className="hidden xl:flex justify-center items-center text-base  uppercase font-semibold text-gray-700 h-full">
             <li className="py-[30px] px-[20px]">
               <a href="#" className="hover:text-blue-500 transition">
                 Trang chủ
