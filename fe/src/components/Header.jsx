@@ -7,6 +7,7 @@ import { CgMenuBoxed } from "react-icons/cg";
 import { FaShopware } from "react-icons/fa";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,7 +38,7 @@ const Header = () => {
         <div className="menu-data order-first flex justify-between items-center h-[80px]">
           <ul className="hidden xl:flex justify-center items-center text-base  uppercase font-semibold text-gray-700 h-full">
             <li className="py-[30px] px-[20px]">
-              <a href="#" className="hover:text-blue-500 transition">
+              <a href="/" className="hover:text-blue-500 transition">
                 Trang chủ
               </a>
             </li>
@@ -155,7 +156,7 @@ const Header = () => {
               </ul>
             </li>
             <li className="py-[30px] px-[20px]">
-              <a href="#" className="hover:text-blue-500 transition">
+              <a href="/lien-he" className="hover:text-blue-500 transition">
                 Liên hệ
               </a>
             </li>
@@ -187,7 +188,9 @@ const Header = () => {
       {/* Menu response */}
       <div
         className={`xl:hidden menu-parent bg-yellow-100 m-[4px] rounded-lg p-4 transition-transform duration-800 ${
-          isMenuOpen ? "translate-x-0 h-[calc(100vh-80px)]" : "-translate-x-full hidden"
+          isMenuOpen
+            ? "translate-x-0 h-[calc(100vh-80px)]"
+            : "-translate-x-full hidden"
         }`}
       >
         <ul className="space-y-2">
@@ -275,7 +278,9 @@ const Header = () => {
             </ul>
           </li>
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
-            LIÊN HỆ
+            <a href="/lien-he" className="hover:text-blue-500 transition">
+              Liên Hệ
+            </a>
           </li>
         </ul>
       </div>

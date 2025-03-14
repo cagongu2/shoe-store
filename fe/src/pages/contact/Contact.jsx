@@ -14,7 +14,7 @@ const Contact = () => {
 
   return (
     <>
-      <div className="px-[48px] mt-[48px]">
+      <div className="px-[48px] mt-[48px] bg-white">
         <div className="flex justify-center overflow-hidden mx-[-12px">
           <div className="text-center px-3">
             <div className="px-0">
@@ -29,7 +29,7 @@ const Contact = () => {
         </div>
         <div className="overflow-x-hidden mx-[-12px] grid xl:grid-cols-2">
           {/* info */}
-          <div className="col-span-1 px-3 mb-4">
+          <div className="col-span-2 px-3 mb-4 lg:col-span-1">
             <div>
               <div className="px-0">
                 <div className="flex mx-[-12px] justify-center flex-col">
@@ -79,11 +79,11 @@ const Contact = () => {
           </div>
 
           {/* form */}
-          <div className="col-span-1 px-3">
+          <div className="col-span-2 px-3 lg:col-span-1">
             <div className="px-0">
               <form action="" onSubmit={handleSubmit(onSubmit)}>
                 {/* Họ và tên & Email */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-3 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4  mb-6">
                   <div>
                     <label className="block text-gray-400 text-sm mb-2">
                       Họ và tên
@@ -127,7 +127,7 @@ const Contact = () => {
                 </div>
 
                 {/* Số điện thoại & Tiêu đề */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-3 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4  mb-6">
                   <div>
                     <label className="block text-gray-400 text-sm mb-2">
                       Số điện thoại
@@ -167,7 +167,7 @@ const Contact = () => {
                 </div>
 
                 {/* Nội dung */}
-                <div className="px-3 mb-6">
+                <div className=" mb-6">
                   <label className="block text-gray-400 text-sm mb-2">
                     Nội dung
                   </label>
