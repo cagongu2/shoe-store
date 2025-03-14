@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
+import Footer from "./components/footer";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <Outlet />
         </main>
 
-        <footer>Footer</footer>
+        <Footer/>
       </div>
     </>
   );

@@ -60,6 +60,259 @@ const Collection = () => {
                 </div>
               </div>
             </div>
+            {/* Single Product */}
+            <div className="p-3">
+              <div className="">
+                <div className="border-solid rounded-md shadow-xl text-center">
+                  {/* Image */}
+                  <div className="overflow-hidden">
+                    <img
+                      src={image1}
+                      alt="Nike Air Winflo 10"
+                      className="mx-auto transition-transform duration-500 hover:scale-110 rounded-t-lg"
+                    />
+                  </div>
+                  {/* Details */}
+                  <div className="flex flex-col pt-4 pb-4 bg-white rounded-b-lg">
+                    <a
+                      href=""
+                      className="block text-[15px] font-bold text-gray-700 uppercase mb-2 hover:text-blue-600"
+                    >
+                      Nike Air Winflo 10
+                    </a>
+                    <h6 className="pt-3 font-bold text-gray-700 text-[15px]  hover:text-blue-600">
+                      3.489.000 VNĐ
+                    </h6>
+                    {/* Button */}
+                    <div className="mt-3">
+                      <a
+                        href=""
+                        className="bg-orange-500 text-white text-base px-4 py-1 rounded inline-block transition-transform duration-300 hover:-translate-y-1"
+                      >
+                        Mua ngay
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Single Product */}
+            <div className="p-3">
+              <div className="">
+                <div className="border-solid rounded-md shadow-xl text-center">
+                  {/* Image */}
+                  <div className="overflow-hidden">
+                    <img
+                      src={image1}
+                      alt="Nike Air Winflo 10"
+                      className="mx-auto transition-transform duration-500 hover:scale-110 rounded-t-lg"
+                    />
+                  </div>
+                  {/* Details */}
+                  <div className="flex flex-col pt-4 pb-4 bg-white rounded-b-lg">
+                    <a
+                      href=""
+                      className="block text-[15px] font-bold text-gray-700 uppercase mb-2 hover:text-blue-600"
+                    >
+                      Nike Air Winflo 10
+                    </a>
+                    <h6 className="pt-3 font-bold text-gray-700 text-[15px]  hover:text-blue-600">
+                      3.489.000 VNĐ
+                    </h6>
+                    {/* Button */}
+                    <div className="mt-3">
+                      <a
+                        href=""
+                        className="bg-orange-500 text-white text-base px-4 py-1 rounded inline-block transition-transform duration-300 hover:-translate-y-1"
+                      >
+                        Mua ngay
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Single Product */}
+            <div className="p-3">
+              <div className="">
+                <div className="border-solid rounded-md shadow-xl text-center">
+                  {/* Image */}
+                  <div className="overflow-hidden">
+                    <img
+                      src={image1}
+                      alt="Nike Air Winflo 10"
+                      className="mx-auto transition-transform duration-500 hover:scale-110 rounded-t-lg"
+                    />
+                  </div>
+                  {/* Details */}
+                  <div className="flex flex-col pt-4 pb-4 bg-white rounded-b-lg">
+                    <a
+                      href=""
+                      className="block text-[15px] font-bold text-gray-700 uppercase mb-2 hover:text-blue-600"
+                    >
+                      Nike Air Winflo 10
+                    </a>
+                    <h6 className="pt-3 font-bold text-gray-700 text-[15px]  hover:text-blue-600">
+                      3.489.000 VNĐ
+                    </h6>
+                    {/* Button */}
+                    <div className="mt-3">
+                      <a
+                        href=""
+                        className="bg-orange-500 text-white text-base px-4 py-1 rounded inline-block transition-transform duration-300 hover:-translate-y-1"
+                      >
+                        Mua ngay
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Single Product */}
+            <div className="p-3">
+              <div className="">
+                <div className="border-solid rounded-md shadow-xl text-center">
+                  {/* Image */}
+                  <div className="overflow-hidden">
+                    <img
+                      src={image1}
+                      alt="Nike Air Winflo 10"
+                      className="mx-auto transition-transform duration-500 hover:scale-110 rounded-t-lg"
+                    />
+                  </div>
+                  {/* Details */}
+                  <div className="flex flex-col pt-4 pb-4 bg-white rounded-b-lg">
+                    <a
+                      href=""
+                      className="block text-[15px] font-bold text-gray-700 uppercase mb-2 hover:text-blue-600"
+                    >
+                      Nike Air Winflo 10
+                    </a>
+                    <h6 className="pt-3 font-bold text-gray-700 text-[15px]  hover:text-blue-600">
+                      3.489.000 VNĐ
+                    </h6>
+                    {/* Button */}
+                    <div className="mt-3">
+                      <a
+                        href=""
+                        className="bg-orange-500 text-white text-base px-4 py-1 rounded inline-block transition-transform duration-300 hover:-translate-y-1"
+                      >
+                        Mua ngay
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Single Product */}
+            <div className="p-3">
+              <div className="">
+                <div className="border-solid rounded-md shadow-xl text-center">
+                  {/* Image */}
+                  <div className="overflow-hidden">
+                    <img
+                      src={image1}
+                      alt="Nike Air Winflo 10"
+                      className="mx-auto transition-transform duration-500 hover:scale-110 rounded-t-lg"
+                    />
+                  </div>
+                  {/* Details */}
+                  <div className="flex flex-col pt-4 pb-4 bg-white rounded-b-lg">
+                    <a
+                      href=""
+                      className="block text-[15px] font-bold text-gray-700 uppercase mb-2 hover:text-blue-600"
+                    >
+                      Nike Air Winflo 10
+                    </a>
+                    <h6 className="pt-3 font-bold text-gray-700 text-[15px]  hover:text-blue-600">
+                      3.489.000 VNĐ
+                    </h6>
+                    {/* Button */}
+                    <div className="mt-3">
+                      <a
+                        href=""
+                        className="bg-orange-500 text-white text-base px-4 py-1 rounded inline-block transition-transform duration-300 hover:-translate-y-1"
+                      >
+                        Mua ngay
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Single Product */}
+            <div className="p-3">
+              <div className="">
+                <div className="border-solid rounded-md shadow-xl text-center">
+                  {/* Image */}
+                  <div className="overflow-hidden">
+                    <img
+                      src={image1}
+                      alt="Nike Air Winflo 10"
+                      className="mx-auto transition-transform duration-500 hover:scale-110 rounded-t-lg"
+                    />
+                  </div>
+                  {/* Details */}
+                  <div className="flex flex-col pt-4 pb-4 bg-white rounded-b-lg">
+                    <a
+                      href=""
+                      className="block text-[15px] font-bold text-gray-700 uppercase mb-2 hover:text-blue-600"
+                    >
+                      Nike Air Winflo 10
+                    </a>
+                    <h6 className="pt-3 font-bold text-gray-700 text-[15px]  hover:text-blue-600">
+                      3.489.000 VNĐ
+                    </h6>
+                    {/* Button */}
+                    <div className="mt-3">
+                      <a
+                        href=""
+                        className="bg-orange-500 text-white text-base px-4 py-1 rounded inline-block transition-transform duration-300 hover:-translate-y-1"
+                      >
+                        Mua ngay
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Single Product */}
+            <div className="p-3">
+              <div className="">
+                <div className="border-solid rounded-md shadow-xl text-center">
+                  {/* Image */}
+                  <div className="overflow-hidden">
+                    <img
+                      src={image1}
+                      alt="Nike Air Winflo 10"
+                      className="mx-auto transition-transform duration-500 hover:scale-110 rounded-t-lg"
+                    />
+                  </div>
+                  {/* Details */}
+                  <div className="flex flex-col pt-4 pb-4 bg-white rounded-b-lg">
+                    <a
+                      href=""
+                      className="block text-[15px] font-bold text-gray-700 uppercase mb-2 hover:text-blue-600"
+                    >
+                      Nike Air Winflo 10
+                    </a>
+                    <h6 className="pt-3 font-bold text-gray-700 text-[15px]  hover:text-blue-600">
+                      3.489.000 VNĐ
+                    </h6>
+                    {/* Button */}
+                    <div className="mt-3">
+                      <a
+                        href=""
+                        className="bg-orange-500 text-white text-base px-4 py-1 rounded inline-block transition-transform duration-300 hover:-translate-y-1"
+                      >
+                        Mua ngay
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+           
           </div>
         </div>
         {/* btn  */}
