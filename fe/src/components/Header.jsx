@@ -43,7 +43,7 @@ const Header = () => {
               </a>
             </li>
             <li className="py-[30px] px-[20px]">
-              <a href="#" className="hover:text-blue-500 transition">
+              <a href="/ve-chung-toi" className="hover:text-blue-500 transition">
                 Giới thiệu
               </a>
             </li>
@@ -200,7 +200,9 @@ const Header = () => {
             </a>
           </li>
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
-            GIỚI THIỆU
+            <a href="/ve-chung-toi" className="hover:text-blue-500 transition">
+              GIỚI THIỆU
+            </a>
           </li>
           <li className="relative group ">
             <div className="flex justify-between">
