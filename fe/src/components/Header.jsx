@@ -130,7 +130,7 @@ const Header = () => {
             </li>
             <li className="relative group py-[30px] px-[20px]">
               <a
-                href="#"
+                href="/bai-viet"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 blog
@@ -195,7 +195,9 @@ const Header = () => {
       >
         <ul className="space-y-2">
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
-            TRANG CHỦ
+            <a href="/" className="hover:text-blue-500 transition">
+              TRANG CHỦ
+            </a>
           </li>
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
             GIỚI THIỆU
@@ -261,7 +263,9 @@ const Header = () => {
           <li className="relative group ">
             <div className="flex justify-between">
               <button className="py-2 font-semibold w-full text-left uppercase relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 group-hover:before:scale-x-100">
-                blog
+                <a href="/bai-viet" className="hover:text-blue-500 transition">
+                  BLOG
+                </a>
               </button>
               <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
             </div>
@@ -279,7 +283,7 @@ const Header = () => {
           </li>
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
             <a href="/lien-he" className="hover:text-blue-500 transition">
-              Liên Hệ
+              LIÊN HỆ
             </a>
           </li>
         </ul>
