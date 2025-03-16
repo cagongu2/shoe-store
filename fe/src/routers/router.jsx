@@ -5,6 +5,7 @@ import Home from "../pages/home/Home";
 import Contact from "../pages/contact/Contact";
 import Blog from "../pages/blog/Blog";
 import About from "../pages/about/About";
+import FavoritePage from "../pages/favorite/FavoritePage";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "/lien-he",
         element: <Contact/>,
+      },
+      {
+        path: "/san-pham-yeu-thich",
+        element: <FavoritePage/>,
       },
     ],
   },

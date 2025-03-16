@@ -43,7 +43,10 @@ const Header = () => {
               </a>
             </li>
             <li className="py-[30px] px-[20px]">
-              <a href="/ve-chung-toi" className="hover:text-blue-500 transition">
+              <a
+                href="/ve-chung-toi"
+                className="hover:text-blue-500 transition"
+              >
                 Giới thiệu
               </a>
             </li>
@@ -180,7 +183,9 @@ const Header = () => {
           {/* Icons */}
           <div className="flex items-center space-x-4">
             <IoIosSearch className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
-            <IoHeartOutline className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
+            <Link to="/san-pham-yeu-thich">
+              <IoHeartOutline className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
+            </Link>
             <HiOutlineShoppingBag className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
           </div>
         </div>
