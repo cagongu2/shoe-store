@@ -4,6 +4,8 @@ import App from "../App";
 import Home from "../pages/home/Home";
 import Contact from "../pages/contact/Contact";
 import Blog from "../pages/blog/Blog";
+import About from "../pages/about/About";
+import Product from "../pages/product/Product";
 
 const router = createBrowserRouter([
   {
@@ -16,11 +18,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/ve-chung-toi",
-        element: <div>GIỚI THIỆU</div>,
+        element: <About/>,
       },
       {
         path: "/san-pham",
-        element: <div>SẢN PHẨM</div>,
+        element: <Product/>,
       },
       {
         path: "/",
