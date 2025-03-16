@@ -147,7 +147,7 @@ const Product = () => {
             {/* content */}
             <div className="">
                 
-            <div className="px-12 w-full">
+            <div className="w-full px-20 my-20">
                 <div className="flex">
                     <div className="md:w-5/12 lg:w-1/3 xl:w-1/4 p-3">
                         <div className="w-full bg-white rounded-lg shadow-md p-3">
