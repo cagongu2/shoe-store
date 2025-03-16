@@ -1,5 +1,11 @@
 import { useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { FaLongArrowAltRight } from 'react-icons/fa';
+import { motion } from "framer-motion";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const Product = () => {
     const [showThuongHieu, setThuongHieu] = useState(true);
@@ -67,6 +73,33 @@ const Product = () => {
       price: 2499000,
       oldPrice: 2500000,
       image: "https://assets.adidas.com/images/w_1880,f_auto,q_auto/c1337559438a4ab89863b7a1c1a9dbb4_9366/ID7560_06_standard.jpg",
+    },
+  ];
+  const accessories = [
+    {
+      id: 1,
+      name: "Vớ Sneaker",
+      image: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR2MdEItPw92dd_lEz0VYILDOv3jXRbhWvwFM1Cb0kVFRqkYi0E",
+    },
+    {
+      id: 2,
+      name: "Dây giày thể thao",
+      image: "https://down-vn.img.susercontent.com/file/f4fcb99a9cd319ca89e4b0c63fbb77c5",
+    },
+    {
+      id: 3,
+      name: "Dung dịch vệ sinh giày",
+      image: "https://salt.tikicdn.com/ts/product/31/ee/74/cf202201f5699d37de609ed9587f8f57.jpg",
+    },
+    {
+      id: 4,
+      name: "Hộp đựng giày sneaker",
+      image: "https://product.hstatic.net/200000528441/product/hop-dung-giay-sneaker_eeefc93ae4dc47bbba16c92d1e0a28ba.jpg",
+    },
+    {
+      id: 5,
+      name: "Bàn chải vệ sinh giày",
+      image: "https://vn-test-11.slatic.net/p/c1bba840a62f7ef514009658a38d5ae0.jpg",
     },
   ];
 
@@ -259,14 +292,60 @@ const Product = () => {
 
                 </div>
             </div>
-
+            <motion.div
+      className="col-lg-6 text-center"
+      initial={{ opacity: 0, x: -50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 1 }}
+      viewport={{ once: true }}
+    >
+      <div className="section-title">
+        <h1 className="text-3xl font-bold text-gray-800">Phụ kiện</h1>
+        <p className="text-lg text-gray-600 mt-2">
+          Phụ kiện hoàn hảo cho đôi giày của bạn - cùng shop khám phá ngay
+        </p>
+      </div>
+            </motion.div>        
             </div>
-          
+            {/* Slide chạy ngang tự động */}
+            <div className="w-full max-w-7xl mx-auto">
+      <Swiper
+        modules={[Navigation, Autoplay]}
+        spaceBetween={20}
+        slidesPerView={4}
+        navigation
+        autoplay={{ delay: 3000 }}
+        loop={true}
+        breakpoints={{
+          320: { slidesPerView: 1 },
+          640: { slidesPerView: 2 },
+          1024: { slidesPerView: 4 },
+        }}
+        className="pb-10"
+      >
+        {products.map((product) => (
+          <SwiperSlide key={product.id}>
+            <div className="border rounded-lg shadow-md overflow-hidden">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-60 object-cover"
+            />
+              <div className="p-4 text-center">
+              <h3 className="font-bold text-center text-sm h-12 overflow-hidden text-ellipsis line-clamp-2">
+              {product.name}
+                </h3>
+                <p className="text-gray-700">{product.price}</p>
+                <button className="mt-2 bg-orange-500 text-white px-4 py-2 rounded-lg">
+                  Mua ngay
+                </button>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
         </div>
-      
-           
-        
-        
     );
 }
 
