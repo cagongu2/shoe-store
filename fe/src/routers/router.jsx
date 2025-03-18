@@ -7,6 +7,7 @@ import Blog from "../pages/blog/Blog";
 import About from "../pages/about/About";
 import FavoritePage from "../pages/favorite/FavoritePage";
 import BlogDetail from "../pages/blog/details/BlogDetail";
+import Cart from "../pages/cart/Cart";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/bai-viet",
         element: <Blog/>,
+      },
+      {
+        path: "/gio-hang",
+        element: <Cart/>,
       },
       {
         path: "/bai-viet/:id",
