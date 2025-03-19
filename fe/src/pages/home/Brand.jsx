@@ -1,8 +1,5 @@
 import React from "react";
-import brand1 from "../../assets/tmp/uploads/product/category/1699345766-puma-1684311439523.webp";
-import brand2 from "../../assets/tmp/uploads/product/category/1699345752-nb-1684311439515.webp";
-import brand3 from "../../assets/tmp/uploads/product/category/1699345658-B.webp";
-import brand4 from "../../assets/tmp/uploads/product/category/1699345637-nike-1684311439519.webp";
+import { getImgUrl } from "../../util/getImageUrl";
 
 const Brand = () => {
   return (
@@ -13,7 +10,7 @@ const Brand = () => {
             <div className="flex items-center justify-center">
               <a href="">
                 <img
-                  src={brand1}
+                  src={`${getImgUrl("uploads/product/category/1699345766-puma-1684311439523.webp")}`}
                   className="max-w-20 max-h-20  filter invert-[80%] brightness-90 hover:invert-0 hover:brightness-100"
                   alt=""
                 />
@@ -22,7 +19,7 @@ const Brand = () => {
             <div className="flex items-center justify-center">
               <a href="">
                 <img
-                  src={brand2}
+                 src={`${getImgUrl("uploads/product/category/1699345752-nb-1684311439515.webp")}`}
                   className="max-w-20 max-h-20  filter invert-[80%] brightness-90 hover:invert-0 hover:brightness-100"
                   alt=""
                 />
@@ -31,7 +28,7 @@ const Brand = () => {
             <div className="flex items-center justify-center py-0 my-0">
               <a href="">
                 <img
-                  src={brand3}
+                 src={`${getImgUrl("uploads/product/category/1699345658-B.webp")}`}
                   className="max-w-20 max-h-20  filter invert-[80%] brightness-90 hover:invert-0 hover:brightness-100"
                   alt=""
                 />
@@ -40,7 +37,7 @@ const Brand = () => {
             <div className="flex items-center justify-center">
               <a href="">
                 <img
-                  src={brand4}
+                  src={`${getImgUrl("uploads/product/category/1699345637-nike-1684311439519.webp")}`}
                   className="max-w-20 max-h-20  filter invert-[80%] brightness-90 hover:invert-0 hover:brightness-100"
                   alt=""
                 />

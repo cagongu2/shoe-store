@@ -2,8 +2,34 @@ import React from "react";
 import { FaTrash } from "react-icons/fa";
 import { RiShoppingBagLine } from "react-icons/ri";
 import { useForm } from "react-hook-form";
+import { getImgUrl } from "../../util/getImageUrl";
 
 const Cart = () => {
+  const cartItems = [
+    {
+      id: 1,
+      name: "Nike Air Winflo 10",
+      price: "3.489.000",
+      category: "Nike",
+      size: 36,
+      quantity: 2,
+      color: "Đỏ",
+      image: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
+      link: "/san-pham/nike-air-winflo-10",
+    },
+    {
+      id: 1,
+      name: "Nike Air Winflo 10",
+      price: "3.489.000",
+      category: "Nike",
+      size: 36,
+      quantity: 1,
+      color: "Đỏ",
+      image: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
+      link: "/san-pham/nike-air-winflo-10",
+    },
+  ];
+
   const {
     register,
     handleSubmit,
@@ -29,111 +55,58 @@ const Cart = () => {
                   {/* cart item */}
                   <div>
                     {/* single item */}
-                    <div className="grid grid-cols-12 ">
-                      {/* img */}
-                      <div className="p-4 col-span-12 md:col-span-3">
-                        <img
-                          className="lg:w-[150px] lg:h-[150px] rounded-xl object-contain"
-                          src="https://shoes.themedemo.site/backend/uploads/product/1701279232-DD9284-401-2.jpg"
-                          alt=""
-                        />
-                      </div>
-                      {/* item-info */}
-                      <div className="col-span-12 md:col-span-9">
-                        <div className="p-4">
-                          <div className="mx-[-12px]">
-                            <div className="px-3">
-                              <p className="text-lg mb-2">
-                                Nike Flex Experience Rn 11
-                              </p>
-                              <div className="d-flex gap-3 align-items-center">
-                                <p className="text-base mb-4 text-orange-500">
-                                  4.218.000 VNĐ
-                                </p>
-                              </div>
-                              <div className="flex justify-between mb-4 flex-wrap gap-2">
-                                <div>
-                                  <span className="text-semibold">
-                                    Thương hiệu:
-                                  </span>
-                                  <span>Nike</span>
+                    {cartItems.map((product) => (
+                      <div className="grid grid-cols-12 ">
+                        {/* img */}
+                        <div className="p-4 col-span-12 md:col-span-3">
+                          <img
+                            className="lg:w-[150px] lg:h-[150px] rounded-xl object-contain"
+                            src={`${getImgUrl(product.image)}`}
+                            alt={product.name}
+                          />
+                        </div>
+                        {/* item-info */}
+                        <div className="col-span-12 md:col-span-9">
+                          <div className="p-4">
+                            <div className="mx-[-12px]">
+                              <div className="px-3">
+                                <p className="text-lg mb-2">{product.name}</p>
+                                <div className="d-flex gap-3 align-items-center">
+                                  <p className="text-base mb-4 text-orange-500">
+                                    {product.price} VNĐ
+                                  </p>
                                 </div>
-                                <div>
-                                  <span className="text-semibold">Size:</span>
-                                  <span>36</span>
+                                <div className="flex justify-between mb-4 flex-wrap gap-2">
+                                  <div>
+                                    <span className="text-semibold">
+                                      Thương hiệu:
+                                    </span>
+                                    <span>{product.category}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-semibold">Size:</span>
+                                    <span>{product.size}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-semibold">SL:</span>
+                                    <span>{product.quantity}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-semibold">
+                                      Màu sắc:
+                                    </span>
+                                    <span>{product.color}</span>
+                                  </div>
                                 </div>
-                                <div>
-                                  <span className="text-semibold">SL:</span>
-                                  <span>2</span>
+                                <div className="text-red-700">
+                                  <FaTrash />
                                 </div>
-                                <div>
-                                  <span className="text-semibold">
-                                    Màu sắc:
-                                  </span>
-                                  <span>Đen</span>
-                                </div>
-                              </div>
-                              <div className="text-red-700">
-                                <FaTrash />
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    {/* single item */}
-                    <div className="grid grid-cols-12 ">
-                      {/* img */}
-                      <div className="p-4 col-span-12 md:col-span-3">
-                        <img
-                          className="lg:w-[150px] lg:h-[150px] rounded-xl object-contain"
-                          src="https://shoes.themedemo.site/backend/uploads/product/1701279232-DD9284-401-2.jpg"
-                          alt=""
-                        />
-                      </div>
-                      {/* item-info */}
-                      <div className="col-span-12 md:col-span-9">
-                        <div className="p-4">
-                          <div className="mx-[-12px]">
-                            <div className="px-3">
-                              <p className="text-lg mb-2">
-                                Nike Flex Experience Rn 11
-                              </p>
-                              <div className="d-flex gap-3 align-items-center">
-                                <p className="text-base mb-4 text-orange-500">
-                                  4.218.000 VNĐ
-                                </p>
-                              </div>
-                              <div className="flex justify-between mb-4 flex-wrap gap-2">
-                                <div>
-                                  <span className="text-semibold">
-                                    Thương hiệu:
-                                  </span>
-                                  <span>Nike</span>
-                                </div>
-                                <div>
-                                  <span className="text-semibold">Size:</span>
-                                  <span>36</span>
-                                </div>
-                                <div>
-                                  <span className="text-semibold">SL:</span>
-                                  <span>2</span>
-                                </div>
-                                <div>
-                                  <span className="text-semibold">
-                                    Màu sắc:
-                                  </span>
-                                  <span>Đen</span>
-                                </div>
-                              </div>
-                              <div className="text-red-700">
-                                <FaTrash />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
 
                   <div className="my-5 w-full border-b border-gray-200"></div>
@@ -146,7 +119,7 @@ const Cart = () => {
                           {/* icon left */}
                           <div className="group max-w-[180px] px-3 mb-4 pr-0 bg-green-500 inline-flex items-center justify-center rounded ml-7 group-hover:px-0">
                             <a
-                              href="https://shoes.themedemo.site/san-pham"
+                              href="/san-pham"
                               className="flex items-center justify-center gap-4 relative w-full"
                             >
                               <span className="text-base p-2 mr-10">
@@ -161,7 +134,7 @@ const Cart = () => {
                           {/* icon right */}
                           <div className="group max-w-[180px] px-3 mb-4 pr-0 bg-red-500 inline-flex items-center justify-center rounded ml-7 group-hover:px-0">
                             <a
-                              href="https://shoes.themedemo.site/san-pham"
+                              href="#"
                               className="flex items-center justify-center gap-4 relative w-full"
                             >
                               <span className="text-base p-2 mr-10 w-[100%]">
@@ -208,7 +181,13 @@ const Cart = () => {
 
                 <div className="flex justify-between">
                   <p className="font-medium text-base mb-2">TỔNG TIỀN: </p>
-                  <p className="font-semibold text-base mb-2">10.213.000 VNĐ</p>
+                  <p className="font-semibold text-base mb-2">
+                    {cartItems.reduce((sum, item) => {
+                      const price = parseInt(item.price.replace(/\./g, ""), 10); // Chuyển "3.489.000" -> 3489000
+                      return sum + price * item.quantity;
+                    }, 0)}{" "}
+                    VNĐ
+                  </p>
                 </div>
                 <a
                   href=""

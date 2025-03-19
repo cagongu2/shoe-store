@@ -185,8 +185,10 @@ const Header = () => {
             <IoIosSearch className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
             <Link to="/san-pham-yeu-thich">
               <IoHeartOutline className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
+            </Link>{" "}
+            <Link to="/gio-hang">
+              <HiOutlineShoppingBag className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
             </Link>
-            <HiOutlineShoppingBag className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
           </div>
         </div>
       </div>

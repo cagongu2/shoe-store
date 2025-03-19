@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
-
-import image1 from "../../assets/tmp/uploads/slide/1699767079.jpg";
-import image2 from "../../assets/tmp/uploads/slide/1699767458.jpg";
-import image3 from "../../assets/tmp/uploads/slide/1700839642.png";
-import image4 from "../../assets/tmp/uploads/slide/1700839986.png";
-import image5 from "../../assets/tmp/uploads/slide/puma-rsx-suede-vitruta.jpg";
+import { getImgUrl } from "../../util/getImageUrl";
 
 const Banner = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -25,7 +20,8 @@ const Banner = () => {
       className="mySwiper"
     >
       <SwiperSlide>
-        <img src={image1} alt="" />
+        <img src={`${getImgUrl("uploads/slide/1699767079.jpg")}`} 
+        alt="" />
         <div className="content_slide">
           <div>
             <div>
@@ -63,7 +59,7 @@ const Banner = () => {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <img src={image2} alt="" />
+        <img src={`${getImgUrl("uploads/slide/1699767458.jpg")}`} alt="" />
         <div className="content_slide">
           <div>
             <div>
@@ -102,7 +98,7 @@ const Banner = () => {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <img src={image3} alt="" />
+        <img src={`${getImgUrl("uploads/slide/1700839642.png")}`} alt="" />
         <div className="content_slide">
           <div>
             <div>
@@ -141,7 +137,7 @@ const Banner = () => {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <img src={image4} alt="" />
+        <img src={`${getImgUrl("uploads/slide/1700839986.png")}`} alt="" />
         <div className="content_slide">
           <div>
             <div>
@@ -180,7 +176,7 @@ const Banner = () => {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <img src={image5} alt="" />
+        <img src={`${getImgUrl("uploads/slide/puma-rsx-suede-vitruta.jpg")}`} alt="" />
         <div className="content_slide">
           <div>
             <div>

@@ -27,6 +27,10 @@ const router = createBrowserRouter([
         element: <div>SẢN PHẨM</div>,
       },
       {
+        path: "/san-pham/:id",
+        element: <div>SẢN PHẨM</div>,
+      },
+      {
         path: "/",
         element: <div>THƯƠNG HIỆU</div>,
       },
@@ -39,12 +43,12 @@ const router = createBrowserRouter([
         element: <Blog/>,
       },
       {
-        path: "/gio-hang",
-        element: <Cart/>,
-      },
-      {
         path: "/bai-viet/:id",
         element: <BlogDetail/>,
+      },
+      {
+        path: "/gio-hang",
+        element: <Cart/>,
       },
       {
         path: "/lien-he",

@@ -13,8 +13,7 @@ import { SlCalender } from "react-icons/sl";
 import { IoEyeOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa6";
 import { LuChevronsUpDown } from "react-icons/lu";
-
-import img1 from "../../../assets/tmp/uploads/product/1701277327-1699808901-M860B13-3.jpg";
+import { getImgUrl } from "../../../util/getImageUrl";
 
 const BlogDetail = () => {
   const {
@@ -89,7 +88,7 @@ const BlogDetail = () => {
                     <p className="text-justify mb-4"></p>
                     <p>
                       Air Jordan 3 – Lịch sử của thiết kế đã cứu rỗi Nike Một
-                      trong những mẫu Air Jordan phổ biến nhất từ ​​trước đến
+                      trong những mẫu Air Jordan phổ biến nhất từ trước đến
                       nay, Air Jordan 3 đã thiết lập một tiêu chuẩn mới về thời
                       trang và công nghệ cho giày Jordan. Giống như Air Jordan
                       2, Air Jordan 3 là sự pha trộn hoàn hảo giữa sự tinh tế và
@@ -118,7 +117,7 @@ const BlogDetail = () => {
                       chế của riêng mình với họ thay vì dựa vào Nike. Và thật
                       may mắn cho Nike, một nhà thiết kế trẻ tên là Tinker
                       Hatfield đã “lên tiếng” khi công ty này cần anh nhất. Cựu
-                      chuyên gia kiến ​​trúc và kiến ​​trúc sư của Đại học
+                      chuyên gia kiến trúc và kiến trúc sư của Đại học
                       Oregon đã có một vài bản hit đầu tiên với The Swoosh, dòng
                       giày chạy Air Max 1 và Air Trainer 1. Theo đó, cả hai đôi
                       giày này đều sở hữu thiết kế mang tính cách mạng, thành
@@ -209,7 +208,7 @@ const BlogDetail = () => {
                       trên phiên bản White Cement và Black Cement retro vào năm
                       2011. Phối màu “Fire Red” OG đã chưa từng có một bản retro
                       nào cho đến năm 2007. Vào năm đó, người hâm mộ cũng chứng
-                      kiến ​​sự xuất hiện của các phối màu mới như Pure Money,
+                      kiến sự xuất hiện của các phối màu mới như Pure Money,
                       Black Cat và Do The Right Thing. Vài năm tiếp theo là
                       quãng thời gian khá im ắng của Air Jordan 3, với chiếc
                       True Blue trở lại vào năm 2009 và thiết kế “25th
@@ -318,7 +317,7 @@ const BlogDetail = () => {
                         <div>
                           <a href="" className="mr-2">
                             <img
-                              src={img1}
+                              src={`${getImgUrl("uploads/product/1701277327-1699808901-M860B13-3.jpg")}`}
                               alt=""
                               className="max-h-12.5 max-w-12.5"
                             />
