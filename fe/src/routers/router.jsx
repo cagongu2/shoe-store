@@ -8,7 +8,11 @@ import About from "../pages/about/About";
 import FavoritePage from "../pages/favorite/FavoritePage";
 import BlogDetail from "../pages/blog/details/BlogDetail";
 import Cart from "../pages/cart/Cart";
-
+import Product from "../pages/product/Product";
+import SingleProduct from "../pages/product/details/SingleProduct";
+import Login from "../components/Login";
+import Register from "../components/Register";
+import ShoeForm from "../demo/ShoeForm";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -16,47 +20,51 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home/>,
+        element: <Home />,
       },
       {
         path: "/ve-chung-toi",
-        element: <About/>,
+        element: <About />,
       },
       {
         path: "/san-pham",
-        element: <div>SẢN PHẨM</div>,
+        element: <Product />,
       },
       {
         path: "/san-pham/:id",
-        element: <div>SẢN PHẨM</div>,
-      },
-      {
-        path: "/",
-        element: <div>THƯƠNG HIỆU</div>,
-      },
-      {
-        path: "/",
-        element: <div>PHỤ KIỆN</div>,
+        element: <SingleProduct />,
       },
       {
         path: "/bai-viet",
-        element: <Blog/>,
+        element: <Blog />,
       },
       {
         path: "/bai-viet/:id",
-        element: <BlogDetail/>,
+        element: <BlogDetail />,
       },
       {
         path: "/gio-hang",
-        element: <Cart/>,
+        element: <Cart />,
       },
       {
         path: "/lien-he",
-        element: <Contact/>,
+        element: <Contact />,
       },
       {
         path: "/san-pham-yeu-thich",
-        element: <FavoritePage/>,
+        element: <FavoritePage />,
+      },
+      {
+        path: "/dang-nhap",
+        element: <Login />,
+      },
+      {
+        path: "/dang-ky",
+        element: <Register />,
+      },
+      {
+        path: "/demo",
+        element: <ShoeForm />,
       },
     ],
   },

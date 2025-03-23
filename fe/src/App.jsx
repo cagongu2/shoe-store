@@ -16,8 +16,7 @@ function App() {
         <main className="py-[120px]">
           <Outlet />
         </main>
-
-        <Footer/>
+        <Footer />
       </div>
     </>
   );

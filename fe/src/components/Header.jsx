@@ -8,9 +8,30 @@ import { FaShopware } from "react-icons/fa";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const cartItems = useSelector((state) => state.cart.cartItems);
+
+  const newsTypes = [
+    { type: "meo-vat", label: "Mẹo vặt" },
+    { type: "tin-tuc", label: "Tin tức" },
+    { type: "su-kien", label: "Sự kiện" },
+  ];
+
+  const accessories = [
+    { type: "vo", label: "Vớ" },
+    { type: "giay", label: "Giày" },
+    { type: "dung-dich-ve-sinh", label: "Dung dịch vệ sinh" },
+  ];
+
+  const brands = [
+    { name: "nike", label: "NIKE" },
+    { name: "addidas", label: "ADIDAS" },
+    { name: "new-balance", label: "NEW BALANCE" },
+    { name: "puma", label: "PUMA" },
+  ];
 
   return (
     <header className="fixed top-0 w-full bg-white shadow-md z-50">
@@ -52,7 +73,7 @@ const Header = () => {
             </li>
             <li className="relative group py-[30px] px-[20px]">
               <a
-                href="#"
+                href="/san-pham"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 Sản phẩm
@@ -61,12 +82,18 @@ const Header = () => {
               {/* Dropdown menu */}
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
+                  <a
+                    href="/san-pham?hot=true"
+                    className="block px-4 py-2 text-white"
+                  >
                     SẢN PHẨM HOT
                   </a>
                 </li>
                 <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
+                  <a
+                    href="/san-pham?sale=true"
+                    className="block px-4 py-2 text-white"
+                  >
                     SẢN PHẨM SALE
                   </a>
                 </li>
@@ -74,7 +101,7 @@ const Header = () => {
             </li>
             <li className="relative group py-[30px] px-[20px]">
               <a
-                href="#"
+                href="/san-pham?brand=nike"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 Thương hiệu
@@ -82,31 +109,24 @@ const Header = () => {
               </a>
               {/* Dropdown menu */}
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    NIKE
-                  </a>
-                </li>
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    ADIDAS
-                  </a>
-                </li>
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    NEW BALANCE
-                  </a>
-                </li>
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    PUMA
-                  </a>
-                </li>
+                {brands.map((brand) => (
+                  <li
+                    key={brand.name}
+                    className="border-b border-white hover:bg-orange-400"
+                  >
+                    <a
+                      href={`/san-pham?brand=${brand.name}`}
+                      className="block px-4 py-2 text-white"
+                    >
+                      {brand.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </li>
             <li className="relative group py-[30px] px-[20px]">
               <a
-                href="#"
+                href="/san-pham?type=vo"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 phụ kiện
@@ -114,21 +134,19 @@ const Header = () => {
               </a>
               {/* Dropdown menu */}
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    vớ
-                  </a>
-                </li>
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    giày
-                  </a>
-                </li>
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    dung dịch vệ sinh
-                  </a>
-                </li>
+                {accessories.map((item) => (
+                  <li
+                    key={item.type}
+                    className="border-b border-white hover:bg-orange-400"
+                  >
+                    <a
+                      href={`/san-pham?category=${item.type}`}
+                      className="block px-4 py-2 text-white"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </li>
             <li className="relative group py-[30px] px-[20px]">
@@ -141,21 +159,19 @@ const Header = () => {
               </a>
               {/* Dropdown menu */}
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    mẹo vặt
-                  </a>
-                </li>
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    Tin tức
-                  </a>
-                </li>
-                <li className="border-b border-white hover:bg-orange-400">
-                  <a href="#" className="block px-4 py-2 text-white">
-                    sự kiện
-                  </a>
-                </li>
+                {newsTypes.map((item) => (
+                  <li
+                    key={item.type}
+                    className="border-b border-white hover:bg-orange-400"
+                  >
+                    <a
+                      href={`/bai-viet?type=${item.type}`}
+                      className="block px-4 py-2 text-white"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </li>
             <li className="py-[30px] px-[20px]">
@@ -186,9 +202,20 @@ const Header = () => {
             <Link to="/san-pham-yeu-thich">
               <IoHeartOutline className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
             </Link>{" "}
-            <Link to="/gio-hang">
-              <HiOutlineShoppingBag className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
-            </Link>
+            <div className="relative">
+              <Link to="/gio-hang">
+                <HiOutlineShoppingBag className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
+              </Link>
+              {cartItems.length > 0 ? (
+                <span className="absolute right-[-10px] top-[-10px] bg-orange-500 rounded-full w-5 h-5 flex items-center justify-center text-sm text-white">
+                  {cartItems.length}
+                </span>
+              ) : (
+                <span className="absolute right-[-10px] top-[-10px] bg-orange-500 rounded-full w-5 h-5 flex items-center justify-center text-sm text-white">
+                  0
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -213,18 +240,24 @@ const Header = () => {
           </li>
           <li className="relative group ">
             <div className="flex justify-between">
-              <button className="py-2 font-semibold w-full text-left uppercase relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 group-hover:before:scale-x-100">
-                sản phẩm
-              </button>
+              <a href="/san-pham">
+                <button className="py-2 font-semibold w-full text-left uppercase relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 group-hover:before:scale-x-100">
+                  sản phẩm
+                </button>
+              </a>
               <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                sản phẩm hot
-              </li>
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                sản phẩm sale
-              </li>
+              <a href="/san-pham?hot=true">
+                <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                  sản phẩm hot
+                </li>
+              </a>
+              <a href="/san-pham?hot=true">
+                <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                  sản phẩm sale
+                </li>
+              </a>
             </ul>
           </li>
 
@@ -236,18 +269,13 @@ const Header = () => {
               <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                nike
-              </li>
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                adidas
-              </li>
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                new balance
-              </li>
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                puma
-              </li>
+              {brands.map((brand) => (
+                <a href={`/san-pham?brand=${brand.name}`}>
+                  <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                    {brand.name}
+                  </li>
+                </a>
+              ))}
             </ul>
           </li>
           <li className="relative group ">
@@ -258,15 +286,13 @@ const Header = () => {
               <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                vớ
-              </li>
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                dây giày
-              </li>
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                dung dịch vệ sinh giày
-              </li>
+              {accessories.map((item) => (
+                <a href={`/san-pham?category=${item.type}`}>
+                  <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                    {item.label}
+                  </li>
+                </a>
+              ))}
             </ul>
           </li>
           <li className="relative group ">
@@ -279,15 +305,13 @@ const Header = () => {
               <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                mẹo vặt
-              </li>
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                tin tức
-              </li>
-              <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                tư vấn
-              </li>
+              {newsTypes.map((item) => (
+                <a href={`/bai-viet?type=${item.type}`}>
+                  <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                    {item.label}
+                  </li>
+                </a>
+              ))}
             </ul>
           </li>
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
