@@ -13,6 +13,70 @@ import { Link } from "react-router-dom";
 const Product = () => {
   const products = [
     {
+      id: 2,
+      name: "Nike Air Force One",
+      price: 120,
+      hot: true,
+      sale: false,
+      link: "/san-pham/2",
+      description: "Classic and comfortable sneakers for all occasions.",
+      brand: {
+        id: 1,
+        name: "Nike",
+      },
+      category: {
+        id: 2,
+        name: "Sneakers",
+      },
+      images: [
+        {
+          id: 101,
+          url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
+        },
+        {
+          id: 102,
+          url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
+        },
+      ],
+      stock: [
+        {
+          size: {
+            id: 1,
+            name: 31,
+          },
+          color: {
+            id: 1,
+            name: "Green",
+          },
+          quantity: 10,
+        },
+        {
+          size: {
+            id: 1,
+            name: 32,
+          },
+          color: {
+            id: 2,
+            name: "Blue",
+          },
+          quantity: 5,
+        },
+        {
+          size: {
+            id: 2,
+            name: 34,
+          },
+          color: {
+            id: 1,
+            name: "Red",
+          },
+          quantity: 8,
+        },
+      ],
+      createdAt: "2024-03-20T10:00:00.000Z",
+      updatedAt: "2024-03-21T10:00:00.000Z",
+    },
+    {
       id: 1,
       name: "Nike Air Force One",
       price: 120,
@@ -42,11 +106,11 @@ const Product = () => {
         {
           size: {
             id: 1,
-            name: 32,
+            name: 31,
           },
           color: {
             id: 1,
-            name: "Red",
+            name: "black",
           },
           quantity: 10,
         },
@@ -68,7 +132,7 @@ const Product = () => {
           },
           color: {
             id: 1,
-            name: "Red",
+            name: "green",
           },
           quantity: 8,
         },

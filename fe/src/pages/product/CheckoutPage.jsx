@@ -8,7 +8,7 @@ import Loading from "../../components/Loading";
 const CheckoutPage = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const totalPrice = cartItems
-    .reduce((acc, item) => acc + item.newPrice, 0)
+    .reduce((acc, item) => acc + item.price * item.quantity, 0)
     .toFixed(2);
 
   const {
@@ -31,7 +31,7 @@ const CheckoutPage = () => {
         zipcode: data.zipcode,
       },
       phone: data.phone,
-      productIds: cartItems.map((item) => item?._id),
+      products: cartItems.map((item) => item),
       totalPrice: totalPrice,
     };
     console.log(newOrder);

@@ -3,7 +3,10 @@ import { FaTrash } from "react-icons/fa";
 import { RiShoppingBagLine } from "react-icons/ri";
 import { useForm } from "react-hook-form";
 import { getImgUrl } from "../../util/getImageUrl";
-import { clearCart, removeFromCart } from "../../redux/features/carts/cartSlice";
+import {
+  clearCart,
+  removeFromCart,
+} from "../../redux/features/carts/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -42,14 +45,14 @@ const Cart = () => {
         icon: "success",
         title: "Sản phẩm đã xóa thêm",
         showConfirmButton: false,
-        timer: 1500
-    });
+        timer: 1500,
+      });
     }
   };
 
   const handleClearCart = () => {
     dispatch(clearCart());
-  }
+  };
 
   const {
     register,
@@ -122,7 +125,9 @@ const Cart = () => {
                                 <div className="text-red-700">
                                   <FaTrash
                                     className="cursor-pointer"
-                                    onClick={handleRemoveFromCart}
+                                    onClick={() =>
+                                      handleRemoveFromCart(product)
+                                    }
                                   />
                                 </div>
                               </div>
@@ -159,7 +164,7 @@ const Cart = () => {
                           <div className="group max-w-[180px] px-3 mb-4 pr-0 bg-red-500 inline-flex items-center justify-center rounded ml-7 group-hover:px-0">
                             <Link
                               to="#"
-                              onClick={handleClearCart}
+                              onClick={() => handleClearCart}
                               className="flex items-center justify-center gap-4 relative w-full"
                             >
                               <span className="text-base p-2 mr-10 w-[100%]">

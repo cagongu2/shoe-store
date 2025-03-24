@@ -47,7 +47,7 @@ const SingleProduct = () => {
   ];
 
   const product = {
-    id: 1,
+    id: 2,
     name: "Nike Air Force One",
     price: 120,
     hot: true,
@@ -76,11 +76,11 @@ const SingleProduct = () => {
       {
         size: {
           id: 1,
-          name: 32,
+          name: 31,
         },
         color: {
           id: 1,
-          name: "Red",
+          name: "Green",
         },
         quantity: 10,
       },
@@ -188,6 +188,7 @@ const SingleProduct = () => {
   const isProductFavorite = favoriteItems.some(
     (item) => item.product_id === product.id
   );
+  
   const [isFavorite, setIsFavorite] = useState(isProductFavorite);
 
   const [openIndex, setOpenIndex] = useState(null);
@@ -290,7 +291,10 @@ const SingleProduct = () => {
                   <p> Màu sắc</p>
                   <div className="flex flex-wrap gap-3">
                     {product.stock.map((productStock) => (
-                      <div key={productStock.color.name.toLowerCase()} className="relative">
+                      <div
+                        key={productStock.color.name.toLowerCase()}
+                        className="relative"
+                      >
                         <input
                           type="radio"
                           id={`color-${productStock.color.name.toLowerCase()}`}
@@ -303,18 +307,20 @@ const SingleProduct = () => {
                           tabIndex="0"
                           className={`${
                             productStock.color.name.toLowerCase() === "black"
-                          } ? bg-black : bg-${
+                          } ? bg-black : bg-${productStock.color.name.toLowerCase()}-500 rounded-full w-7.5 h-7.5 border-1 block ${
+                            selectedColor ===
                             productStock.color.name.toLowerCase()
-                          }-500 rounded-full w-7.5 h-7.5 border-1 block ${
-                            selectedColor === productStock.color.name.toLowerCase()
                               ? "border-orange-500"
                               : "border-black"
                           }`}
-                          onClick={() => setSelectedColor(productStock.color.name.toLowerCase())}
+                          onClick={() =>
+                            setSelectedColor(
+                              productStock.color.name.toLowerCase()
+                            )
+                          }
                         ></label>
                       </div>
-                    ))} 
-                    
+                    ))}
                   </div>
                 </div>
                 {/* size */}
@@ -340,7 +346,9 @@ const SingleProduct = () => {
                 ? "border-orange-500 text-orange-500 font-bold"
                 : "border-gray-400 text-gray-700 hover:border-black"
             }`}
-                          onClick={() => setSelectedSize(productStock.size.name)}
+                          onClick={() =>
+                            setSelectedSize(productStock.size.name)
+                          }
                         >
                           {productStock.size.name}
                         </label>
