@@ -6,6 +6,8 @@ import {
   FaChevronUp,
 } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../../redux/features/carts/cartSlice";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -14,6 +16,11 @@ import "swiper/css/pagination";
 import { FreeMode } from "swiper/modules";
 import { getImgUrl } from "../../../util/getImageUrl";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
+import {
+  addToFavorite,
+  removeFromFavorite,
+} from "../../../redux/features/favorites/favoriteSlice";
 
 const SingleProduct = () => {
   const policies = [
@@ -64,6 +71,12 @@ const SingleProduct = () => {
     updatedAt: "2024-03-21T10:00:00.000Z",
   };
 
+  const isLogin = false;
+
+  // add to cart
+  const dispatch = useDispatch();
+  const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
+
   const handleAddToCart = () => {
     if (!setSelectedSize) {
       alert("Vui lòng chọn size.");
@@ -75,13 +88,21 @@ const SingleProduct = () => {
     }
 
     const cartItem = {
-      id: product.id,
+      product_id: product.id,
       name: product.name,
       price: product.price,
+      brand: product.brand,
       size: selectedSize,
-      color: selectedColor,
+      link: product.link,
       quantity,
+      color: selectedColor,
+      images: product.images,
     };
+
+    if (!isLogin) {
+      dispatch(addToCart(cartItem));
+    }
+    console.log(cartItem);
 
     Swal.fire({
       position: "center",
@@ -92,6 +113,30 @@ const SingleProduct = () => {
     });
   };
 
+  const handleAddToFavorite = () => {
+    const cartItem = {
+      product_id: product.id,
+      name: product.name,
+      price: product.price,
+      brand: product.brand,
+      size: selectedSize,
+      link: product.link,
+      quantity,
+      color: selectedColor,
+      images: product.images,
+    };
+
+    if (!isLogin) {
+      if (isFavorite) {
+        dispatch(removeFromFavorite(cartItem.product_id));
+      } else {
+        dispatch(addToFavorite(cartItem));
+      }
+    }
+
+    setIsFavorite((prev) => !prev);
+  };
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedImage, setSelectedImage] = useState(product.images[0].url);
@@ -100,7 +145,10 @@ const SingleProduct = () => {
   const increase = () => setQuantity((prev) => prev + 1);
   const decrease = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
-  const [isFavorite, setIsFavorite] = useState(false);
+  const isProductFavorite = favoriteItems.some(
+    (item) => item.product_id === product.id
+  );
+  const [isFavorite, setIsFavorite] = useState(isProductFavorite);
 
   const [openIndex, setOpenIndex] = useState(null);
   const toggleAccordion = (index) => {
@@ -217,7 +265,11 @@ const SingleProduct = () => {
                             color.name === "black"
                           } ? bg-black : bg-${
                             color.name
-                          }-500 rounded-full w-7.5 h-7.5 border-1 block focus:border-orange-500`}
+                          }-500 rounded-full w-7.5 h-7.5 border-1 block ${
+                            selectedColor === color.name
+                              ? "border-orange-500"
+                              : "border-black"
+                          }`}
                           onClick={() => setSelectedColor(color.name)}
                         ></label>
                       </div>
@@ -285,8 +337,8 @@ const SingleProduct = () => {
                     <div className="grid grid-cols-12">
                       <div className="col-span-12 md:col-span-7 xl:col-span-8 lg:col-span-10 flex justify-between items-center gap-3">
                         {/* Nút Tiếp tục mua hàng */}
-                        <a
-                          href="/san-pham?hot=true"
+                        <Link
+                          to="/san-pham?hot=true"
                           className="w-[50%] flex justify-center items-center gap-2 bg-blue-500 text-white py-3  rounded-lg shadow-md hover:bg-blue-600 transition-all"
                         >
                           <svg
@@ -305,11 +357,11 @@ const SingleProduct = () => {
                             <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
                           </svg>
                           Tiếp tục mua hàng
-                        </a>
+                        </Link>
 
                         {/* Nút Thêm mục yêu thích */}
                         <button
-                          onClick={() => setIsFavorite(!isFavorite)}
+                          onClick={handleAddToFavorite}
                           className="flex items-center justify-center gap-2 w-[50%] bg-white text-black py-3 rounded-lg shadow-md hover:bg-gray-100 transition-all"
                         >
                           <svg
@@ -388,20 +440,20 @@ const SingleProduct = () => {
                         <div className="mx-[-12px]">
                           <div className="grid grid-cols-12">
                             <div className="col-span-12 md:col-span-5 lg:col-span-5 xl:col-span-3 xl:col-start-3 md:pr-5 mb-4">
-                              <a
-                                href=""
+                              <Link
+                                to=""
                                 className="flex h-10 text-base justify-center rounded-xl items-center text-white bg-blue-400"
                               >
                                 Mô tả
-                              </a>
+                              </Link>
                             </div>
                             <div className="col-span-12 md:col-span-5 lg:col-span-5 xl:col-span-3 xl:col-start-6 mb-4">
-                              <a
-                                href=""
+                              <Link
+                                to=""
                                 className="flex h-10 text-base justify-center rounded-xl items-center text-blue-400 border-1 border-blue-400"
                               >
                                 Bình luận (14)
-                              </a>
+                              </Link>
                             </div>
                           </div>
                         </div>

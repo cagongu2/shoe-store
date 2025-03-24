@@ -33,16 +33,9 @@ const cartSlice = createSlice({
             //     });
             // }
             state.cartItems.push(action.payload);
-            Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Sản phẩm đã được thêm thành công!!!",
-                showConfirmButton: false,
-                timer: 1500
-            });
         },
         removeFromCart: (state, action) => {
-            state.cartItems = state.cartItems.filter(item => item._id !== action.payload._id)
+            state.cartItems = state.cartItems.filter(item => item._id !== action.payload._id);
         },
         clearCart: (state) => {
             state.cartItems = [];

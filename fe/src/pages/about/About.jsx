@@ -1,6 +1,6 @@
 import React from "react";
 import { FaFacebook, FaTwitter, FaInstagramSquare } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -180,27 +180,27 @@ const About = () => {
                         className=""
                       />
                       <div className="flex flex-row items-center justify-center text-orange-500 absolute bottom-[-22px] left-1/2 transform -translate-x-1/2">
-                        <a
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[4px]"
-                          href="https://www.facebook.com/"
+                          to="https://www.facebook.com/"
                           target="_blank"
                         >
                           <FaFacebook />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaTwitter />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaInstagramSquare />
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <div className="px-4 mt-6">
@@ -222,27 +222,27 @@ const About = () => {
                         className=""
                       />
                       <div className="flex flex-row items-center justify-center text-orange-500 absolute bottom-[-22px] left-1/2 transform -translate-x-1/2">
-                        <a
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[4px]"
-                          href="https://www.facebook.com/"
+                          to="https://www.facebook.com/"
                           target="_blank"
                         >
                           <FaFacebook />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaTwitter />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaInstagramSquare />
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <div className="px-4 mt-6">
@@ -264,27 +264,27 @@ const About = () => {
                         className=""
                       />
                       <div className="flex flex-row items-center justify-center text-orange-500 absolute bottom-[-22px] left-1/2 transform -translate-x-1/2">
-                        <a
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[4px]"
-                          href="https://www.facebook.com/"
+                          to="https://www.facebook.com/"
                           target="_blank"
                         >
                           <FaFacebook />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaTwitter />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaInstagramSquare />
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <div className="px-4 mt-6">
@@ -306,27 +306,27 @@ const About = () => {
                         className=""
                       />
                       <div className="flex flex-row items-center justify-center text-orange-500 absolute bottom-[-22px] left-1/2 transform -translate-x-1/2">
-                        <a
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[4px]"
-                          href="https://www.facebook.com/"
+                          to="https://www.facebook.com/"
                           target="_blank"
                         >
                           <FaFacebook />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaTwitter />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaInstagramSquare />
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <div className="px-4 mt-6">
@@ -348,27 +348,27 @@ const About = () => {
                         className=""
                       />
                       <div className="flex flex-row items-center justify-center text-orange-500 absolute bottom-[-22px] left-1/2 transform -translate-x-1/2">
-                        <a
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[4px]"
-                          href="https://www.facebook.com/"
+                          to="https://www.facebook.com/"
                           target="_blank"
                         >
                           <FaFacebook />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaTwitter />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           className="w-11 h-11 bg-white rounded-full shadow-xl flex items-center justify-center py-2 px-3 mx-[5px]"
-                          href=""
+                          to=""
                           target="_blank"
                         >
                           <FaInstagramSquare />
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <div className="px-4 mt-6">

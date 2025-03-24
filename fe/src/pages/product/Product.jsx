@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 
 import { FreeMode } from "swiper/modules";
 import { getImgUrl } from "../../util/getImageUrl";
+import { Link } from "react-router-dom";
 
 const Product = () => {
   const products = [
@@ -99,8 +100,8 @@ const Product = () => {
                           key={brand}
                           className="border-b border-gray-300 h-12.5 flex items-center text-base last:border-none"
                         >
-                          <a
-                            href={`/san-pham?brand=${brand.toLowerCase()}`}
+                          <Link
+                            to={`/san-pham?brand=${brand.toLowerCase()}`}
                             className="pl-[10px]"
                           >
                             <span className="mr-2.5"></span>
@@ -108,7 +109,7 @@ const Product = () => {
                             <span className="ml-2.5 text-gray-400">
                               ({count})
                             </span>
-                          </a>
+                          </Link>
                         </li>
                       ))}
                     </ul>
@@ -129,20 +130,20 @@ const Product = () => {
                   <div>
                     <ul className="px-5 ">
                       <li className="border-b border-gray-300 h-12.5 flex items-center text-base">
-                        <a href="/san-pham?hot=true" className="pl-[10px]">
+                        <Link to="/san-pham?hot=true" className="pl-[10px]">
                           <span className="mr-2.5"></span>Sản phẩm hot
                           <span className="ml-2.5 text-gray-400">
                             ({hotCount})
                           </span>
-                        </a>
+                        </Link>
                       </li>
                       <li className="h-12.5 flex items-center text-base">
-                        <a href="/san-pham?sale=true" className="pl-[10px]">
+                        <Link to="/san-pham?sale=true" className="pl-[10px]">
                           <span className="mr-2.5"></span>Sản phẩm sale
                           <span className="ml-2.5 text-gray-400">
                             ({saleCount})
                           </span>
-                        </a>
+                        </Link>
                       </li>
                     </ul>
                   </div>
@@ -167,8 +168,8 @@ const Product = () => {
                             key={category}
                             className="border-b border-gray-300 h-12.5 flex items-center text-base last:border-none"
                           >
-                            <a
-                              href={`/san-pham?category=${category.toLowerCase()}`}
+                            <Link
+                              to={`/san-pham?category=${category.toLowerCase()}`}
                               className="pl-[10px]"
                             >
                               <span className="mr-2.5"></span>
@@ -188,7 +189,7 @@ const Product = () => {
                               <span className="ml-2.5 text-gray-400">
                                 ({count})
                               </span>
-                            </a>
+                            </Link>
                           </li>
                         )
                       )}
@@ -228,35 +229,35 @@ const Product = () => {
                       <div className="mb-7.5 bg-white rounded drop-shadow-lg">
                         {/* img */}
                         <div className="mb-5 rounded border-gray-200 overflow-hidden">
-                          <a href={product.link}>
+                          <Link to={product.link}>
                             <img
                               src={`${getImgUrl(product.images[0].url)}`}
                               alt={product.name}
                               className="w-full h-[240px] object-cover rounded hover:scale-[120%] transition-all duration-500"
                             />
-                          </a>
+                          </Link>
                         </div>
                         {/* details */}
                         <div className="rounded">
-                          <a href="">
+                          <Link to="">
                             <div>
                               <p className="px-2 mb-2 text-center text-lg font-normal">
                                 {product.name}
                               </p>
                             </div>
-                          </a>
+                          </Link>
                           <div>
                             <p className="pr-[15px] text-center text-lg font-normal">
                               {product.price} VNĐ
                             </p>
                           </div>
                           <div className="flex justify-center">
-                            <a
-                              href={product.link}
+                            <Link
+                              to={product.link}
                               className="text-base bg-orange-500 rounded text-white inline-flex py-[6px] px-4 my-4 hover:-translate-y-0.5 transition-all duration-500"
                             >
                               Mua ngay
-                            </a>
+                            </Link>
                           </div>
                         </div>
                       </div>
@@ -268,43 +269,43 @@ const Product = () => {
             {/* pagination */}
             <div className=" flex justify-center items-center px-3">
               <div className=" flex justify-center items-center gap-3">
-                <a
-                  href="https://shoes.themedemo.site/san-pham?keyword=&amp;page=2"
+                <Link
+                  to="https://shoes.themedemo.site/san-pham?keyword=&amp;page=2"
                   className="px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg bg-gray-100 flex items-center justify-center text-base"
                 >
                   <FaAngleLeft />
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  to="#"
                   className="px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg bg-gray-100 flex items-center justify-center text-base"
                 >
                   1
-                </a>
-                <a
-                  href="https://shoes.themedemo.site/san-pham?keyword=&amp;page=2"
+                </Link>
+                <Link
+                  to="https://shoes.themedemo.site/san-pham?keyword=&amp;page=2"
                   className="px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg bg-gray-100 flex items-center justify-center text-base"
                 >
                   2
-                </a>
-                <a
-                  href="https://shoes.themedemo.site/san-pham?keyword=&amp;page=3"
+                </Link>
+                <Link
+                  to="https://shoes.themedemo.site/san-pham?keyword=&amp;page=3"
                   className="px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg bg-gray-100 flex items-center justify-center text-base"
                 >
                   3
-                </a>
-                <a
-                  href="https://shoes.themedemo.site/san-pham?keyword=&amp;page=4"
+                </Link>
+                <Link
+                  to="https://shoes.themedemo.site/san-pham?keyword=&amp;page=4"
                   className="px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg bg-gray-100 flex items-center justify-center text-base"
                 >
                   4
-                </a>
+                </Link>
 
-                <a
-                  href="https://shoes.themedemo.site/san-pham?keyword=&amp;page=2"
+                <Link
+                  to="https://shoes.themedemo.site/san-pham?keyword=&amp;page=2"
                   className="px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg bg-gray-100 flex items-center justify-center text-base"
                 >
                   <FaAngleRight />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -353,33 +354,33 @@ const Product = () => {
                 <div className="text-center rounded">
                   {/* img */}
                   <div>
-                    <a href="">
+                    <Link to="">
                       <img
                         className="rounded"
                         src={`${getImgUrl(product.images[0].url)}`}
                         alt=""
                       />
-                    </a>
+                    </Link>
                   </div>
                   {/* content */}
                   <div className="rounded">
-                    <a href="">
+                    <Link to="">
                       <p className="line-clamp-1 px-2 mt-[15px] mb-2 text-sm font-[500] uppercase">
                         {product.name}
                       </p>
-                    </a>
+                    </Link>
                     <div>
                       <p className="mb-2 text-sm font-[500] uppercase">
                         {product.price} VNĐ
                       </p>
                     </div>
                     <div className="">
-                      <a
-                        href={product.link}
+                      <Link
+                        to={product.link}
                         className="px-4 py-1.5 mb-4 bg-orange-500 text-white inline-flex rounded hover:-translate-y-0.5 duration-500 transition-all"
                       >
                         Mua ngay
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>

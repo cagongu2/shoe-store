@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
 
   const newsTypes = [
     { type: "meo-vat", label: "Mẹo vặt" },
@@ -41,9 +42,9 @@ const Header = () => {
           <Marquee>Địa chỉ </Marquee>
         </div>
         <div className="flex items-center justify-end gap-3">
-          <a href="#" className="hover:underline">
+          <Link to="/dang-nhap" className="hover:underline">
             Đăng nhập
-          </a>
+          </Link>
           <span>|</span>
           <span>Hotline: 0333333333</span>
         </div>
@@ -52,61 +53,61 @@ const Header = () => {
       {/* Thanh điều hướng */}
       <div className="menu-navbar flex justify-between items-center pr-[3rem] pl-[3rem] shadow-[0px_4px_10px_rgba(0,0,0,0.15)]">
         <div className="menu-logo xl:order-first">
-          <a href="">
+          <Link to="">
             <FaShopware className="text-6xl m-[10px]" />
-          </a>
+          </Link>
         </div>
         <div className="menu-data order-first flex justify-between items-center h-[80px]">
           <ul className="hidden xl:flex justify-center items-center text-base  uppercase font-semibold text-gray-700 h-full">
             <li className="py-[30px] px-[20px]">
-              <a href="/" className="hover:text-blue-500 transition">
+              <Link to="/" className="hover:text-blue-500 transition">
                 Trang chủ
-              </a>
+              </Link>
             </li>
             <li className="py-[30px] px-[20px]">
-              <a
-                href="/ve-chung-toi"
+              <Link
+                to="/ve-chung-toi"
                 className="hover:text-blue-500 transition"
               >
                 Giới thiệu
-              </a>
+              </Link>
             </li>
             <li className="relative group py-[30px] px-[20px]">
-              <a
-                href="/san-pham"
+              <Link
+                to="/san-pham"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 Sản phẩm
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180 " />
-              </a>
+              </Link>
               {/* Dropdown menu */}
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 <li className="border-b border-white hover:bg-orange-400">
-                  <a
-                    href="/san-pham?hot=true"
+                  <Link
+                    to="/san-pham?hot=true"
                     className="block px-4 py-2 text-white"
                   >
                     SẢN PHẨM HOT
-                  </a>
+                  </Link>
                 </li>
                 <li className="border-b border-white hover:bg-orange-400">
-                  <a
-                    href="/san-pham?sale=true"
+                  <Link
+                    to="/san-pham?sale=true"
                     className="block px-4 py-2 text-white"
                   >
                     SẢN PHẨM SALE
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </li>
             <li className="relative group py-[30px] px-[20px]">
-              <a
-                href="/san-pham?brand=nike"
+              <Link
+                to="/san-pham?brand=nike"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 Thương hiệu
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
-              </a>
+              </Link>
               {/* Dropdown menu */}
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 {brands.map((brand) => (
@@ -114,24 +115,24 @@ const Header = () => {
                     key={brand.name}
                     className="border-b border-white hover:bg-orange-400"
                   >
-                    <a
-                      href={`/san-pham?brand=${brand.name}`}
+                    <Link
+                      to={`/san-pham?brand=${brand.name}`}
                       className="block px-4 py-2 text-white"
                     >
                       {brand.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </li>
             <li className="relative group py-[30px] px-[20px]">
-              <a
-                href="/san-pham?type=vo"
+              <Link
+                to="/san-pham?type=vo"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 phụ kiện
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
-              </a>
+              </Link>
               {/* Dropdown menu */}
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 {accessories.map((item) => (
@@ -139,24 +140,24 @@ const Header = () => {
                     key={item.type}
                     className="border-b border-white hover:bg-orange-400"
                   >
-                    <a
-                      href={`/san-pham?category=${item.type}`}
+                    <Link
+                      to={`/san-pham?category=${item.type}`}
                       className="block px-4 py-2 text-white"
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </li>
             <li className="relative group py-[30px] px-[20px]">
-              <a
-                href="/bai-viet"
+              <Link
+                to="/bai-viet"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 blog
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
-              </a>
+              </Link>
               {/* Dropdown menu */}
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 {newsTypes.map((item) => (
@@ -164,20 +165,20 @@ const Header = () => {
                     key={item.type}
                     className="border-b border-white hover:bg-orange-400"
                   >
-                    <a
-                      href={`/bai-viet?type=${item.type}`}
+                    <Link
+                      to={`/bai-viet?type=${item.type}`}
                       className="block px-4 py-2 text-white"
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </li>
             <li className="py-[30px] px-[20px]">
-              <a href="/lien-he" className="hover:text-blue-500 transition">
+              <Link to="/lien-he" className="hover:text-blue-500 transition">
                 Liên hệ
-              </a>
+              </Link>
             </li>
           </ul>
           {/* icon response */}
@@ -199,9 +200,20 @@ const Header = () => {
           {/* Icons */}
           <div className="flex items-center space-x-4">
             <IoIosSearch className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
-            <Link to="/san-pham-yeu-thich">
-              <IoHeartOutline className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
-            </Link>{" "}
+            <div className="relative">
+              <Link to="/san-pham-yeu-thich">
+                <IoHeartOutline className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
+              </Link>
+              {favoriteItems.length > 0 ? (
+                <span className="absolute right-[-10px] top-[-10px] bg-orange-500 rounded-full w-5 h-5 flex items-center justify-center text-sm text-white">
+                  {favoriteItems.length}
+                </span>
+              ) : (
+                <span className="absolute right-[-10px] top-[-10px] bg-orange-500 rounded-full w-5 h-5 flex items-center justify-center text-sm text-white">
+                  0
+                </span>
+              )}
+            </div>
             <div className="relative">
               <Link to="/gio-hang">
                 <HiOutlineShoppingBag className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
@@ -229,35 +241,35 @@ const Header = () => {
       >
         <ul className="space-y-2">
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
-            <a href="/" className="hover:text-blue-500 transition">
+            <Link to="/" className="hover:text-blue-500 transition">
               TRANG CHỦ
-            </a>
+            </Link>
           </li>
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
-            <a href="/ve-chung-toi" className="hover:text-blue-500 transition">
+            <Link to="/ve-chung-toi" className="hover:text-blue-500 transition">
               GIỚI THIỆU
-            </a>
+            </Link>
           </li>
           <li className="relative group ">
             <div className="flex justify-between">
-              <a href="/san-pham">
+              <Link to="/san-pham">
                 <button className="py-2 font-semibold w-full text-left uppercase relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 group-hover:before:scale-x-100">
                   sản phẩm
                 </button>
-              </a>
+              </Link>
               <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
-              <a href="/san-pham?hot=true">
+              <Link to="/san-pham?hot=true">
                 <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                   sản phẩm hot
                 </li>
-              </a>
-              <a href="/san-pham?hot=true">
+              </Link>
+              <Link to="/san-pham?hot=true">
                 <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                   sản phẩm sale
                 </li>
-              </a>
+              </Link>
             </ul>
           </li>
 
@@ -270,11 +282,11 @@ const Header = () => {
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {brands.map((brand) => (
-                <a href={`/san-pham?brand=${brand.name}`}>
+                <Link to={`/san-pham?brand=${brand.name}`}>
                   <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                     {brand.name}
                   </li>
-                </a>
+                </Link>
               ))}
             </ul>
           </li>
@@ -287,37 +299,37 @@ const Header = () => {
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {accessories.map((item) => (
-                <a href={`/san-pham?category=${item.type}`}>
+                <Link to={`/san-pham?category=${item.type}`}>
                   <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                     {item.label}
                   </li>
-                </a>
+                </Link>
               ))}
             </ul>
           </li>
           <li className="relative group ">
             <div className="flex justify-between">
               <button className="py-2 font-semibold w-full text-left uppercase relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 group-hover:before:scale-x-100">
-                <a href="/bai-viet" className="hover:text-blue-500 transition">
+                <Link to="/bai-viet" className="hover:text-blue-500 transition">
                   BLOG
-                </a>
+                </Link>
               </button>
               <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {newsTypes.map((item) => (
-                <a href={`/bai-viet?type=${item.type}`}>
+                <Link to={`/bai-viet?type=${item.type}`}>
                   <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                     {item.label}
                   </li>
-                </a>
+                </Link>
               ))}
             </ul>
           </li>
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
-            <a href="/lien-he" className="hover:text-blue-500 transition">
+            <Link to="/lien-he" className="hover:text-blue-500 transition">
               LIÊN HỆ
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
