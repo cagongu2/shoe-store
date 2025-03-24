@@ -44,6 +44,9 @@ export const AuthProvide = ({ children }) => {
 
   // manage user
   useEffect(() => {
+
+    if (!auth) return;
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
@@ -67,6 +70,7 @@ export const AuthProvide = ({ children }) => {
     loginUser,
     signInWithGoogle,
     logout,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
