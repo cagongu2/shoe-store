@@ -7,17 +7,20 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import Footer from "./components/footer";
+import { AuthProvide } from "./context/AuthContext";
 
 function App() {
   return (
     <>
-      <div className="bg-gray-50">
-        <Header />
-        <main className="py-[120px]">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
+      <AuthProvide>
+        <div className="bg-gray-50">
+          <Header />
+          <main className="py-[120px]">
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
+      </AuthProvide>
     </>
   );
 }

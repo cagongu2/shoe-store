@@ -48,24 +48,64 @@ const SingleProduct = () => {
 
   const product = {
     id: 1,
-    name: "Nike Air Max",
+    name: "Nike Air Force One",
     price: 120,
     hot: true,
     sale: false,
     link: "/san-pham/1",
-    description: "Best shoes for running",
+    description: "Classic and comfortable sneakers for all occasions.",
+    brand: {
+      id: 1,
+      name: "Nike",
+    },
+    category: {
+      id: 2,
+      name: "Sneakers",
+    },
     images: [
-      { url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg" },
-      { url: "uploads/product/1701278821-1699714663-MFCPRGB4-3.jpg" },
+      {
+        id: 101,
+        url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
+      },
+      {
+        id: 102,
+        url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
+      },
     ],
-    sizes: [{ name: 42 }, { name: 44 }],
-    brand: { name: "nike" },
-    category: { name: "vo" },
-    colors: [
-      { name: "red" },
-      { name: "green" },
-      { name: "blue" },
-      { name: "black" },
+    stock: [
+      {
+        size: {
+          id: 1,
+          name: 32,
+        },
+        color: {
+          id: 1,
+          name: "Red",
+        },
+        quantity: 10,
+      },
+      {
+        size: {
+          id: 1,
+          name: 32,
+        },
+        color: {
+          id: 2,
+          name: "Blue",
+        },
+        quantity: 5,
+      },
+      {
+        size: {
+          id: 2,
+          name: 34,
+        },
+        color: {
+          id: 1,
+          name: "Red",
+        },
+        quantity: 8,
+      },
     ],
     createdAt: "2024-03-20T10:00:00.000Z",
     updatedAt: "2024-03-21T10:00:00.000Z",
@@ -249,31 +289,32 @@ const SingleProduct = () => {
                 <div className="mt-6 flex items-center gap-3">
                   <p> Màu sắc</p>
                   <div className="flex flex-wrap gap-3">
-                    {product.colors.map((color) => (
-                      <div key={color.name} className="relative">
+                    {product.stock.map((productStock) => (
+                      <div key={productStock.color.name.toLowerCase()} className="relative">
                         <input
                           type="radio"
-                          id={`color-${color.name}`}
+                          id={`color-${productStock.color.name.toLowerCase()}`}
                           name="color"
-                          value={color.name}
+                          value={productStock.color.name.toLowerCase()}
                           className="hidden"
                         />
                         <label
                           htmlFor=""
                           tabIndex="0"
                           className={`${
-                            color.name === "black"
+                            productStock.color.name.toLowerCase() === "black"
                           } ? bg-black : bg-${
-                            color.name
+                            productStock.color.name.toLowerCase()
                           }-500 rounded-full w-7.5 h-7.5 border-1 block ${
-                            selectedColor === color.name
+                            selectedColor === productStock.color.name.toLowerCase()
                               ? "border-orange-500"
                               : "border-black"
                           }`}
-                          onClick={() => setSelectedColor(color.name)}
+                          onClick={() => setSelectedColor(productStock.color.name.toLowerCase())}
                         ></label>
                       </div>
-                    ))}
+                    ))} 
+                    
                   </div>
                 </div>
                 {/* size */}
@@ -282,26 +323,26 @@ const SingleProduct = () => {
                     Size:
                   </label>
                   <div className="flex flex-wrap gap-3 mt-2">
-                    {product.sizes.map((size) => (
-                      <div key={size.name} className="relative">
+                    {product.stock.map((productStock) => (
+                      <div key={productStock.size.name} className="relative">
                         <input
                           type="radio"
-                          id={`size-${size.name}`}
+                          id={`size-${productStock.size.name}`}
                           name="size"
-                          value={size.name}
+                          value={productStock.size.name}
                           className="hidden"
                         />
                         <label
-                          htmlFor={`size-${size.name}`}
+                          htmlFor={`size-${productStock.size.name}`}
                           className={`cursor-pointer px-6 py-1.5 border rounded-md text-center block transition-all 
             ${
-              selectedSize === size.name
+              selectedSize === productStock.size.name
                 ? "border-orange-500 text-orange-500 font-bold"
                 : "border-gray-400 text-gray-700 hover:border-black"
             }`}
-                          onClick={() => setSelectedSize(size.name)}
+                          onClick={() => setSelectedSize(productStock.size.name)}
                         >
-                          {size.name}
+                          {productStock.size.name}
                         </label>
                       </div>
                     ))}

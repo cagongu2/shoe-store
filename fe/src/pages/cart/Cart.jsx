@@ -216,7 +216,7 @@ const Cart = () => {
                   </p>
                 </div>
                 <Link
-                  to=""
+                  to="/thanh-toan"
                   className="rounded bg-orange-500 text-white w-full p-[6px] block mt-2 text-center"
                 >
                   Thanh toán

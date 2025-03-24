@@ -13,6 +13,7 @@ import SingleProduct from "../pages/product/details/SingleProduct";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import ShoeForm from "../demo/ShoeForm";
+import CheckoutPage from "../pages/product/checkoutPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: "/dang-ky",
         element: <Register />,
+      },
+      {
+        path: "/thanh-toan",
+        element: <CheckoutPage />,
       },
       {
         path: "/demo",

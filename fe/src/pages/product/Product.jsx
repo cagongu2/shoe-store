@@ -14,39 +14,65 @@ const Product = () => {
   const products = [
     {
       id: 1,
-      name: "Nike Air Max",
+      name: "Nike Air Force One",
       price: 120,
       hot: true,
       sale: false,
       link: "/san-pham/1",
-      description: "Best shoes for running",
+      description: "Classic and comfortable sneakers for all occasions.",
+      brand: {
+        id: 1,
+        name: "Nike",
+      },
+      category: {
+        id: 2,
+        name: "Sneakers",
+      },
       images: [
-        { url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg" },
-        { url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg" },
+        {
+          id: 101,
+          url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
+        },
+        {
+          id: 102,
+          url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
+        },
       ],
-      sizes: [{ name: "42" }, { name: "44" }],
-      brand: { name: "Nike" },
-      category: { name: "vo" },
-      color: { name: "Red" },
-      createdAt: "2024-03-20T10:00:00.000Z",
-      updatedAt: "2024-03-21T10:00:00.000Z",
-    },
-    {
-      id: 1,
-      name: "Nike Air Max",
-      price: 120,
-      hot: true,
-      sale: true,
-      link: "/san-pham/1",
-      description: "Best shoes for running",
-      images: [
-        { url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg" },
-        { url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg" },
+      stock: [
+        {
+          size: {
+            id: 1,
+            name: 32,
+          },
+          color: {
+            id: 1,
+            name: "Red",
+          },
+          quantity: 10,
+        },
+        {
+          size: {
+            id: 1,
+            name: 32,
+          },
+          color: {
+            id: 2,
+            name: "Blue",
+          },
+          quantity: 5,
+        },
+        {
+          size: {
+            id: 2,
+            name: 34,
+          },
+          color: {
+            id: 1,
+            name: "Red",
+          },
+          quantity: 8,
+        },
       ],
-      sizes: [{ name: "42" }, { name: "44" }],
-      brand: { name: "new-balance" },
-      category: { name: "giay" },
-      color: { name: "Red" },
       createdAt: "2024-03-20T10:00:00.000Z",
       updatedAt: "2024-03-21T10:00:00.000Z",
     },

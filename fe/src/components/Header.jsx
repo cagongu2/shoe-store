@@ -9,8 +9,14 @@ import { AiFillCloseSquare } from "react-icons/ai";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
+  const { currentUser, logout } = useAuth();
+  const handleLogOut = () => {
+    logout();
+  };
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
   const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
@@ -41,13 +47,25 @@ const Header = () => {
         <div className="hidden uppercase lg:col-span-2 lg:flex">
           <Marquee>Địa chỉ </Marquee>
         </div>
-        <div className="flex items-center justify-end gap-3">
-          <Link to="/dang-nhap" className="hover:underline">
-            Đăng nhập
-          </Link>
-          <span>|</span>
-          <span>Hotline: 0333333333</span>
-        </div>
+        {currentUser ? (
+          <div className="flex items-center justify-end gap-3">
+            <span>{currentUser.email}</span>
+            <span>|</span>
+            <Link to="/dang-nhap" className="hover:underline"
+              onClick={handleLogOut}
+            >
+              Đăng xuất
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center justify-end gap-3">
+            <Link to="/dang-nhap" className="hover:underline">
+              Đăng nhập
+            </Link>
+            <span>|</span>
+            <span>Hotline: 0333333333</span>
+          </div>
+        )}
       </div>
 
       {/* Thanh điều hướng */}
