@@ -101,9 +101,9 @@ const FavoritePage = () => {
                 <div className="mb-4">
                   <div className="grid grid-cols-12">
                     <div className="col-span-12 md:col-span-2 p-4">
-                      <Link to={item.link}>
+                      <Link to={`/san-pham/${item.product_id}`}>
                         <img
-                          src={`${getImgUrl(item.images[0].url)}`}
+                          src={`${getImgUrl(item.images[0].link)}`}
                           alt=""
                           className="rounded w-fit h-30 object-cover sm:w-full sm:h-fit"
                         />
@@ -113,7 +113,7 @@ const FavoritePage = () => {
                       <div className="p-4 ">
                         <div className="mx-[-12px] grid grid-cols-1 xl:grid-cols-3">
                           <div className=" p-4 flex items-center">
-                            <Link to={item.link}>
+                            <Link to={`/san-pham/${item.product_id}`}>
                               <p className="text-xl font-medium">{item.name}</p>
                             </Link>
                           </div>
@@ -126,14 +126,14 @@ const FavoritePage = () => {
                             <div className="flex gap-3 text-white items-center justify-between text-base">
                               <div className="flex h-[40px] items-center justify-center">
                                 <button className="py-2 px-3 inline-flex justify-center h-[100%] items-center bg-red-500 rounded w-25">
-                                  <Link onClick={handleClearFavorite} to="#">
+                                  <Link onClick={handleRemoveFromFavorite} to="#">
                                     <FaRegTrashAlt className="leading-[100%]" />
                                   </Link>
                                 </button>
                               </div>
                               <div className="py-2 px-3 h-[40px] w-40 bg-green-500 rounded ">
                                 <Link
-                                  to={item.link}
+                                  to={`/san-pham/${item.product_id}`}
                                   className=" flex items-center justify-center gap-2"
                                 >
                                   <FaEye className="block" /> Xem sản phẩm

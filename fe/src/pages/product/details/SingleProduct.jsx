@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaAngleLeft,
   FaAngleRight,
@@ -16,11 +16,12 @@ import "swiper/css/pagination";
 import { FreeMode } from "swiper/modules";
 import { getImgUrl } from "../../../util/getImageUrl";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   addToFavorite,
   removeFromFavorite,
 } from "../../../redux/features/favorites/favoriteSlice";
+import { useFetchProductByIdQuery } from "../../../redux/features/products/productsApi";
 
 const SingleProduct = () => {
   const policies = [
@@ -46,70 +47,13 @@ const SingleProduct = () => {
     },
   ];
 
-  const product = {
-    id: 2,
-    name: "Nike Air Force One",
-    price: 120,
-    hot: true,
-    sale: false,
-    link: "/san-pham/1",
-    description: "Classic and comfortable sneakers for all occasions.",
-    brand: {
-      id: 1,
-      name: "Nike",
-    },
-    category: {
-      id: 2,
-      name: "Sneakers",
-    },
-    images: [
-      {
-        id: 101,
-        url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
-      },
-      {
-        id: 102,
-        url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
-      },
-    ],
-    stock: [
-      {
-        size: {
-          id: 1,
-          name: 31,
-        },
-        color: {
-          id: 1,
-          name: "Green",
-        },
-        quantity: 10,
-      },
-      {
-        size: {
-          id: 1,
-          name: 32,
-        },
-        color: {
-          id: 2,
-          name: "Blue",
-        },
-        quantity: 5,
-      },
-      {
-        size: {
-          id: 2,
-          name: 34,
-        },
-        color: {
-          id: 1,
-          name: "Red",
-        },
-        quantity: 8,
-      },
-    ],
-    createdAt: "2024-03-20T10:00:00.000Z",
-    updatedAt: "2024-03-21T10:00:00.000Z",
-  };
+  const { id } = useParams();
+
+  const {
+    data: product = {},
+    isLoading,
+    isError,
+  } = useFetchProductByIdQuery(id);
 
   const isLogin = false;
 
@@ -128,15 +72,15 @@ const SingleProduct = () => {
     }
 
     const cartItem = {
-      product_id: product.id,
-      name: product.name,
-      price: product.price,
-      brand: product.brand,
+      product_id: product?.id,
+      name: product?.name,
+      price: product?.price,
+      brand: product?.brand,
       size: selectedSize,
-      link: product.link,
+      link: product?.link,
       quantity,
       color: selectedColor,
-      images: product.images,
+      images: product?.images,
     };
 
     if (!isLogin) {
@@ -155,15 +99,11 @@ const SingleProduct = () => {
 
   const handleAddToFavorite = () => {
     const cartItem = {
-      product_id: product.id,
-      name: product.name,
-      price: product.price,
-      brand: product.brand,
-      size: selectedSize,
-      link: product.link,
-      quantity,
-      color: selectedColor,
-      images: product.images,
+      product_id: product?.id,
+      name: product?.name,
+      price: product?.price,
+      brand: product?.brand,
+      images: product?.images,
     };
 
     if (!isLogin) {
@@ -176,20 +116,26 @@ const SingleProduct = () => {
 
     setIsFavorite((prev) => !prev);
   };
+  const isProductFavorite = favoriteItems.some(
+    (item) => item.product_id === product?.id
+  );
+  const [isFavorite, setIsFavorite] = useState(isProductFavorite);
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(product.images[0].url);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    if (product?.images?.length > 0) {
+      setSelectedImage(product?.images[0].link);
+    }
+  }, [product]);
 
   const [quantity, setQuantity] = useState(1);
   const increase = () => setQuantity((prev) => prev + 1);
   const decrease = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
-  const isProductFavorite = favoriteItems.some(
-    (item) => item.product_id === product.id
-  );
-  
-  const [isFavorite, setIsFavorite] = useState(isProductFavorite);
+
 
   const [openIndex, setOpenIndex] = useState(null);
   const toggleAccordion = (index) => {
@@ -248,20 +194,20 @@ const SingleProduct = () => {
                     modules={[FreeMode]}
                     className="mySwiper"
                   >
-                    {product.images.map((image, index) => (
+                    {product?.images?.map((image, index) => (
                       <SwiperSlide key={index} className="min-w-30 min-h-30">
                         {/* small img */}
                         <img
                           className={`max-w-[180px] max-h-[180px] min-w-30 min-h-30 rounded border-1 border-gray-200 object-contain
                           ${
-                            selectedImage === image.url
+                            selectedImage === image.link
                               ? "opacity-100"
                               : "opacity-20"
                           }
                           `}
-                          src={`${getImgUrl(image.url)}`}
+                          src={`${getImgUrl(image.link)}`}
                           alt=""
-                          onClick={() => setSelectedImage(image.url)}
+                          onClick={() => setSelectedImage(image.link)}
                         />
                       </SwiperSlide>
                     ))}
@@ -275,47 +221,47 @@ const SingleProduct = () => {
               <div className="col-span-12 lg:col-span-6 px-3">
                 {/* product name */}
                 <div className="mt-4">
-                  <p className="font-normal text-3xl mb-2">{product.name}</p>
+                  <p className="font-normal text-3xl mb-2">{product?.name}</p>
                   <p className="mb-2 font-semibold">
-                    SKU: <span className="font-normal">{product.id}</span>
+                    SKU: <span className="font-normal">{product?.id}</span>
                   </p>
                 </div>
                 {/* product price */}
                 <div className="mt-6">
                   <p className="font-semibold text-3xl text-orange-500">
-                    {product.price} VNĐ
+                    {product?.price} VNĐ
                   </p>
                 </div>
                 {/* color */}
                 <div className="mt-6 flex items-center gap-3">
                   <p> Màu sắc</p>
                   <div className="flex flex-wrap gap-3">
-                    {product.stock.map((productStock) => (
+                    {product?.stocks?.map((productStock) => (
                       <div
-                        key={productStock.color.name.toLowerCase()}
+                        key={productStock?.color?.name.toLowerCase()}
                         className="relative"
                       >
                         <input
                           type="radio"
-                          id={`color-${productStock.color.name.toLowerCase()}`}
+                          id={`color-${productStock?.color?.name.toLowerCase()}`}
                           name="color"
-                          value={productStock.color.name.toLowerCase()}
+                          value={productStock?.color?.name.toLowerCase()}
                           className="hidden"
                         />
                         <label
                           htmlFor=""
                           tabIndex="0"
                           className={`${
-                            productStock.color.name.toLowerCase() === "black"
-                          } ? bg-black : bg-${productStock.color.name.toLowerCase()}-500 rounded-full w-7.5 h-7.5 border-1 block ${
+                            productStock?.color?.name.toLowerCase() === "black"
+                          } ? bg-black : bg-${productStock?.color?.name.toLowerCase()}-500 rounded-full w-7.5 h-7.5 border-1 block ${
                             selectedColor ===
-                            productStock.color.name.toLowerCase()
+                            productStock?.color?.name.toLowerCase()
                               ? "border-orange-500"
                               : "border-black"
                           }`}
                           onClick={() =>
                             setSelectedColor(
-                              productStock.color.name.toLowerCase()
+                              productStock?.color?.name.toLowerCase()
                             )
                           }
                         ></label>
@@ -329,28 +275,28 @@ const SingleProduct = () => {
                     Size:
                   </label>
                   <div className="flex flex-wrap gap-3 mt-2">
-                    {product.stock.map((productStock) => (
-                      <div key={productStock.size.name} className="relative">
+                    {product?.stocks?.map((productStock) => (
+                      <div key={productStock?.size?.name} className="relative">
                         <input
                           type="radio"
-                          id={`size-${productStock.size.name}`}
+                          id={`size-${productStock?.size?.name}`}
                           name="size"
-                          value={productStock.size.name}
+                          value={productStock?.size?.name}
                           className="hidden"
                         />
                         <label
-                          htmlFor={`size-${productStock.size.name}`}
+                          htmlFor={`size-${productStock?.size?.name}`}
                           className={`cursor-pointer px-6 py-1.5 border rounded-md text-center block transition-all 
             ${
-              selectedSize === productStock.size.name
+              selectedSize === productStock?.size?.name
                 ? "border-orange-500 text-orange-500 font-bold"
                 : "border-gray-400 text-gray-700 hover:border-black"
             }`}
                           onClick={() =>
-                            setSelectedSize(productStock.size.name)
+                            setSelectedSize(productStock?.size?.name)
                           }
                         >
-                          {productStock.size.name}
+                          {productStock?.size?.name}
                         </label>
                       </div>
                     ))}
@@ -507,6 +453,20 @@ const SingleProduct = () => {
                           </div>
                         </div>
                       </div>
+                    </div>
+                    <div className="mb-[16px] border-gray-400 border-b"></div>
+                    {/* description */}
+                    <div className="px-6 flex flex-col text-gray-400">
+                      <p className="text-gray-600 font-semibold">
+                        GIÀY THỜI TRANG NAM PUMA-180 PERF
+                      </p>
+                      <p>
+                        Bước vào thế giới phong cách đích thực với Giày Thời
+                        Trang Nam Puma-180 Perf. Sự kết hợp hoàn hảo giữa thiết
+                        kế tinh tế và sự thoải mái đáng kinh ngạc, đây chắc chắn
+                        sẽ là đôi giày yêu thích mà bạn có thể mang bất kỳ dịp
+                        nào.
+                      </p>
                     </div>
                   </div>
                   {/* san pham khac*/}

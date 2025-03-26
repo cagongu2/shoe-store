@@ -9,138 +9,11 @@ import "swiper/css/pagination";
 import { FreeMode } from "swiper/modules";
 import { getImgUrl } from "../../util/getImageUrl";
 import { Link } from "react-router-dom";
+import { useFetchAllProductsQuery } from "../../redux/features/products/productsApi";
+import Loading from "../../components/Loading";
 
 const Product = () => {
-  const products = [
-    {
-      id: 2,
-      name: "Nike Air Force One",
-      price: 120,
-      hot: true,
-      sale: false,
-      link: "/san-pham/2",
-      description: "Classic and comfortable sneakers for all occasions.",
-      brand: {
-        id: 1,
-        name: "Nike",
-      },
-      category: {
-        id: 2,
-        name: "Sneakers",
-      },
-      images: [
-        {
-          id: 101,
-          url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
-        },
-        {
-          id: 102,
-          url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
-        },
-      ],
-      stock: [
-        {
-          size: {
-            id: 1,
-            name: 31,
-          },
-          color: {
-            id: 1,
-            name: "Green",
-          },
-          quantity: 10,
-        },
-        {
-          size: {
-            id: 1,
-            name: 32,
-          },
-          color: {
-            id: 2,
-            name: "Blue",
-          },
-          quantity: 5,
-        },
-        {
-          size: {
-            id: 2,
-            name: 34,
-          },
-          color: {
-            id: 1,
-            name: "Red",
-          },
-          quantity: 8,
-        },
-      ],
-      createdAt: "2024-03-20T10:00:00.000Z",
-      updatedAt: "2024-03-21T10:00:00.000Z",
-    },
-    {
-      id: 1,
-      name: "Nike Air Force One",
-      price: 120,
-      hot: true,
-      sale: false,
-      link: "/san-pham/1",
-      description: "Classic and comfortable sneakers for all occasions.",
-      brand: {
-        id: 1,
-        name: "Nike",
-      },
-      category: {
-        id: 2,
-        name: "Sneakers",
-      },
-      images: [
-        {
-          id: 101,
-          url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
-        },
-        {
-          id: 102,
-          url: "uploads/product/1701269731-1700986313-FD0368-100-2.jpg",
-        },
-      ],
-      stock: [
-        {
-          size: {
-            id: 1,
-            name: 31,
-          },
-          color: {
-            id: 1,
-            name: "black",
-          },
-          quantity: 10,
-        },
-        {
-          size: {
-            id: 1,
-            name: 32,
-          },
-          color: {
-            id: 2,
-            name: "Blue",
-          },
-          quantity: 5,
-        },
-        {
-          size: {
-            id: 2,
-            name: 34,
-          },
-          color: {
-            id: 1,
-            name: "green",
-          },
-          quantity: 8,
-        },
-      ],
-      createdAt: "2024-03-20T10:00:00.000Z",
-      updatedAt: "2024-03-21T10:00:00.000Z",
-    },
-  ];
+  const { data: products = [], isLoading, isError } = useFetchAllProductsQuery();
 
   const brandCount = products.reduce((acc, product) => {
     const brandName = product.brand.name;
@@ -165,6 +38,8 @@ const Product = () => {
 
     return acc;
   }, 0);
+
+  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -319,9 +194,9 @@ const Product = () => {
                       <div className="mb-7.5 bg-white rounded drop-shadow-lg">
                         {/* img */}
                         <div className="mb-5 rounded border-gray-200 overflow-hidden">
-                          <Link to={product.link}>
+                          <Link to={`/san-pham/${product.id}`}>
                             <img
-                              src={`${getImgUrl(product.images[0].url)}`}
+                              src={`${getImgUrl(product.images[0].link)}`}
                               alt={product.name}
                               className="w-full h-[240px] object-cover rounded hover:scale-[120%] transition-all duration-500"
                             />
@@ -343,7 +218,7 @@ const Product = () => {
                           </div>
                           <div className="flex justify-center">
                             <Link
-                              to={product.link}
+                              to={`/san-pham/${product.id}`}
                               className="text-base bg-orange-500 rounded text-white inline-flex py-[6px] px-4 my-4 hover:-translate-y-0.5 transition-all duration-500"
                             >
                               Mua ngay
@@ -466,7 +341,7 @@ const Product = () => {
                     </div>
                     <div className="">
                       <Link
-                        to={product.link}
+                        to={`/san-pham/${product.id}`}
                         className="px-4 py-1.5 mb-4 bg-orange-500 text-white inline-flex rounded hover:-translate-y-0.5 duration-500 transition-all"
                       >
                         Mua ngay
