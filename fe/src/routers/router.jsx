@@ -11,9 +11,14 @@ import Cart from "../pages/cart/Cart";
 import Product from "../pages/product/Product";
 import SingleProduct from "../pages/product/details/SingleProduct";
 import Login from "../components/Login";
+import AdminLogin from "../components/AdminLogin";
+
 import Register from "../components/Register";
-import ShoeForm from "../demo/ShoeForm";
 import CheckoutPage from "../pages/product/checkoutPage";
+import { PrivateRoute } from "./PrivateRoute";
+import AdminRoute from "./AdminRoute";
+import DashBoard from "../pages/dashboard/DashBoard";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -45,7 +50,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/gio-hang",
-        element: <Cart />,
+        element: (
+          <PrivateRoute>
+            <Cart />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/lien-he",
@@ -65,13 +74,17 @@ const router = createBrowserRouter([
       },
       {
         path: "/thanh-toan",
-        element: <CheckoutPage />,
-      },
-      {
-        path: "/demo",
-        element: <ShoeForm />,
+        element: (
+          <PrivateRoute>
+            <CheckoutPage />
+          </PrivateRoute>
+        ),
       },
     ],
+  },
+  {
+    path: "/dashboard",
+    element: <DashBoard />,
   },
 ]);
 

@@ -13,7 +13,7 @@ import { useFetchAllProductsQuery } from "../../redux/features/products/products
 import Loading from "../../components/Loading";
 
 const Product = () => {
-  const { data: products = [], isLoading, isError } = useFetchAllProductsQuery();
+  const { data: products = [], isLoading } = useFetchAllProductsQuery();
 
   const brandCount = products.reduce((acc, product) => {
     const brandName = product.brand.name;
