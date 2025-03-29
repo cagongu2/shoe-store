@@ -14,7 +14,7 @@ router.get("/", getAllProducts);
 
 router.get("/:id", getProductById);
 
-router.post("/", createProduct);
+router.post("/", upload.array("images", 5), createProduct);
 
 router.put("/:id", updateProduct);
 

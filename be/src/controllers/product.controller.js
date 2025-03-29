@@ -36,7 +36,7 @@ const getProductById = async (req, res) => {
             include: [
                 { model: Brand, as: "brand" },
                 { model: Category, as: "category" },
-                { model: ProductStock, as: "stock" },
+                { model: Image, as: "images" },
                 {
                     model: ProductStock,
                     as: "stocks",
@@ -60,7 +60,9 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { name, link, price, hot, sale, description, brandId, categoryId } = req.body;
+        const { name, link, price, hot, sale, description, brandId, categoryId, stocks } = req.body;
+
+        const imageLinks = req.files.map(file => `uploads/demo/${file.filename}`);
 
         const newProduct = await Product.create({
             name,
@@ -72,6 +74,24 @@ const createProduct = async (req, res) => {
             brandId,
             categoryId
         });
+
+        await Promise.all(
+            imageLinks.map(link => Image.create({ productId: newProduct.id, link }))
+        );
+
+        if (stocks) {
+            const stockList = JSON.parse(stocks);
+            await Promise.all(
+                stockList.map(stock =>
+                    ProductStock.create({
+                        productId: newProduct.id,
+                        colorId: stock.colorId,
+                        sizeId: stock.sizeId,
+                        quantity: stock.quantity,
+                    })
+                )
+            );
+        }
 
         res.status(201).json(newProduct);
     } catch (error) {

@@ -9,7 +9,7 @@ const Size = require("./size.model");
 
 Product.belongsTo(Brand, { foreignKey: "brandId", as: "brand" });
 Product.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
-Product.hasMany(Image, { foreignKey: "productId", as: "images" });
+Product.hasMany(Image, { foreignKey: "productId", as: "images"});
 Product.hasMany(ProductStock, { foreignKey: "productId", as: "stocks" });
 
 Image.belongsTo(Product, { foreignKey: "productId", as: "product" });
