@@ -31,7 +31,7 @@ const CheckoutPage = () => {
         zipcode: data.zipcode,
       },
       phone: data.phone,
-      products: cartItems.map((item) => item),
+      carts: cartItems.map((item) => item),
       totalPrice: totalPrice,
     };
     console.log(newOrder);
@@ -46,13 +46,14 @@ const CheckoutPage = () => {
               <div>
                 <div>
                   <h2 className="font-semibold text-xl text-gray-600 mb-2">
-                    Cash On Delevary
+                    Thanh toán khi nhận hàng
                   </h2>
                   <p className="text-gray-500 mb-2">
-                    Total Price: ${totalPrice}
+                    Tổng tiền: {totalPrice} vnd
                   </p>
                   <p className="text-gray-500 mb-6">
-                    Items: {cartItems.length > 0 ? cartItems.length : 0}
+                    Số lượng sản phẩm:{" "}
+                    {cartItems.length > 0 ? cartItems.length : 0}
                   </p>
                 </div>
 
@@ -62,14 +63,14 @@ const CheckoutPage = () => {
                     className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3 my-8"
                   >
                     <div className="text-gray-600">
-                      <p className="font-medium text-lg">Personal Details</p>
-                      <p>Please fill out all the fields.</p>
+                      <p className="font-medium text-lg">Thông tin cá nhân</p>
+                      <p>Vui lòng điền đầy đủ các trường.</p>
                     </div>
 
                     <div className="lg:col-span-2">
                       <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                         <div className="md:col-span-5">
-                          <label htmlFor="full_name">Full Name</label>
+                          <label htmlFor="full_name">Họ và tên</label>
                           <input
                             {...register("name", { required: true })}
                             type="text"
@@ -80,7 +81,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className="md:col-span-5">
-                          <label htmlFor="email">Email Address</label>
+                          <label htmlFor="email">Địa chỉ email</label>
                           <input
                             type="text"
                             name="email"
@@ -92,19 +93,18 @@ const CheckoutPage = () => {
                           />
                         </div>
                         <div className="md:col-span-5">
-                          <label htmlFor="phone">Phone Number</label>
+                          <label htmlFor="phone">Số điện thoại</label>
                           <input
                             {...register("phone", { required: true })}
                             type="number"
                             name="phone"
                             id="phone"
                             className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                            placeholder="+123 456 7890"
                           />
                         </div>
 
                         <div className="md:col-span-3">
-                          <label htmlFor="address">Address / Street</label>
+                          <label htmlFor="address"> Địa chỉ / Đường phố</label>
                           <input
                             {...register("address", { required: true })}
                             type="text"
@@ -116,7 +116,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className="md:col-span-2">
-                          <label htmlFor="city">City</label>
+                          <label htmlFor="city">Thành phố</label>
                           <input
                             {...register("city", { required: true })}
                             type="text"
@@ -128,7 +128,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className="md:col-span-2">
-                          <label htmlFor="country">Country / region</label>
+                          <label htmlFor="country">Quốc gia</label>
                           <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                             <input
                               {...register("country", { required: true })}
@@ -174,7 +174,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className="md:col-span-2">
-                          <label htmlFor="state">State / province</label>
+                          <label htmlFor="state">Bang / Tỉnh</label>
                           <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                             <input
                               {...register("state", { required: true })}
@@ -217,7 +217,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className="md:col-span-1">
-                          <label htmlFor="zipcode">Zipcode</label>
+                          <label htmlFor="zipcode">Mã bưu điện</label>
                           <input
                             {...register("zipcode", { required: true })}
                             type="text"
@@ -238,13 +238,13 @@ const CheckoutPage = () => {
                               className="form-checkbox"
                             />
                             <label htmlFor="billing_same" className="ml-2 ">
-                              I am aggree to the{" "}
+                              Tôi đồng ý với
                               <Link className="underline underline-offset-2 text-blue-600">
-                                Terms & Conditions
+                                Điều khoản & Điều kiện
                               </Link>{" "}
-                              and{" "}
+                              và
                               <Link className="underline underline-offset-2 text-blue-600">
-                                Shoping Policy.
+                                Chính sách mua sắm.
                               </Link>
                             </label>
                           </div>
@@ -253,7 +253,7 @@ const CheckoutPage = () => {
                         <div className="md:col-span-5 text-right">
                           <div className="inline-flex items-end">
                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                              Place an Order
+                              Đặt hàng
                             </button>
                           </div>
                         </div>

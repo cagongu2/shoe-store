@@ -10,54 +10,101 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useAuth } from "../../context/AuthContext";
+import {
+  useDeleteCartMutation,
+  useFetchCartByUserIdQuery,
+} from "../../redux/features/carts/cartsApi";
+import { setCartCount } from "../../redux/features/status/statusSlice";
 
 const Cart = () => {
-  const isLogin = false;
+  const { currentUser } = useAuth();
+
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const userId = userData?.id;
+
+  const { data: cartItemsFromDB = [] } = useFetchCartByUserIdQuery(userId);
+  const [deleteCart] = useDeleteCartMutation();
+
   const dispatch = useDispatch();
   const cartItemsFromStore = useSelector((state) => state.cart.cartItems);
   const [cartItems, setCartItems] = useState([]);
+  const cartCount = useSelector((state) => state.status.cartCount);
 
   useEffect(() => {
-    if (isLogin) {
-      // axios
-      //   .get("/api/cart")
-      //   .then((response) => setCartItems(response.data))
-      //   .catch((error) => console.error("Error fetching cart:", error));
+    if (currentUser && cartItemsFromDB.length > 0) {
+      setCartItems(cartItemsFromDB);
     } else {
       setCartItems(cartItemsFromStore);
     }
-  }, [isLogin, cartItemsFromStore]);
+  }, [currentUser, cartItemsFromDB, cartItemsFromStore]);
 
-  const handleRemoveFromCart = (product) => {
-    if (isLogin) {
-      // axios
-      //   .delete(`/api/cart/${product.id}`)
-      //   .then(() => {
-      //     setCartItems((prev) =>
-      //       prev.filter((item) => item.product_id !== product.id)
-      //     );
-      //   })
-      //   .catch((error) => console.error("Error removing item:", error));
-    } else {
-      dispatch(removeFromCart(product));
+  const handleRemoveFromCart = async (cart) => {
+    try {
+      if (currentUser) {
+        console.log(cart);
+        await deleteCart(cart.id).unwrap();
+        console.log(cart.id);
+        setCartItems((prev) => prev.filter((item) => item.id !== cart.id));
+      } else {
+        dispatch(removeFromCart(cart));
+      }
       Swal.fire({
         position: "center",
         icon: "success",
-        title: "Sản phẩm đã xóa thêm",
+        title: "Sản phẩm đã xóa",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      dispatch(setCartCount(Math.max(cartCount - 1, 0)));
+    } catch (error) {
+      console.error("Lỗi xóa sản phẩm:", error);
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Xóa sản phẩm thất bại",
         showConfirmButton: false,
         timer: 1500,
       });
     }
   };
 
-  const handleClearCart = () => {
-    dispatch(clearCart());
+  const handleClearCart = async () => {
+    try {
+      if (currentUser) {
+        const deletePromises = cartItems.map((cart) =>
+           deleteCart(cart.id).unwrap()
+        );
+        await Promise.all(deletePromises);
+        setCartItems([]);
+      } else {
+        dispatch(clearCart());
+      }
+
+      dispatch(setCartCount(0));
+
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Đã xóa toàn bộ giỏ hàng",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("Lỗi khi xóa giỏ hàng:", error);
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Xóa giỏ hàng thất bại",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
   };
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
@@ -79,14 +126,17 @@ const Cart = () => {
                   {/* cart item */}
                   <div>
                     {/* single item */}
-                    {cartItems.map((product) => (
-                      <div className="grid grid-cols-12 ">
+                    {cartItems.map((cart) => (
+                      <div
+                        key={`carts-${cart.id}`}
+                        className="grid grid-cols-12 "
+                      >
                         {/* img */}
                         <div className="p-4 col-span-12 md:col-span-3">
                           <img
                             className="lg:w-[150px] lg:h-[150px] rounded-xl object-contain"
-                            src={`${getImgUrl(product.images[0].url)}`}
-                            alt={product.name}
+                            src={`${getImgUrl(cart.images[0].link)}`}
+                            alt={cart.name}
                           />
                         </div>
                         {/* item-info */}
@@ -94,10 +144,10 @@ const Cart = () => {
                           <div className="p-4">
                             <div className="mx-[-12px]">
                               <div className="px-3">
-                                <p className="text-lg mb-2">{product.name}</p>
+                                <p className="text-lg mb-2">{cart.name}</p>
                                 <div className="d-flex gap-3 align-items-center">
                                   <p className="text-base mb-4 text-orange-500">
-                                    {product.price} VNĐ
+                                    {cart.price} VNĐ
                                   </p>
                                 </div>
                                 <div className="flex justify-between mb-4 flex-wrap gap-2">
@@ -105,29 +155,27 @@ const Cart = () => {
                                     <span className="text-semibold">
                                       Thương hiệu:
                                     </span>
-                                    <span>{product.brand.name}</span>
+                                    <span>{cart.brand.name}</span>
                                   </div>
                                   <div>
                                     <span className="text-semibold">Size:</span>
-                                    <span>{product.size}</span>
+                                    <span>{cart.size}</span>
                                   </div>
                                   <div>
                                     <span className="text-semibold">SL:</span>
-                                    <span>{product.quantity}</span>
+                                    <span>{cart.quantity}</span>
                                   </div>
                                   <div>
                                     <span className="text-semibold">
                                       Màu sắc:
                                     </span>
-                                    <span>{product.color}</span>
+                                    <span>{cart.color}</span>
                                   </div>
                                 </div>
                                 <div className="text-red-700">
                                   <FaTrash
                                     className="cursor-pointer"
-                                    onClick={() =>
-                                      handleRemoveFromCart(product)
-                                    }
+                                    onClick={() => handleRemoveFromCart(cart)}
                                   />
                                 </div>
                               </div>
@@ -164,7 +212,7 @@ const Cart = () => {
                           <div className="group max-w-[180px] px-3 mb-4 pr-0 bg-red-500 inline-flex items-center justify-center rounded ml-7 group-hover:px-0">
                             <Link
                               to="#"
-                              onClick={() => handleClearCart}
+                              onClick={handleClearCart}
                               className="flex items-center justify-center gap-4 relative w-full"
                             >
                               <span className="text-base p-2 mr-10 w-[100%]">

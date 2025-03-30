@@ -1,10 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/database");
 
-const Product = require("./product.model");
-const Size = require("./size.model");
-const Color = require("./color.model");
-
 const ProductStock = sequelize.define(
   "ProductStock",
   {

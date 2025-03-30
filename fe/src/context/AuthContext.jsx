@@ -8,6 +8,10 @@ import {
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase.config";
+import {
+  useAddUserMutation,
+  useFetchUserByEmailQuery,
+} from "../redux/features/users/userApi";
 
 const AuthContext = createContext();
 
@@ -17,37 +21,42 @@ export const useAuth = () => {
 
 const googleProvider = new GoogleAuthProvider();
 
-// authProvider
 export const AuthProvide = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // register a user
+  const [addUser] = useAddUserMutation();
+  const { refetch } = useFetchUserByEmailQuery();
+
   const registerUser = async (email, password) => {
+    try {
+      const res = await addUser({ email, password }).unwrap();
+      console.log("User created successfully:", res);
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
+
     return await createUserWithEmailAndPassword(auth, email, password);
   };
 
-  // login the user
   const loginUser = async (email, password) => {
     return await signInWithEmailAndPassword(auth, email, password);
   };
 
-  // sing up with google
   const signInWithGoogle = async () => {
     return await signInWithPopup(auth, googleProvider);
   };
 
-  // logout the user
   const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     return signOut(auth);
   };
 
-  // manage user
   useEffect(() => {
-
     if (!auth) return;
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       setLoading(false);
 
@@ -58,11 +67,18 @@ export const AuthProvide = ({ children }) => {
           username: displayName,
           photo: photoURL,
         };
+
+        try {
+          const res = await addUser({ email }).unwrap();
+          console.log("User created successfully:", res);
+        } catch (error) {
+          console.error("Error creating user:", error);
+        }
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [addUser, refetch]);
 
   const value = {
     currentUser,

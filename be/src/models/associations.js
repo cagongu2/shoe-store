@@ -1,11 +1,15 @@
+const Address = require("./address.model");
 const Brand = require("./brand.model");
+const Cart = require("./cart.model");
 const Category = require("./category.model");
 const Color = require("./color.model");
 const Image = require("./image.model");
+const Order = require("./order.model");
 const Product = require("./product.model");
+const User = require("./user.model");
+
 const ProductStock = require("./productStock.model");
 const Size = require("./size.model");
-
 
 Product.belongsTo(Brand, { foreignKey: "brandId", as: "brand" });
 Product.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
@@ -21,3 +25,11 @@ ProductStock.belongsTo(Size, { foreignKey: "sizeId", as: "size" });
 Color.hasMany(ProductStock, { foreignKey: "colorId", as: "stocks" });
 Size.hasMany(ProductStock, { foreignKey: "sizeId", as: "stocks" });
 
+Cart.belongsTo(Product, { foreignKey: "productId", as: "product" });
+Cart.belongsTo(Brand, { foreignKey: "brandId", as: "brand" });
+Cart.belongsTo(User, { foreignKey: "userId", as: "user" });
+Cart.belongsTo(Order, { foreignKey: "orderId", as: "order" });
+
+
+Order.belongsTo(Address, { foreignKey: "addressId", as: "address" });
+Order.hasMany(Cart, {foreignKey: "orderId", as: "carts" })

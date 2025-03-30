@@ -1,27 +1,28 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/database");
 
-const Order = sequelize.define(
-    "Order",
+
+const Address = sequelize.define(
+    "Address",
     {
-        name: {
+        city: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        email: {
+        country: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        phone: {
+        state: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        totalPrice: {
-            type: DataTypes.FLOAT,
+        zipcode: {
+            type: DataTypes.STRING,
             allowNull: false
         }
     },
-    { tableName: "orders", timestamps: true }
+    { tableName: "addresses", timestamps: true }
 );
 
-module.exports = Order;
+module.exports = Address;

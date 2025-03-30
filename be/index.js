@@ -22,6 +22,10 @@ const colorRoutes = require("./src/routes/color.route");
 const imageRoutes = require("./src/routes/image.route");
 const sizeRoutes = require("./src/routes/size.route");
 const stockRoutes = require("./src/routes/productStock.route");
+const userRoutes = require("./src/routes/user.route");
+const cartsRoutes = require("./src/routes/cart.route");
+const momoRoutes = require("./src/routes/momo.routes")
+
 
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/brands", brandRoutes);
@@ -30,6 +34,10 @@ app.use("/api/v1/colors", colorRoutes);
 app.use("/api/v1/images", imageRoutes);
 app.use("/api/v1/sizes", sizeRoutes);
 app.use("/api/v1/stocks", stockRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/carts", cartsRoutes);
+app.use("/api/v1/momo", momoRoutes);
+
 
 app.use("/uploads", express.static(path.join(__dirname, "src/assets/uploads")));
 

@@ -6,20 +6,45 @@ import Marquee from "react-fast-marquee";
 import { CgMenuBoxed } from "react-icons/cg";
 import { FaShopware } from "react-icons/fa";
 import { AiFillCloseSquare } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useAuth } from "../context/AuthContext";
+import { useFetchUserByEmailQuery } from "../redux/features/users/userApi";
+import { useFetchCartByUserIdQuery } from "../redux/features/carts/cartsApi";
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
+  const { data: userData } = useFetchUserByEmailQuery(currentUser?.email);
+  const cartItemsFromStore = useSelector((state) => state.status.cartCount);
+  const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { data: cartItemsFromDB = [] } = useFetchCartByUserIdQuery(
+    userData?.id,
+    {
+      skip: !userData?.id,
+    }
+  );
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    localStorage.removeItem("user");
+
+    if (userData) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ id: userData.id, email: userData.email })
+      );
+      setCartItems(cartItemsFromDB.length);
+    } 
+    setCartItems(cartItemsFromStore);
+  }, [userData, cartItemsFromDB, cartItemsFromStore]);
+
   const handleLogOut = () => {
     logout();
   };
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
 
   const newsTypes = [
     { type: "meo-vat", label: "Mẹo vặt" },
@@ -51,7 +76,9 @@ const Header = () => {
           <div className="flex items-center justify-end gap-3">
             <span>{currentUser.email}</span>
             <span>|</span>
-            <Link to="/dang-nhap" className="hover:underline"
+            <Link
+              to="/dang-nhap"
+              className="hover:underline"
               onClick={handleLogOut}
             >
               Đăng xuất
@@ -130,7 +157,7 @@ const Header = () => {
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 {brands.map((brand) => (
                   <li
-                    key={brand.name}
+                    key={`brand-${brand.name}`}
                     className="border-b border-white hover:bg-orange-400"
                   >
                     <Link
@@ -155,7 +182,7 @@ const Header = () => {
               <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 {accessories.map((item) => (
                   <li
-                    key={item.type}
+                    key={`item-${item.type}`}
                     className="border-b border-white hover:bg-orange-400"
                   >
                     <Link
@@ -236,9 +263,9 @@ const Header = () => {
               <Link to="/gio-hang">
                 <HiOutlineShoppingBag className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
               </Link>
-              {cartItems.length > 0 ? (
+              {cartItems > 0 ? (
                 <span className="absolute right-[-10px] top-[-10px] bg-orange-500 rounded-full w-5 h-5 flex items-center justify-center text-sm text-white">
-                  {cartItems.length}
+                  {cartItems}
                 </span>
               ) : (
                 <span className="absolute right-[-10px] top-[-10px] bg-orange-500 rounded-full w-5 h-5 flex items-center justify-center text-sm text-white">
@@ -300,7 +327,10 @@ const Header = () => {
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {brands.map((brand) => (
-                <Link to={`/san-pham?brand=${brand.name}`}>
+                <Link
+                  key={`${brand.name}`}
+                  to={`/san-pham?brand=${brand.name}`}
+                >
                   <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                     {brand.name}
                   </li>
@@ -317,7 +347,10 @@ const Header = () => {
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {accessories.map((item) => (
-                <Link to={`/san-pham?category=${item.type}`}>
+                <Link
+                  key={`accessory-${item.type}`}
+                  to={`/san-pham?category=${item.type}`}
+                >
                   <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                     {item.label}
                   </li>
@@ -336,7 +369,10 @@ const Header = () => {
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {newsTypes.map((item) => (
-                <Link to={`/bai-viet?type=${item.type}`}>
+                <Link
+                  key={`newsTypes-${item.type}`}
+                  to={`/bai-viet?type=${item.type}`}
+                >
                   <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                     {item.label}
                   </li>

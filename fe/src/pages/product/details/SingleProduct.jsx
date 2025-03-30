@@ -7,7 +7,6 @@ import {
 } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../../redux/features/carts/cartSlice";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -22,6 +21,10 @@ import {
   removeFromFavorite,
 } from "../../../redux/features/favorites/favoriteSlice";
 import { useFetchProductByIdQuery } from "../../../redux/features/products/productsApi";
+import { useAuth } from "../../../context/AuthContext";
+import { useFetchUserByEmailQuery } from "../../../redux/features/users/userApi";
+import { useAddCartMutation } from "../../../redux/features/carts/cartsApi";
+import {setCartCount} from "../../../redux/features/status/statusSlice"
 
 const SingleProduct = () => {
   const policies = [
@@ -48,54 +51,14 @@ const SingleProduct = () => {
   ];
 
   const { id } = useParams();
+  const { data: product = {} } = useFetchProductByIdQuery(id);
+  const { currentUser } = useAuth();
+  const { data: userData } = useFetchUserByEmailQuery(currentUser?.email);
+  const [addToCart] = useAddCartMutation();
+  const currentCartCount = useSelector((state) => state.status.cartCount);
 
-  const {
-    data: product = {},
-    isLoading,
-    isError,
-  } = useFetchProductByIdQuery(id);
-
-  const isLogin = false;
-
-  // add to cart
   const dispatch = useDispatch();
   const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
-
-  const handleAddToCart = () => {
-    if (!setSelectedSize) {
-      alert("Vui lòng chọn size.");
-      return;
-    }
-    if (!selectedColor) {
-      alert("Vui lòng chọn màu sắc.");
-      return;
-    }
-
-    const cartItem = {
-      product_id: product?.id,
-      name: product?.name,
-      price: product?.price,
-      brand: product?.brand,
-      size: selectedSize,
-      link: product?.link,
-      quantity,
-      color: selectedColor,
-      images: product?.images,
-    };
-
-    if (!isLogin) {
-      dispatch(addToCart(cartItem));
-    }
-    console.log(cartItem);
-
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Sản phẩm đã được thêm thành công!!!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  };
 
   const handleAddToFavorite = () => {
     const cartItem = {
@@ -106,7 +69,7 @@ const SingleProduct = () => {
       images: product?.images,
     };
 
-    if (!isLogin) {
+    if (!currentUser) {
       if (isFavorite) {
         dispatch(removeFromFavorite(cartItem.product_id));
       } else {
@@ -121,6 +84,73 @@ const SingleProduct = () => {
   );
   const [isFavorite, setIsFavorite] = useState(isProductFavorite);
 
+  const handleAddToCart = async () => {
+    if (!selectedSize) {
+      alert("Vui lòng chọn size.");
+      return;
+    }
+    if (!selectedColor) {
+      alert("Vui lòng chọn màu sắc.");
+      return;
+    }
+
+    const cartItem = {
+      product_id: product?.id,
+      name: product?.name,
+      price: product?.price,
+      brand: product?.brand,
+      size: selectedSize,
+      quantity,
+      color: selectedColor,
+      images: product?.images,
+    };
+
+    if (!currentUser) {
+      dispatch(addToCart(cartItem));
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Sản phẩm đã được thêm thành công!!!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      dispatch(setCartCount(currentCartCount + 1));
+    } else {
+      if (userData) {
+        try {
+          await addToCart({
+            userId: userData.id,
+            product_id: product?.id,
+            name: product?.name,
+            price: product?.price,
+            brand: product?.brand,
+            size: selectedSize,
+            color: selectedColor,
+            quantity,
+          });
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Sản phẩm đã được thêm thành công!!!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          dispatch(setCartCount(currentCartCount + 1));
+        } catch (error) {
+          console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Lỗi khi thêm sản phẩm vào giỏ hàng:",
+            error,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      }
+    }
+  };
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -134,8 +164,6 @@ const SingleProduct = () => {
   const [quantity, setQuantity] = useState(1);
   const increase = () => setQuantity((prev) => prev + 1);
   const decrease = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
-
 
   const [openIndex, setOpenIndex] = useState(null);
   const toggleAccordion = (index) => {

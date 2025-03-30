@@ -21,7 +21,7 @@ const AdminLogin = () => {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        `${getBaseUrl()}/api/v1/auth/admin`,
+        `${getBaseUrl()}/api/v1/users/admin`,
         data,
         {
           headers: {
@@ -55,16 +55,16 @@ const AdminLogin = () => {
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="username"
+              htmlFor="email"
             >
-              Username
+              Email
             </label>
             <input
-              {...register("username", { required: true })}
+              {...register("email", { required: true })}
               type="text"
-              name="username"
-              id="username"
-              placeholder="username"
+              name="email"
+              id="email"
+              placeholder="email"
               className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow"
             />
           </div>
