@@ -24,9 +24,10 @@ const googleProvider = new GoogleAuthProvider();
 export const AuthProvide = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [addUser] = useAddUserMutation();
-  const { refetch } = useFetchUserByEmailQuery();
+  const { data: userChecked } = useFetchUserByEmailQuery(currentUser?.email, {
+    skip: !currentUser?.email,
+  });
 
   const registerUser = async (email, password) => {
     try {
@@ -68,17 +69,21 @@ export const AuthProvide = ({ children }) => {
           photo: photoURL,
         };
 
-        try {
-          const res = await addUser({ email }).unwrap();
-          console.log("User created successfully:", res);
-        } catch (error) {
-          console.error("Error creating user:", error);
+        if (email) {
+          if (!userChecked) {
+            try {
+              const res = await addUser({ email }).unwrap();
+              console.log("User created successfully:", res);
+            } catch (error) {
+              console.error("Error creating user:", error);
+            }
+          }
         }
       }
     });
 
     return () => unsubscribe();
-  }, [addUser, refetch]);
+  }, [addUser, userChecked]);
 
   const value = {
     currentUser,

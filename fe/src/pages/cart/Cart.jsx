@@ -33,7 +33,7 @@ const Cart = () => {
 
   useEffect(() => {
     if (currentUser && cartItemsFromDB.length > 0) {
-      setCartItems(cartItemsFromDB);
+      setCartItems(cartItemsFromDB.filter((item) => !item.isPayed));
     } else {
       setCartItems(cartItemsFromStore);
     }
@@ -73,7 +73,7 @@ const Cart = () => {
     try {
       if (currentUser) {
         const deletePromises = cartItems.map((cart) =>
-           deleteCart(cart.id).unwrap()
+          deleteCart(cart.id).unwrap()
         );
         await Promise.all(deletePromises);
         setCartItems([]);

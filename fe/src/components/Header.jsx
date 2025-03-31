@@ -27,20 +27,22 @@ const Header = () => {
       skip: !userData?.id,
     }
   );
+  const unpaidCartItems = cartItemsFromDB.filter((item) => !item.isPayed);
+
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     localStorage.removeItem("user");
-
     if (userData) {
       localStorage.setItem(
         "user",
         JSON.stringify({ id: userData.id, email: userData.email })
       );
-      setCartItems(cartItemsFromDB.length);
-    } 
-    setCartItems(cartItemsFromStore);
-  }, [userData, cartItemsFromDB, cartItemsFromStore]);
+      setCartItems(unpaidCartItems.length);
+    } else {
+      setCartItems(cartItemsFromStore);
+    }
+  }, [userData, unpaidCartItems, cartItemsFromStore]);
 
   const handleLogOut = () => {
     logout();

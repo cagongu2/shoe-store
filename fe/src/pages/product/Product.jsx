@@ -322,7 +322,7 @@ const Product = () => {
                     <Link to="">
                       <img
                         className="rounded"
-                        src={`${getImgUrl(product.images[0].url)}`}
+                        src={`${getImgUrl(product.images[0].link)}`}
                         alt=""
                       />
                     </Link>

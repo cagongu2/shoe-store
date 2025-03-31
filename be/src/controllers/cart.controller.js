@@ -69,6 +69,7 @@ exports.getCartItems = async (req, res) => {
             size: item.size,
             quantity: item.quantity,
             color: item.color,
+            isPayed: item.isPayed,
             images: item.product.images
         }));
 
@@ -103,6 +104,7 @@ exports.getCartItemById = async (req, res) => {
             size: cartItem.size,
             quantity: cartItem.quantity,
             color: cartItem.color,
+            isPayed: item.isPayed,
             images: cartItem.product.images
         };
 
@@ -147,6 +149,7 @@ exports.getCartByUserId = async (req, res) => {
             size: item.size,
             quantity: item.quantity,
             color: item.color,
+            isPayed: item.isPayed,
             images: item.product.images
         }));
 

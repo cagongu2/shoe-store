@@ -18,7 +18,6 @@ const usersApi = createApi({
     baseQuery,
     tagTypes: ['Users'],
     endpoints: (builder) => ({
-    
         fetchUserByEmail: builder.query({
             query: (email) => `/${email}`,
             providesTags: (result, error, email) => [{ type: "Users", id: email }],

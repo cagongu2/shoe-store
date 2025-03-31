@@ -25,6 +25,8 @@ const stockRoutes = require("./src/routes/productStock.route");
 const userRoutes = require("./src/routes/user.route");
 const cartsRoutes = require("./src/routes/cart.route");
 const momoRoutes = require("./src/routes/momo.routes")
+const ordersRotes = require("./src/routes/order.route")
+
 
 
 app.use("/api/v1/products", productRoutes);
@@ -37,12 +39,14 @@ app.use("/api/v1/stocks", stockRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/carts", cartsRoutes);
 app.use("/api/v1/momo", momoRoutes);
+app.use("/api/v1/orders", ordersRotes);
+
 
 
 app.use("/uploads", express.static(path.join(__dirname, "src/assets/uploads")));
 
 app.listen(port, () => {
-    sequelize.sync({ alter: true })
+    sequelize.sync()
         .then(() => console.log("Database Synchronized!"))
         .catch(err => console.error("Error:", err));
     console.log(`App listening on port ${port}`)

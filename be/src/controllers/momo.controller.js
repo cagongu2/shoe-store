@@ -3,10 +3,10 @@ const https = require("https");
 
 exports.createPayment = async (req, res) => {
     try {
+        const { amount } = req.body;
         const partnerCode = process.env.MOMO_PARTNER_CODE;
         const accessKey = process.env.MOMO_ACCESS_KEY;
         const requestId = partnerCode + new Date().getTime();
-        const { amount } = req.body;
         const orderId = requestId;
         const orderInfo = "Thanh toán với MoMo";
         const redirectUrl = process.env.MOMO_REDIRECT_URL;

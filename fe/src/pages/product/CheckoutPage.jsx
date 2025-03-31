@@ -1,15 +1,46 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Loading from "../../components/Loading";
+import getBaseUrl from "../../util/baseUrl";
+import axios from "axios";
+import { useFetchCartByUserIdQuery } from "../../redux/features/carts/cartsApi";
+import { useCreateOrderMutation } from "../../redux/features/orders/ordersApi";
 
 const CheckoutPage = () => {
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  const totalPrice = cartItems
-    .reduce((acc, item) => acc + item.price * item.quantity, 0)
-    .toFixed(2);
+  const { currentUser, loading } = useAuth();
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const userId = userData?.id;
+
+  const { data: cartItemsFromDB = [] } = useFetchCartByUserIdQuery(userId);
+  const cartItemsFromStore = useSelector((state) => state.cart.cartItems);
+  const [cartItems, setCartItems] = useState([]);
+  const totalPrice = useMemo(() => {
+    return Math.round(
+      cartItems.reduce(
+        (acc, item) => acc + Number(item.price) * item.quantity,
+        0
+      )
+    );
+  }, [cartItems]);
+
+  useEffect(() => {
+    if (currentUser && cartItemsFromDB.length > 0) {
+      if (
+        JSON.stringify(cartItems) !==
+        JSON.stringify(cartItemsFromDB.filter((item) => !item.isPayed))
+      ) {
+        setCartItems(cartItemsFromDB.filter((item) => !item.isPayed));
+      }
+    } else if (
+      !currentUser &&
+      JSON.stringify(cartItems) !== JSON.stringify(cartItemsFromStore)
+    ) {
+      setCartItems(cartItemsFromStore);
+    }
+  }, [currentUser, cartItemsFromDB, cartItemsFromStore, cartItems]);
 
   const {
     register,
@@ -17,8 +48,6 @@ const CheckoutPage = () => {
     watch,
     formState: { errors },
   } = useForm();
-
-  const { currentUser, loading } = useAuth();
 
   const onSubmit = async (data) => {
     const newOrder = {
@@ -31,11 +60,179 @@ const CheckoutPage = () => {
         zipcode: data.zipcode,
       },
       phone: data.phone,
-      carts: cartItems.map((item) => item),
+      carts: cartItems.map((item) => item.id),
       totalPrice: totalPrice,
     };
     console.log(newOrder);
+    localStorage.setItem("newOrder", JSON.stringify(newOrder));
+
+    try {
+      console.log(totalPrice);
+      const response = await axios.post(
+        `${getBaseUrl()}/api/v1/momo/create-payment`,
+        {
+          amount: totalPrice,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response?.data?.payUrl) {
+        window.location.href = response.data.payUrl;
+      } else {
+        console.error("Không nhận được payUrl từ server:", response?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const [searchParams] = useSearchParams();
+  var resultCode = searchParams.get("resultCode");
+  const message = searchParams.get("message");
+  const [createOrder] = useCreateOrderMutation();
+  if (resultCode) {
+    if (resultCode == "0") {
+      const storedOrder = localStorage.getItem("newOrder");
+
+      if (storedOrder) {
+        const newOrderData = JSON.parse(storedOrder);
+        try {
+          createOrder(newOrderData);
+        } catch (error) {
+          console.log(error);
+        }
+        localStorage.removeItem("newOrder");
+      }
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
+          <div className="text-lg font-semibold text-gray-800">{message}</div>
+
+          <div className="flex gap-4">
+            <Link
+              to="/san-pham?hot=true"
+              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="feather feather-shopping-bag"
+              >
+                <path d="M6 2l2 7h8l2-7"></path>
+                <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
+              </svg>
+              Tiếp tục mua hàng
+            </Link>
+          </div>
+        </div>
+      );
+    } else if (resultCode == "7000") {
+      localStorage.removeItem("newOrder");
+
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
+          <div className="text-lg font-semibold text-gray-800">{message}</div>
+
+          <div className="flex gap-4">
+            <Link
+              to="/san-pham?hot=true"
+              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="feather feather-shopping-bag"
+              >
+                <path d="M6 2l2 7h8l2-7"></path>
+                <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
+              </svg>
+              Tiếp tục mua hàng
+            </Link>
+          </div>
+        </div>
+      );
+    } else if (resultCode == "9000") {
+      localStorage.removeItem("newOrder");
+
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
+          <div className="text-lg font-semibold text-gray-800">{message}</div>
+
+          <div className="flex gap-4">
+            <Link
+              to="/san-pham?hot=true"
+              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="feather feather-shopping-bag"
+              >
+                <path d="M6 2l2 7h8l2-7"></path>
+                <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
+              </svg>
+              Tiếp tục mua hàng
+            </Link>
+          </div>
+        </div>
+      );
+    } else {
+      localStorage.removeItem("newOrder");
+
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
+          <div className="text-lg font-semibold text-gray-800">{message}</div>
+
+          <div className="flex gap-4">
+            <Link
+              to="/san-pham?hot=true"
+              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="feather feather-shopping-bag"
+              >
+                <path d="M6 2l2 7h8l2-7"></path>
+                <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
+              </svg>
+              Tiếp tục mua hàng
+            </Link>
+          </div>
+        </div>
+      );
+    }
+  }
 
   return (
     <>
@@ -252,7 +449,7 @@ const CheckoutPage = () => {
 
                         <div className="md:col-span-5 text-right">
                           <div className="inline-flex items-end">
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <button className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                               Đặt hàng
                             </button>
                           </div>
