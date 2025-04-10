@@ -9,12 +9,12 @@ import FavoritePage from "../pages/favorite/FavoritePage";
 import BlogDetail from "../pages/blog/details/BlogDetail";
 import Cart from "../pages/cart/Cart";
 import Product from "../pages/product/Product";
+import CheckoutPage from "../pages/product/CheckoutPage"
 import SingleProduct from "../pages/product/details/SingleProduct";
 import Login from "../components/Login";
 import AdminLogin from "../components/AdminLogin";
 
 import Register from "../components/Register";
-import CheckoutPage from "../pages/product/checkoutPage";
 import { PrivateRoute } from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import DashBoard from "../pages/dashboard/DashBoard";

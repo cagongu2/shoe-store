@@ -52,6 +52,7 @@ const SingleProduct = () => {
 
   const { id } = useParams();
   const { data: product = {} } = useFetchProductByIdQuery(id);
+  console.log(product);
   const { currentUser } = useAuth();
   const { data: userData } = useFetchUserByEmailQuery(currentUser?.email);
   const [addToCart] = useAddCartMutation();
