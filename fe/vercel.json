@@ -1,0 +1,16 @@
+{
+    "rootDirectory": "fe",
+    "builds": [
+      {
+        "src": "fe/package.json",
+        "use": "@vercel/static-build"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/index.html"
+      }
+    ]
+  }
+  
