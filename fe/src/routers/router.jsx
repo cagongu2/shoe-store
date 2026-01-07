@@ -18,6 +18,8 @@ import Register from "../components/Register";
 import { PrivateRoute } from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import DashBoard from "../pages/dashboard/DashBoard";
+import Profile from "../pages/profile/Profile";
+import OrderHistory from "../pages/orders/OrderHistory";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +73,22 @@ const router = createBrowserRouter([
       {
         path: "/dang-ky",
         element: <Register />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        )
+      },
+      {
+        path: "/orders",
+        element: (
+          <PrivateRoute>
+            <OrderHistory />
+          </PrivateRoute>
+        )
       },
       {
         path: "/thanh-toan",

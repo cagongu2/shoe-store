@@ -26,3 +26,4 @@ assets/demo/
 *.sw?
 
 GEMINI.md
+.env

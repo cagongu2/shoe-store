@@ -1,4 +1,5 @@
 import { IoIosArrowDown } from "react-icons/io";
+import { FaUserCircle } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import { IoHeartOutline } from "react-icons/io5";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
@@ -76,27 +77,52 @@ const Header = () => {
         <div className="hidden uppercase lg:col-span-2 lg:flex">
           <Marquee>Địa chỉ </Marquee>
         </div>
-        {currentUser ? (
-          <div className="flex items-center justify-end gap-3">
-            <span>{currentUser.email}</span>
-            <span>|</span>
-            <Link
-              to="/dang-nhap"
-              className="hover:underline"
-              onClick={handleLogOut}
-            >
-              Đăng xuất
-            </Link>
-          </div>
-        ) : (
-          <div className="flex items-center justify-end gap-3">
-            <Link to="/dang-nhap" className="hover:underline">
-              Đăng nhập
-            </Link>
-            <span>|</span>
-            <span>Hotline: 0333333333</span>
-          </div>
-        )}
+        <div className="flex items-center justify-end gap-3">
+          {currentUser ? (
+            <div className="relative group z-50">
+              <div className="flex items-center gap-2 cursor-pointer">
+                {currentUser.photo ? (
+                  <img src={currentUser.photo} alt="Avatar" className="w-6 h-6 rounded-full object-cover" />
+                ) : (
+                  <FaUserCircle className="text-xl" />
+                )}
+                <span>{currentUser.username || currentUser.email}</span>
+                <IoIosArrowDown />
+              </div>
+
+              {/* Dropdown */}
+              <div className="absolute right-0 top-full mt-1 w-48 bg-white text-gray-800 rounded-md shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                {currentUser.role === 'admin' && (
+                  <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-100">
+                    Bảng điều khiển
+                  </Link>
+                )}
+                <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">
+                  Thông tin cá nhân
+                </Link>
+                <Link to="/orders" className="block px-4 py-2 hover:bg-gray-100">
+                  Đơn hàng của tôi
+                </Link>
+
+                <div className="border-t border-gray-200 mt-2 pt-2">
+                  <button onClick={handleLogOut} className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600">
+                    Đăng xuất
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <Link to="/dang-nhap" className="hover:underline">
+                Đăng nhập
+              </Link>
+              <span>|</span>
+              <Link to="/dang-ky" className="hover:underline">
+                Đăng ký
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Thanh điều hướng */}

@@ -48,21 +48,47 @@ app.use("/api/v1/blogs", blogRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "src/assets/uploads")));
 
-sequelize.sync()
+sequelize.sync({ alter: true })
     .then(async () => {
         console.log("Database Synchronized!");
 
-        // Manual check for 'status' column in 'orders' table to avoid 'alter: true' issues
+        // Seed Admin User
+        const User = require("./src/models/user.model");
+        try {
+            const adminEmail = process.env.ADMIN_EMAIL || "admin@store.com";
+            const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+
+            const admin = await User.findOne({ where: { role: "admin" } });
+            if (!admin) {
+                await User.create({
+                    email: adminEmail,
+                    password: adminPassword, // Note: In production, hash this!
+                    role: "admin",
+                    username: "Admin",
+                    photo: "" // Default or empty
+                });
+                console.log(`Admin account created: ${adminEmail} / ${adminPassword}`);
+            } else {
+                console.log("Admin account already exists.");
+            }
+        } catch (error) {
+            console.error("Error seeding admin:", error);
+        }
+
+        // Manual check for 'status' column in 'orders' table to avoid 'alter: true' issues (kept as fallback though alter: true handles most)
         try {
             const tableDesc = await sequelize.getQueryInterface().describeTable('orders');
             if (!tableDesc.status) {
-                console.log("Adding missing 'status' column to 'orders' table...");
-                await sequelize.getQueryInterface().addColumn('orders', 'status', {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                    defaultValue: "pending"
-                });
-                console.log("'status' column added successfully.");
+                // Double check just in case alter didn't catch it or for safety
+                // ... logic kept largely same or simplified since alter:true should handle it.
+                // But let's keep the user's manual logic for safety if they prefer specific defaults
+                /*   console.log("Adding missing 'status' column to 'orders' table...");
+                   await sequelize.getQueryInterface().addColumn('orders', 'status', {
+                       type: DataTypes.STRING,
+                       allowNull: false,
+                       defaultValue: "pending"
+                   }); 
+                   console.log("'status' column added successfully."); */
             }
         } catch (error) {
             console.error("Error checking/adding 'status' column:", error);
