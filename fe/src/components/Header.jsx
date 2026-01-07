@@ -54,6 +54,7 @@ const Header = () => {
 
   const handleLogOut = () => {
     logout();
+    window.location.href = "/"; // Force redirect to Home and reload state
   };
 
   const { data: blogCategories = [] } = useFetchAllBlogCategoriesQuery();

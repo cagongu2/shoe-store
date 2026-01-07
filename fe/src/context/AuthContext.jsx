@@ -32,7 +32,9 @@ export const AuthProvide = ({ children }) => {
         localStorage.removeItem("token");
       }
     }
-    setLoading(false);
+    // Delay setting loading to false slightly to ensuring currentUser state is propagated
+    const timer = setTimeout(() => setLoading(false), 50);
+    return () => clearTimeout(timer);
   }, []);
 
   const registerUser = async (email, password, username) => {

@@ -81,8 +81,8 @@ const updateUser = async (req, res) => {
             photoPath = req.body.photo;
         }
 
-        // Note: Role update might need restriction, but keeping flexible as per existing code
-        await user.update({ username, photo: photoPath, role, phone, address });
+        // Note: Role update is RESTRICTED in this endpoint. Use updateUserRole instead.
+        await user.update({ username, photo: photoPath, phone, address });
 
         res.status(200).json(user);
     } catch (error) {
