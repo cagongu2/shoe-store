@@ -35,12 +35,7 @@ const Header = () => {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    localStorage.removeItem("user");
     if (userData) {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ id: userData.id, email: userData.email })
-      );
       setCartItems(unpaidCartItems.length);
     } else {
       setCartItems(cartItemsFromStore);

@@ -1,17 +1,16 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-
-import axios from "axios"
 import { useNavigate } from "react-router-dom";
-import getBaseUrl from "../util/baseUrl";
+import { useAuth } from "../context/AuthContext";
 
 
 const AdminLogin = () => {
   const [message, setMessage] = useState("");
+  const { loginUser } = useAuth();
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
@@ -20,27 +19,12 @@ const AdminLogin = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        `${getBaseUrl()}/api/v1/users/admin`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const auth = response.data;
-      if (auth.token) {
-        localStorage.setItem("token", auth.token);
-        setTimeout(() => {
-          localStorage.removeItem("token");
-          alert("Token has been expired!, Please login again.");
-          navigate("/");
-        }, 3600 * 1000);
-      }
-
-      alert("Admin Login successful!");
-      navigate("/dashboard");
+      await loginUser(data.email, data.password);
+      // alert("Admin Login successful!"); // Removing alert to check if it interferes
+      console.log("Login finished, navigating in 500ms...");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
     } catch (error) {
       const serverMessage = error.response?.data?.message;
       setMessage(serverMessage || "Please provide a valid email and password");

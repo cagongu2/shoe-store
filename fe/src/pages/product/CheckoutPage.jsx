@@ -52,8 +52,17 @@ const CheckoutPage = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    if (currentUser) {
+      setValue("name", currentUser.username || "");
+      setValue("phone", currentUser.phone || "");
+      setValue("address", currentUser.address || "");
+    }
+  }, [currentUser, setValue]);
 
   // Hook tạo order
   const [createOrder, { isLoading: isCreating }] = useCreateOrderMutation();

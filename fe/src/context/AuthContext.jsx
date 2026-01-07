@@ -12,6 +12,10 @@ export const AuthProvide = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    console.log("AuthContext: currentUser changed to:", currentUser);
+  }, [currentUser]);
+
   // Initialize user from local storage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -19,7 +23,9 @@ export const AuthProvide = ({ children }) => {
 
     if (storedUser && storedToken) {
       try {
-        setCurrentUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        console.log("Restoring user from local storage:", parsedUser);
+        setCurrentUser(parsedUser);
       } catch (e) {
         console.error("Failed to parse stored user", e);
         localStorage.removeItem("user");
@@ -30,6 +36,7 @@ export const AuthProvide = ({ children }) => {
   }, []);
 
   const registerUser = async (email, password, username) => {
+    setLoading(true);
     try {
       const response = await axios.post(`${getBaseUrl()}/api/v1/users/register`, {
         email,
@@ -39,10 +46,13 @@ export const AuthProvide = ({ children }) => {
       return response.data;
     } catch (error) {
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const loginUser = async (email, password) => {
+    setLoading(true);
     try {
       const response = await axios.post(`${getBaseUrl()}/api/v1/users/login`, {
         email,
@@ -53,12 +63,16 @@ export const AuthProvide = ({ children }) => {
 
       // Save to local storage
       localStorage.setItem("token", token);
+      console.log("Saving to localStorage:", JSON.stringify(user));
       localStorage.setItem("user", JSON.stringify(user));
 
+      console.log("Login successful, setting user:", user);
       setCurrentUser(user);
       return user;
     } catch (error) {
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
