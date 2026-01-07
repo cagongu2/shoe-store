@@ -1,35 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { FaLongArrowAltRight, FaEye } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { IoIosSearch } from "react-icons/io";
 import { getImgUrl } from "../../util/getImageUrl";
+import { Link, useSearchParams } from "react-router-dom";
+import { blogs as blogData } from "../../data/blogs"; // Import mock data
 
 const Blog = () => {
-  const blogs = [
-    {
-      id: 1,
-      title:
-        "Adidas Yeezy Boost 350 v2 Granite HQ2059 - Bản phối màu mới sắp ra mắt",
-      image: "uploads/blog/1699845298.jpg",
-      link: "bai-viet/1",
-      description:
-        "Sneaker đã trở thành một trong những xu hướng thời trang được ưa chuộng trong những năm gần đây và vẫn đang tiếp tục phát triển mạnh mẽ. Chắc hẳn với những tín đồ mộ điệu sneaker thì mỗi vết dơ, ẩm mốc, hay vết bạc màu cũng chính là kẻ thù số một. Nếu bạn vẫn đang loay hoay không biết cách&nbsp;bảo quản giày sneaker&nbsp;thế nào cho đúng thì hãy bỏ túi một số tips dưới đây nhé!",
-      type: "Mẹo vặt",
-      tag: "Nike",
-      date_created: "01/12/2024 - 09:55",
-      date_updated: "01/12/2024 - 09:55",
-      viewed: 405,
-    },
-  ];
+  const [searchParams] = useSearchParams();
+  const typeParam = searchParams.get("type");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  // Xử lý tìm kiếm
+  const onSubmit = (data) => {
+    setSearchTerm(data.search);
+  };
+
+  // Lọc bài viết theo Type (từ URL) và SearchTerm
+  const filteredBlogs = useMemo(() => {
+    return blogData.filter((blog) => {
+      // Filter by Type
+      if (typeParam && blog.type !== typeParam) {
+        return false;
+      }
+      // Filter by Search
+      if (searchTerm && !blog.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+      return true;
+    });
+  }, [typeParam, searchTerm]);
+
+  // Bài viết phổ biến (Demo: sort by viewed)
+  const popularBlogs = [...blogData].sort((a, b) => b.viewed - a.viewed).slice(0, 5);
 
   return (
     <>
@@ -40,9 +45,11 @@ const Blog = () => {
             <div className="pr-10 text-white">
               <p className="text-3xl mb-2">Bài viết</p>
               <nav className="flex items-center text-base">
-                <a href="/">Trang chủ</a>
+                <Link to="/">Trang chủ</Link>
                 <FaLongArrowAltRight className="mx-[10px]" />
-                <a href="/bai-viet/meo-vat">Mẹo vặt</a>
+                <span className="text-gray-200">
+                  {typeParam ? typeParam === 'meo-vat' ? 'Mẹo vặt' : typeParam === 'tin-tuc' ? 'Tin tức' : 'Tư vấn' : 'Tất cả bài viết'}
+                </span>
               </nav>
             </div>
           </div>
@@ -51,70 +58,69 @@ const Blog = () => {
         <div className="my-12 px-12">
           <div className="mx-[-12px] grid grid-cols-12">
             <div className="xl:col-span-8 lg:col-span-6 px-3 col-span-12">
-              {/* single blog */}
-              {blogs.map((blog) => (
-                <div className="mb-4 border-solid border-1 rounded-xl border-gray-100">
-                  <div className="grid grid-cols-12">
-                    <div className="md:col-span-5 col-span-12">
-                      <a href={`${blog.link}`}>
-                        <img
-                          src={`${getImgUrl(blog.image)}`}
-                          className="object-fill w-full rounded-l-lg h-[260px]"
-                          alt={blog.title}
-                        />
-                      </a>
-                    </div>
-                    <div className="md:col-span-7 col-span-12">
-                      <div className="m-4 overflow-hidden text-gray-700">
-                        <a href={`${blog.link}`}>
-                          <p className="mb-4 text-blue-600 text-xl">
-                            {blog.title}
+              {/* LIST BLOGS */}
+              {filteredBlogs.length > 0 ? (
+                filteredBlogs.map((blog) => (
+                  <div key={blog.id} className="mb-4 border-solid border-1 rounded-xl border-gray-100">
+                    <div className="grid grid-cols-12">
+                      <div className="md:col-span-5 col-span-12">
+                        <Link to={`/bai-viet/${blog.id}`}>
+                          {/* Dùng ảnh placeholder nếu ảnh lỗi/không có */}
+                          <img
+                            src={blog.image.startsWith("uploads") ? getImgUrl(blog.image) : "https://placehold.co/600x400?text=Blog+Image"}
+                            onError={(e) => { e.target.src = "https://placehold.co/600x400?text=No+Image" }}
+                            className="object-cover w-full rounded-l-lg h-[260px]"
+                            alt={blog.title}
+                          />
+                        </Link>
+                      </div>
+                      <div className="md:col-span-7 col-span-12">
+                        <div className="m-4 overflow-hidden text-gray-700">
+                          <Link to={`/bai-viet/${blog.id}`}>
+                            <p className="mb-4 text-blue-600 text-xl font-semibold hover:text-blue-800 transition-colors">
+                              {blog.title}
+                            </p>
+                          </Link>
+                          <p className="mb-4 line-clamp-2 text-base/7">
+                            {blog.description}
                           </p>
-                        </a>
-                        <p className="mb-4 line-clamp-2 text-base/7">
-                          {blog.description}
-                        </p>
-                        <p className="mb-4"></p>
-                        <div className="flex gap-4 items-center mb-4 italic ">
-                          <p className="">Ngày {blog.date_created}</p>
-                          <div className="grid grid-cols-[auto_1fr] items-start gap-1">
-                            <FaEye className="text-lg" />
-                            <p>• {blog.viewed} Lượt xem</p>
+                          <p className="mb-4"></p>
+                          <div className="flex gap-4 items-center mb-4 italic ">
+                            <p className="">Ngày {blog.date}</p>
+                            <div className="grid grid-cols-[auto_1fr] items-start gap-1">
+                              <FaEye className="text-lg" />
+                              <p>• {blog.viewed} Lượt xem</p>
+                            </div>
                           </div>
-                        </div>
-                        <a
-                          href={`${blog.link}`}
-                          className="relative  pl-1 pr-1 py-1.5 w-[160px] h-[50px] text-base text-nowrap group flex items-center justify-between rounded-2xl bg-orange-500 text-white font-semibold transition-all duration-500 hover:bg-white hover:border hover:border-orange-500 hover:text-orange-500"
-                        >
-                          <p className="absolute pl-3">Xem thêm</p>
+                          <Link
+                            to={`/bai-viet/${blog.id}`}
+                            className="relative pl-1 pr-1 py-1.5 w-[140px] h-[45px] text-base text-nowrap group flex items-center justify-between rounded-2xl bg-orange-500 text-white font-semibold transition-all duration-500 hover:bg-white hover:border hover:border-orange-500 hover:text-orange-500 shadow-md"
+                          >
+                            <p className="absolute pl-3">Xem thêm</p>
 
-                          <div className="absolute text-sm flex h-10 w-10 items-center justify-center rounded-xl right-1 bg-white text-orange-500 transition-all duration-500 group-hover:w-[95%] group-hover:pl-1 group-hover:bg-orange-500 group-hover:text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              width="20"
-                              height="20"
-                            >
-                              <path fill="none" d="M0 0h24v24H0z"></path>
-                              <path
-                                fill="currentColor"
-                                d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13pv-2z"
-                              ></path>
-                            </svg>
-                          </div>
-                        </a>
+                            <div className="absolute text-sm flex h-9 w-9 items-center justify-center rounded-xl right-1 bg-white text-orange-500 transition-all duration-500 group-hover:w-[90%] group-hover:pl-1 group-hover:bg-orange-500 group-hover:text-white">
+                              <FaLongArrowAltRight />
+                            </div>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-10 text-gray-500">
+                  <p className="text-xl">Không tìm thấy bài viết nào.</p>
+                  <button onClick={() => { setSearchTerm(""); window.history.replaceState(null, '', '/bai-viet'); }} className="mt-4 text-blue-500 underline">Quay lại danh sách</button>
                 </div>
-              ))}
+              )}
             </div>
 
+            {/* SIDEBAR */}
             <div className="xl:col-span-4 lg:col-span-6 col-span-12">
               <div className="px-[15px] py-5 border-solid border-1 rounded-xl border-gray-100">
                 {/* search */}
                 <div className="pb-6">
-                  <form action="" onSubmit={handleSubmit(onSubmit)}>
+                  <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex items-center">
                       <input
                         id="search"
@@ -133,155 +139,92 @@ const Blog = () => {
                 </div>
                 {/* popular blog */}
                 <div>
-                  <p className="mb-2 text-[18px]">Bài viết phổ biến</p>
+                  <p className="mb-2 text-[18px] font-semibold">Bài viết phổ biến</p>
                   <div className="mb-4 mt-2 w-full border-b border-gray-100"></div>
-                  {/* single blog */}
-                  {blogs
-                    .sort((a, b) => b.viewed - a.viewed)
-                    .slice(0, 5)
-                    .map((blog) => (
-                      <div className=" mb-4 border-0">
-                        <div className="grid grid-cols-12 h-full md:h-[140px]">
-                          <div className="col-span-12 md:col-span-4 h-full md:h-[140px]">
-                            <a href={blog.link}>
-                              <img
-                                src={`${getImgUrl(blog.image)}`}
-                                className=" h-full md:h-[140px] object-fit rounded-l-lg"
-                                alt={blog.title}
-                              />
-                            </a>
-                          </div>
-                          <div className="col-span-12 md:col-span-8">
-                            <div className="p-4">
-                              <a href={blog.link}>
-                                <p className="mb-2 text-base text-blue-500 font-[550] line-clamp-1">
-                                  {blog.title}
-                                </p>
-                              </a>
-                              <p className="line-clamp-2 mb-2 text-sm text-gray-700">
-                                {blog.description}
+
+                  {popularBlogs.map((blog) => (
+                    <div key={blog.id} className=" mb-4 border-0">
+                      <div className="grid grid-cols-12 h-full md:h-[100px] gap-2">
+                        <div className="col-span-12 md:col-span-4 h-full">
+                          <Link to={`/bai-viet/${blog.id}`}>
+                            <img
+                              src={blog.image.startsWith("uploads") ? getImgUrl(blog.image) : "https://placehold.co/150x150"}
+                              onError={(e) => { e.target.src = "https://placehold.co/150x150?text=Err" }}
+                              className="h-full w-full object-cover rounded-lg"
+                              alt={blog.title}
+                            />
+                          </Link>
+                        </div>
+                        <div className="col-span-12 md:col-span-8">
+                          <div className="flex flex-col justify-center h-full">
+                            <Link to={`/bai-viet/${blog.id}`}>
+                              <p className="mb-1 text-sm text-blue-500 font-bold line-clamp-2 hover:underline">
+                                {blog.title}
                               </p>
-                              <div className="flex gap-4 italic text-gray-700">
-                                <p className="mb-0">{blog.date_created} </p>
-                                <div className="grid grid-cols-[auto_1fr] items-start gap-1">
-                                  <FaEye className="text-lg" />
-                                  <p>• {blog.viewed}</p>
-                                </div>
+                            </Link>
+
+                            <div className="flex gap-2 italic text-gray-500 text-xs mt-1">
+                              <p className="mb-0">{blog.date} </p>
+                              <div className="flex items-center gap-1">
+                                <FaEye />
+                                <p>{blog.viewed}</p>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
 
                   <div className="mb-4 mt-2 w-full border-b border-gray-100 my-[30px]"></div>
                 </div>
                 {/* blog menu */}
                 <div className="mb-[30px]">
-                  <p className="py-2 mb-[30px] block bg-orange-500 text-center text-white text-[18px]">
+                  <p className="py-2 mb-[30px] block bg-orange-500 text-center text-white text-[18px] rounded">
                     Danh mục bài viết
                   </p>
                   <ul className="text-gray-500">
                     <li className="pb-3 border-b-1 border-dashed border-gray-400 ">
-                      <a
-                        href="https://shoes.themedemo.site/bai-viet/meo-vat"
-                        className="flex justify-between"
+                      <Link
+                        to="/bai-viet?type=meo-vat"
+                        className={`flex justify-between hover:text-orange-500 ${typeParam === 'meo-vat' ? 'font-bold text-orange-500' : ''}`}
                       >
                         <p>Mẹo vặt</p>
-                        <p>39</p>
-                      </a>
+                        <p>2</p>
+                      </Link>
                     </li>
                     <li className="pt-[15px] pb-3 border-b-1 border-dashed border-gray-400">
-                      <a
-                        href="https://shoes.themedemo.site/bai-viet/tin-tuc"
-                        className="flex justify-between"
+                      <Link
+                        to="/bai-viet?type=tin-tuc"
+                        className={`flex justify-between hover:text-orange-500 ${typeParam === 'tin-tuc' ? 'font-bold text-orange-500' : ''}`}
                       >
                         <p>Tin tức</p>
-                        <p>39</p>
-                      </a>
+                        <p>1</p>
+                      </Link>
                     </li>
                     <li className="pt-[15px] pb-3 border-b-1 border-dashed border-gray-400">
-                      <a
-                        href="https://shoes.themedemo.site/bai-viet/tu-van"
-                        className="flex justify-between"
+                      <Link
+                        to="/bai-viet?type=tu-van"
+                        className={`flex justify-between hover:text-orange-500 ${typeParam === 'tu-van' ? 'font-bold text-orange-500' : ''}`}
                       >
                         <p>Tư vấn</p>
-                        <p>12</p>
-                      </a>
+                        <p>1</p>
+                      </Link>
                     </li>
                   </ul>
                 </div>
-                {/* tag */}
+
+                {/* tag - Static Demo */}
                 <div>
-                  <p className="py-2 mb-[30px] block bg-orange-500 text-center text-white text-[18px]">
+                  <p className="py-2 mb-[30px] block bg-orange-500 text-center text-white text-[18px] rounded">
                     Thẻ tag
                   </p>
-                  <ul className="">
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/sneaker-square">
-                        Sneaker Square
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/nike">Nike</a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/adidas">
-                        Adidas
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/puma">Puma</a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/vo-trang">
-                        Vớ trắng
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/hot-trend">
-                        Hot trend
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/moi-nhat">
-                        Mới nhất
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/huu-ich">
-                        Hữu ích
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/new-balance">
-                        New Balance
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/sale">Sale</a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/chia-se">
-                        Chia sẻ
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/goi-y">Gợi ý</a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/tin-moi">
-                        Tin mới
-                      </a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/blog">Blog</a>
-                    </li>
-                    <li className="inline-block mr-2 px-[13px] mb-2 border-1 border-gray-200 text-[12px] text-gray-600">
-                      <a href="https://shoes.themedemo.site/tag/meo-hay-va-bo-ich">
-                        Mẹo hay và bổ ích
-                      </a>
-                    </li>
+                  <ul className="flex flex-wrap gap-2">
+                    {["Sneaker", "Nike", "Adidas", "Sale", "Hot Trend", "Mẹo vặt"].map(tag => (
+                      <li key={tag} className="inline-block px-3 py-1 border border-gray-200 text-xs text-gray-600 rounded hover:bg-orange-500 hover:text-white transition-colors cursor-pointer">
+                        {tag}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>

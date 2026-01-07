@@ -1,22 +1,28 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Loading from "../../components/Loading";
 import getBaseUrl from "../../util/baseUrl";
 import axios from "axios";
 import { useFetchCartByUserIdQuery } from "../../redux/features/carts/cartsApi";
 import { useCreateOrderMutation } from "../../redux/features/orders/ordersApi";
+import Swal from "sweetalert2";
 
 const CheckoutPage = () => {
   const { currentUser, loading } = useAuth();
   const userData = JSON.parse(localStorage.getItem("user"));
   const userId = userData?.id;
+  const navigate = useNavigate();
 
   const { data: cartItemsFromDB = [] } = useFetchCartByUserIdQuery(userId);
   const cartItemsFromStore = useSelector((state) => state.cart.cartItems);
   const [cartItems, setCartItems] = useState([]);
+
+  // State phương thức thanh toán: 'cod' | 'momo'
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+
   const totalPrice = useMemo(() => {
     return Math.round(
       cartItems.reduce(
@@ -49,6 +55,9 @@ const CheckoutPage = () => {
     formState: { errors },
   } = useForm();
 
+  // Hook tạo order
+  const [createOrder, { isLoading: isCreating }] = useCreateOrderMutation();
+
   const onSubmit = async (data) => {
     const newOrder = {
       name: data.name,
@@ -63,175 +72,96 @@ const CheckoutPage = () => {
       carts: cartItems.map((item) => item.id),
       totalPrice: totalPrice,
     };
-    console.log(newOrder);
+
+    // Lưu tạm vào localStorage (dùng cho luồng Momo callback hoặc re-try)
     localStorage.setItem("newOrder", JSON.stringify(newOrder));
 
     try {
-      console.log(totalPrice);
-      const response = await axios.post(
-        `${getBaseUrl()}/api/v1/momo/create-payment`,
-        {
-          amount: totalPrice,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+      if (paymentMethod === "momo") {
+        // --- LOGIC MOMO ---
+        console.log("Processing Momo payment...");
+        const response = await axios.post(
+          `${getBaseUrl()}/api/v1/momo/create-payment`,
+          {
+            amount: totalPrice,
           },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response?.data?.payUrl) {
+          window.location.href = response.data.payUrl;
+        } else {
+          Swal.fire("Lỗi", "Không nhận được link thanh toán từ server", "error");
         }
-      );
-      if (response?.data?.payUrl) {
-        window.location.href = response.data.payUrl;
       } else {
-        console.error("Không nhận được payUrl từ server:", response?.data);
+        // --- LOGIC COD ---
+        console.log("Processing COD order...");
+        await createOrder(newOrder).unwrap();
+
+        Swal.fire({
+          icon: "success",
+          title: "Đặt hàng thành công!",
+          text: "Đơn hàng của bạn đã được ghi nhận.",
+          showConfirmButton: false,
+          timer: 2000
+        });
+
+        localStorage.removeItem("newOrder");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      Swal.fire("Lỗi", "Đã xảy ra lỗi khi tạo đơn hàng", "error");
     }
   };
 
+  // --- XỬ LÝ KẾT QUẢ TỪ MOMO ---
   const [searchParams] = useSearchParams();
   var resultCode = searchParams.get("resultCode");
   const message = searchParams.get("message");
-  const [createOrder] = useCreateOrderMutation();
-  if (resultCode) {
-    if (resultCode == "0") {
-      const storedOrder = localStorage.getItem("newOrder");
 
-      if (storedOrder) {
-        const newOrderData = JSON.parse(storedOrder);
-        try {
-          createOrder(newOrderData);
-        } catch (error) {
-          console.log(error);
+  useEffect(() => {
+    if (resultCode) {
+      if (resultCode === "0") {
+        const storedOrder = localStorage.getItem("newOrder");
+        if (storedOrder) {
+          const newOrderData = JSON.parse(storedOrder);
+          createOrder(newOrderData)
+            .then(() => {
+              localStorage.removeItem("newOrder");
+              Swal.fire("Thành công", "Thanh toán thành công!", "success");
+            })
+            .catch(e => console.error(e));
         }
+      } else {
         localStorage.removeItem("newOrder");
       }
-      return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
-          <div className="text-lg font-semibold text-gray-800">{message}</div>
-
-          <div className="flex gap-4">
-            <Link
-              to="/san-pham?hot=true"
-              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="feather feather-shopping-bag"
-              >
-                <path d="M6 2l2 7h8l2-7"></path>
-                <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
-              </svg>
-              Tiếp tục mua hàng
-            </Link>
-          </div>
-        </div>
-      );
-    } else if (resultCode == "7000") {
-      localStorage.removeItem("newOrder");
-
-      return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
-          <div className="text-lg font-semibold text-gray-800">{message}</div>
-
-          <div className="flex gap-4">
-            <Link
-              to="/san-pham?hot=true"
-              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="feather feather-shopping-bag"
-              >
-                <path d="M6 2l2 7h8l2-7"></path>
-                <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
-              </svg>
-              Tiếp tục mua hàng
-            </Link>
-          </div>
-        </div>
-      );
-    } else if (resultCode == "9000") {
-      localStorage.removeItem("newOrder");
-
-      return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
-          <div className="text-lg font-semibold text-gray-800">{message}</div>
-
-          <div className="flex gap-4">
-            <Link
-              to="/san-pham?hot=true"
-              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="feather feather-shopping-bag"
-              >
-                <path d="M6 2l2 7h8l2-7"></path>
-                <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
-              </svg>
-              Tiếp tục mua hàng
-            </Link>
-          </div>
-        </div>
-      );
-    } else {
-      localStorage.removeItem("newOrder");
-
-      return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
-          <div className="text-lg font-semibold text-gray-800">{message}</div>
-
-          <div className="flex gap-4">
-            <Link
-              to="/san-pham?hot=true"
-              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="feather feather-shopping-bag"
-              >
-                <path d="M6 2l2 7h8l2-7"></path>
-                <path d="M5 9h14l1 9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3l1-9z"></path>
-              </svg>
-              Tiếp tục mua hàng
-            </Link>
-          </div>
-        </div>
-      );
     }
+  }, [resultCode, createOrder]);
+
+  if (resultCode) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
+        <div className={`text-lg font-semibold ${resultCode === "0" ? 'text-green-600' : 'text-red-600'}`}>
+          {resultCode === "0" ? "Giao dịch thành công!" : "Giao dịch thất bại"}
+        </div>
+        <p className="text-gray-600">{message}</p>
+
+        <div className="flex gap-4">
+          <Link
+            to="/san-pham?hot=true"
+            className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all"
+          >
+            Tiếp tục mua hàng
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -243,10 +173,10 @@ const CheckoutPage = () => {
               <div>
                 <div>
                   <h2 className="font-semibold text-xl text-gray-600 mb-2">
-                    Thanh toán khi nhận hàng
+                    Thông tin thanh toán
                   </h2>
                   <p className="text-gray-500 mb-2">
-                    Tổng tiền: {totalPrice} vnd
+                    Tổng tiền: {totalPrice.toLocaleString()} VNĐ
                   </p>
                   <p className="text-gray-500 mb-6">
                     Số lượng sản phẩm:{" "}
@@ -260,8 +190,49 @@ const CheckoutPage = () => {
                     className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3 my-8"
                   >
                     <div className="text-gray-600">
-                      <p className="font-medium text-lg">Thông tin cá nhân</p>
+                      <p className="font-medium text-lg">Thông tin giao hàng</p>
                       <p>Vui lòng điền đầy đủ các trường.</p>
+
+                      {/* --- PHƯƠNG THỨC THANH TOÁN (MỚI) --- */}
+                      <div className="mt-8 pt-4 border-t border-gray-200">
+                        <p className="font-medium text-lg mb-4">Phương thức thanh toán</p>
+
+                        <div className="flex flex-col gap-3">
+                          <label className={`flex items-center p-4 border rounded cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}>
+                            <input
+                              type="radio"
+                              name="paymentParams"
+                              value="cod"
+                              checked={paymentMethod === 'cod'}
+                              onChange={() => setPaymentMethod('cod')}
+                              className="w-4 h-4 text-blue-600"
+                            />
+                            <div className="ml-3">
+                              <span className="block text-sm font-medium text-gray-900">
+                                Thanh toán khi nhận hàng (COD)
+                              </span>
+                            </div>
+                          </label>
+
+                          <label className={`flex items-center p-4 border rounded cursor-pointer transition-all ${paymentMethod === 'momo' ? 'border-pink-500 bg-pink-50' : 'border-gray-200 hover:bg-gray-50'}`}>
+                            <input
+                              type="radio"
+                              name="paymentParams"
+                              value="momo"
+                              checked={paymentMethod === 'momo'}
+                              onChange={() => setPaymentMethod('momo')}
+                              className="w-4 h-4 text-pink-600"
+                            />
+                            <div className="ml-3 flex items-center gap-2">
+                              <span className="block text-sm font-medium text-gray-900">
+                                Ví điện tử Momo
+                              </span>
+                              <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo" className="w-6 h-6 object-contain" />
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+
                     </div>
 
                     <div className="lg:col-span-2">
@@ -334,39 +305,6 @@ const CheckoutPage = () => {
                               placeholder="Country"
                               className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
                             />
-                            <button
-                              tabIndex="-1"
-                              className="cursor-pointer outline-none focus:outline-none transition-all text-gray-300 hover:text-red-600"
-                            >
-                              <svg
-                                className="w-4 h-4 mx-2 fill-current"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                              </svg>
-                            </button>
-                            <button
-                              tabIndex="-1"
-                              className="cursor-pointer outline-none focus:outline-none border-l border-gray-200 transition-all text-gray-300 hover:text-blue-600"
-                            >
-                              <svg
-                                className="w-4 h-4 mx-2 fill-current"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <polyline points="18 15 12 9 6 15"></polyline>
-                              </svg>
-                            </button>
                           </div>
                         </div>
 
@@ -380,36 +318,6 @@ const CheckoutPage = () => {
                               placeholder="State"
                               className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
                             />
-                            <button className="cursor-pointer outline-none focus:outline-none transition-all text-gray-300 hover:text-red-600">
-                              <svg
-                                className="w-4 h-4 mx-2 fill-current"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                              </svg>
-                            </button>
-                            <button
-                              tabIndex="-1"
-                              className="cursor-pointer outline-none focus:outline-none border-l border-gray-200 transition-all text-gray-300 hover:text-blue-600"
-                            >
-                              <svg
-                                className="w-4 h-4 mx-2 fill-current"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <polyline points="18 15 12 9 6 15"></polyline>
-                              </svg>
-                            </button>
                           </div>
                         </div>
 
@@ -428,7 +336,6 @@ const CheckoutPage = () => {
                         <div className="md:col-span-5 mt-3">
                           <div className="inline-flex items-center">
                             <input
-                              // onChange={(e) => setIsChecked(e.target.checked)}
                               type="checkbox"
                               name="billing_same"
                               id="billing_same"
@@ -449,8 +356,11 @@ const CheckoutPage = () => {
 
                         <div className="md:col-span-5 text-right">
                           <div className="inline-flex items-end">
-                            <button className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                              Đặt hàng
+                            <button
+                              disabled={isCreating}
+                              className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+                            >
+                              {isCreating ? "Đang xử lý..." : "Đặt hàng"}
                             </button>
                           </div>
                         </div>

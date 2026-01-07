@@ -24,3 +24,5 @@ assets/demo/
 *.njsproj
 *.sln
 *.sw?
+
+GEMINI.md

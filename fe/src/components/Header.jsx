@@ -15,7 +15,9 @@ import { useFetchCartByUserIdQuery } from "../redux/features/carts/cartsApi";
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
-  const { data: userData } = useFetchUserByEmailQuery(currentUser?.email);
+  const { data: userData } = useFetchUserByEmailQuery(currentUser?.email, {
+    skip: !currentUser?.email,
+  });
   const cartItemsFromStore = useSelector((state) => state.status.cartCount);
   const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
 
@@ -128,7 +130,7 @@ const Header = () => {
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180 " />
               </Link>
               {/* Dropdown menu */}
-              <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+              <ul className="absolute left-0 top-[80px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 <li className="border-b border-white hover:bg-orange-400">
                   <Link
                     to="/san-pham?hot=true"
@@ -156,7 +158,7 @@ const Header = () => {
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
               </Link>
               {/* Dropdown menu */}
-              <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+              <ul className="absolute left-0 top-[80px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 {brands.map((brand) => (
                   <li
                     key={`brand-${brand.name}`}
@@ -181,7 +183,7 @@ const Header = () => {
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
               </Link>
               {/* Dropdown menu */}
-              <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+              <ul className="absolute left-0 top-[80px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 {accessories.map((item) => (
                   <li
                     key={`item-${item.type}`}
@@ -206,7 +208,7 @@ const Header = () => {
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
               </Link>
               {/* Dropdown menu */}
-              <ul className="absolute left-0 top-[90px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+              <ul className="absolute left-0 top-[80px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 {newsTypes.map((item) => (
                   <li
                     key={item.type}
@@ -280,11 +282,10 @@ const Header = () => {
       </div>
       {/* Menu response */}
       <div
-        className={`xl:hidden menu-parent bg-yellow-100 m-[4px] rounded-lg p-4 transition-transform duration-800 ${
-          isMenuOpen
-            ? "translate-x-0 h-[calc(100vh-80px)]"
-            : "-translate-x-full hidden"
-        }`}
+        className={`xl:hidden menu-parent bg-yellow-100 m-[4px] rounded-lg p-4 transition-transform duration-800 ${isMenuOpen
+          ? "translate-x-0 h-[calc(100vh-80px)]"
+          : "-translate-x-full hidden"
+          }`}
       >
         <ul className="space-y-2">
           <li className="py-2 font-semibold relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100">
