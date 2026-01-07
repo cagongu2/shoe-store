@@ -1,207 +1,193 @@
-import { useEffect, useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
-import { IoCartOutline } from "react-icons/io5";
+import { useState, useEffect } from "react";
+import { FaChevronDown, FaChevronRight, FaBoxOpen, FaUserFriends, FaBlog, FaShoppingBag, FaTachometerAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { FaRegUser } from "react-icons/fa";
 
-const Sidebar = () => {
-  const [openMenus, setOpenMenus] = useState(() => {
-    const savedMenus = localStorage.getItem("openMenus");
-    return savedMenus ? JSON.parse(savedMenus) : {};
-  });
-
-  const [activeMenu, setActiveMenu] = useState(() => {
-    return localStorage.getItem("activeMenu") || null;
+const Sidebar = ({ activeMenu, onMenuSelect }) => {
+  // State to manage expanded groups
+  const [expandedGroups, setExpandedGroups] = useState(() => {
+    const saved = localStorage.getItem("sidebarExpanded");
+    return saved ? JSON.parse(saved) : { ecommerce: true, users: false, blogs: false };
   });
 
   useEffect(() => {
-    localStorage.setItem("openMenus", JSON.stringify(openMenus));
-  }, [openMenus]);
+    localStorage.setItem("sidebarExpanded", JSON.stringify(expandedGroups));
+  }, [expandedGroups]);
 
-  useEffect(() => {
-    localStorage.setItem("activeMenu", activeMenu);
-  }, [activeMenu]);
-
-  const toggleMenu = (menu) => {
-    setOpenMenus((prev) => {
-      const newMenus = { ...prev, [menu]: !prev[menu] };
-      return newMenus;
-    });
-    setActiveMenu(menu);
+  const toggleGroup = (group) => {
+    setExpandedGroups((prev) => ({
+      ...prev,
+      [group]: !prev[group]
+    }));
   };
 
-  const handleClick = (menu) => {
-    localStorage.removeItem("activeMenu");
-    localStorage.setItem("activeMenu", menu);
-    window.location.reload();
+  const handleMenuItemClick = (menu) => {
+    if (onMenuSelect) {
+      onMenuSelect(menu);
+    }
+  };
+
+  // Helper to check if a group is active based on current selection
+  const isGroupActive = (groupPrefix) => {
+    // Simple heuristic: if activeMenu starts with the group prefix or belongs to it
+    // This logic can be customized. 
+    // ecommerce -> productList, addProduct...
+    if (groupPrefix === 'ecommerce') return ['dashboard', 'productList', 'addProduct', 'editProduct'].includes(activeMenu);
+    if (groupPrefix === 'users') return ['userList', 'addUser'].includes(activeMenu);
+    if (groupPrefix === 'blogs') return ['blogList', 'addBlog', 'editBlog'].includes(activeMenu);
+    return false;
   };
 
   return (
-    <div className="w-64 bg-white shadow-lg h-screen p-4">
-      {/* Logo */}
-      <div className="flex items-center gap-2 mb-6">
-        <span className="text-2xl font-bold text-indigo-600">
-          <Link to="/">Cửa Hàng Giày</Link>
-        </span>
+    <aside className="w-64 bg-slate-900 text-slate-300 h-full flex flex-col transition-all duration-300 shadow-xl z-20 font-sans">
+      {/* Brand / Logo */}
+      <div className="h-16 flex items-center justify-center border-b border-slate-700 bg-slate-950">
+        <Link to="/" className="flex items-center gap-2 font-bold text-xl text-white hover:text-blue-400 transition-colors">
+          <FaShoppingBag className="text-blue-500" />
+          <span>SHOESTORE<span className="text-blue-500">.</span></span>
+        </Link>
       </div>
-      {/* Menu Items */}
-      <ul className="space-y-2 text-base text-gray-700 font-semibold">
-        {/* eCommerce */}
-        <li>
+
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
+
+        {/* Dashboard Item */}
+        <div>
           <button
-            onClick={() => {
-              toggleMenu("ecommerce");
-              // handleClick("ecommerce");
-            }}
-            className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "ecommerce" ? "bg-purple-100 text-blue-500" : ""
+            onClick={() => handleMenuItemClick("dashboard")}
+            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${activeMenu === 'dashboard'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'hover:bg-slate-800 hover:text-white'
               }`}
           >
-            <div className="flex items-center">
-              <IoCartOutline />
-              <span className="ml-2">Thương mại điện tử</span>
+            <div className="flex items-center gap-3">
+              <FaTachometerAlt className={activeMenu === 'dashboard' ? 'text-white' : 'text-slate-400 group-hover:text-white'} />
+              <span className="font-medium text-sm">Dashboard</span>
             </div>
-            <FaChevronDown
-              className={`transition ${openMenus["ecommerce"] ? "rotate-180" : ""}`}
-              size={16}
-            />
           </button>
-          {openMenus["ecommerce"] && (
-            <ul className="ml-4 mt-1 space-y-1 text-gray-600 text-sm">
-              <li
-                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "dashboard" ? "bg-purple-100 text-blue-500" : ""
-                  }`}
-                onClick={() => handleClick("dashboard")}
-              >
-                Bảng điều khiển
-              </li>
-              <li>
-                <button
-                  onClick={() => {
-                    toggleMenu("products");
-                    // handleClick("products");
-                  }}
-                  className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "products" ? "bg-purple-100 text-blue-500" : ""
-                    }`}
-                >
-                  <span>Sản phẩm</span>
-                  <FaChevronDown
-                    className={`transition ${openMenus["products"] ? "rotate-180" : ""}`}
-                    size={16}
-                  />
-                </button>
-                {openMenus["products"] && (
-                  <ul className="ml-4 mt-1 space-y-1 text-gray-600 text-sm">
-                    <li
-                      className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "productList" ? "bg-purple-100 text-blue-500" : ""
-                        }`}
-                      onClick={() => handleClick("productList")}
-                    >
-                      Danh sách sản phẩm
-                    </li>
-                    <li
-                      className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "addProduct" ? "bg-purple-100 text-blue-500" : ""
-                        }`}
-                      onClick={() => handleClick("addProduct")}
-                    >
-                      Thêm sản phẩm
-                    </li>
-                    <li
-                      className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "editProduct" ? "bg-purple-100 text-blue-500" : ""
-                        }`}
-                      onClick={() => handleClick("editProduct")}
-                    >
-                      Chỉnh sửa sản phẩm
-                    </li>
-                    {/* <li
-                      className={`p-2 rounded-lg hover:bg-gray-100 ${
-                        activeMenu === "productCategory" ? "bg-purple-100 text-blue-500" : ""
-                      }`}
-                      onClick={() => handleClick("productCategory")}
-                    >
-                      Danh mục sản phẩm
-                    </li> */}
-                  </ul>
-                )}
-              </li>
-            </ul>
-          )}
-        </li>
-        {/* Blogs */}
-        <li>
+        </div>
+
+        <div className="pt-4 pb-2">
+          <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Quản lý</p>
+        </div>
+
+        {/* Group: E-Commerce (Products) */}
+        <div className="space-y-1">
           <button
-            onClick={() => {
-              toggleMenu("blogs");
-            }}
-            className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "blogs" ? "bg-purple-100 text-blue-500" : ""
+            onClick={() => toggleGroup("ecommerce")}
+            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('ecommerce') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
               }`}
           >
-            <div className="flex items-center">
-              <span className="material-icons-outlined text-lg w-5">article</span>
-              <span className="ml-2">Quản lý bài viết</span>
+            <div className="flex items-center gap-3">
+              <FaBoxOpen className={isGroupActive('ecommerce') ? 'text-blue-400' : 'text-slate-400 group-hover:text-white'} />
+              <span className="font-medium text-sm">Sản phẩm</span>
             </div>
-            <FaChevronDown
-              className={`transition ${openMenus["blogs"] ? "rotate-180" : ""}`}
-              size={16}
-            />
+            {expandedGroups["ecommerce"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
           </button>
-          {openMenus["blogs"] && (
-            <ul className="ml-4 mt-1 space-y-1 text-gray-600 text-sm">
-              <li
-                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "blogList" ? "bg-purple-100 text-blue-500" : ""
+
+          {/* Submenu */}
+          {expandedGroups["ecommerce"] && (
+            <div className="pl-9 space-y-1">
+              <button
+                onClick={() => handleMenuItemClick("productList")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'productList' ? 'text-blue-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
-                onClick={() => handleClick("blogList")}
               >
-                Danh sách bài viết
-              </li>
-              <li
-                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "addBlog" ? "bg-purple-100 text-blue-500" : ""
+                Danh sách
+              </button>
+              <button
+                onClick={() => handleMenuItemClick("addProduct")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'addProduct' ? 'text-blue-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
-                onClick={() => handleClick("addBlog")}
               >
-                Thêm bài viết
-              </li>
-            </ul>
+                Thêm mới
+              </button>
+            </div>
           )}
-        </li>
-        <li>
+        </div>
+
+        {/* Group: Blogs */}
+        <div className="space-y-1">
           <button
-            onClick={() => {
-              toggleMenu("users");
-              // handleClick("users");
-            }}
-            className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "users" ? "bg-purple-100 text-blue-500" : ""
+            onClick={() => toggleGroup("blogs")}
+            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('blogs') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
               }`}
           >
-            <div className="flex items-center">
-              <FaRegUser />
-              <span className="ml-2">Người dùng</span>
+            <div className="flex items-center gap-3">
+              <FaBlog className={isGroupActive('blogs') ? 'text-pink-400' : 'text-slate-400 group-hover:text-white'} />
+              <span className="font-medium text-sm">Bài viết</span>
             </div>
-            <FaChevronDown
-              className={`transition ${openMenus["users"] ? "rotate-180" : ""}`}
-              size={16}
-            />
+            {expandedGroups["blogs"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
           </button>
-          {openMenus["users"] && (
-            <ul className="ml-4 mt-1 space-y-1 text-gray-600 text-sm">
-              <li
-                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "userList" ? "bg-purple-100 text-blue-500" : ""
+
+          {expandedGroups["blogs"] && (
+            <div className="pl-9 space-y-1">
+              <button
+                onClick={() => handleMenuItemClick("blogList")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'blogList' ? 'text-pink-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
-                onClick={() => handleClick("userList")}
               >
-                Danh sách người dùng
-              </li>
-              <li
-                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "addUser" ? "bg-purple-100 text-blue-500" : ""
+                Danh sách tin
+              </button>
+              <button
+                onClick={() => handleMenuItemClick("addBlog")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'addBlog' ? 'text-pink-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
-                onClick={() => handleClick("addUser")}
               >
-                Thêm người dùng
-              </li>
-            </ul>
+                Viết bài mới
+              </button>
+            </div>
           )}
-        </li>
-      </ul>
-    </div>
+        </div>
+
+        {/* Group: Users */}
+        <div className="space-y-1">
+          <button
+            onClick={() => toggleGroup("users")}
+            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('users') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
+              }`}
+          >
+            <div className="flex items-center gap-3">
+              <FaUserFriends className={isGroupActive('users') ? 'text-green-400' : 'text-slate-400 group-hover:text-white'} />
+              <span className="font-medium text-sm">Người dùng</span>
+            </div>
+            {expandedGroups["users"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+          </button>
+
+          {expandedGroups["users"] && (
+            <div className="pl-9 space-y-1">
+              <button
+                onClick={() => handleMenuItemClick("userList")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'userList' ? 'text-green-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                Danh sách User
+              </button>
+              <button
+                onClick={() => handleMenuItemClick("addUser")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'addUser' ? 'text-green-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                Thêm User
+              </button>
+            </div>
+          )}
+        </div>
+
+      </nav>
+
+      {/* User / Logout */}
+      <div className="p-4 border-t border-slate-700 bg-slate-950">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+            A
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-white">Admin</p>
+            <Link to="/" className="text-xs text-slate-400 hover:text-slate-200">Đăng xuất</Link>
+          </div>
+        </div>
+      </div>
+    </aside>
   );
 };
 
