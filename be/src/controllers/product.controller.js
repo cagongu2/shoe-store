@@ -8,7 +8,13 @@ const Size = require("../models/size.model");
 
 const getAllProducts = async (req, res) => {
     try {
+        const { all } = req.query;
+        // If "all" query param is present and true (e.g. from admin), show everything.
+        // Otherwise, filter where isDeleted is false or null.
+        const whereClause = (all === 'true') ? {} : { isDeleted: false };
+
         const products = await Product.findAll({
+            where: whereClause,
             include: [
                 { model: Brand, as: "brand" },
                 { model: Category, as: "category" },
@@ -117,7 +123,7 @@ const updateProduct = async (req, res) => {
     }
 };
 
-const deleteProduct = async (req, res) => {
+const toggleProductStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const product = await Product.findByPk(id);
@@ -126,9 +132,45 @@ const deleteProduct = async (req, res) => {
             return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
         }
 
-        await product.destroy();
-        res.status(200).json({ message: "Xóa sản phẩm thành công" });
+        await product.update({ isDeleted: !product.isDeleted });
+        res.status(200).json({
+            message: product.isDeleted ? "Đã ẩn sản phẩm" : "Đã kích hoạt sản phẩm",
+            product
+        });
     } catch (error) {
+        res.status(500).json({ message: "Lỗi server", error });
+    }
+};
+
+const permanentlyDeleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const fs = require('fs');
+        const path = require('path');
+
+        const product = await Product.findByPk(id, {
+            include: [{ model: Image, as: "images" }]
+        });
+
+        if (!product) {
+            return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
+        }
+
+        // Delete associated images from filesystem
+        if (product.images && product.images.length > 0) {
+            for (const image of product.images) {
+                const imagePath = path.join(__dirname, '../../src/assets', image.link);
+                if (fs.existsSync(imagePath)) {
+                    fs.unlinkSync(imagePath);
+                }
+            }
+        }
+
+        // Delete product (CASCADE will delete related records)
+        await product.destroy();
+        res.status(200).json({ message: "Xóa sản phẩm vĩnh viễn thành công" });
+    } catch (error) {
+        console.error("Error permanently deleting product:", error);
         res.status(500).json({ message: "Lỗi server", error });
     }
 };
@@ -138,5 +180,6 @@ module.exports = {
     getProductById,
     createProduct,
     updateProduct,
-    deleteProduct
+    toggleProductStatus,
+    permanentlyDeleteProduct
 };

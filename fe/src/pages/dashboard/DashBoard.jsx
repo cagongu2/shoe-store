@@ -7,6 +7,10 @@ import EditBlog from "./blogs/EditBlog";
 import UserList from "./users/UserList";
 import AddUser from "./users/AddUser";
 import OrderList from "./orders/OrderList";
+import ManageBrands from "./attributes/ManageBrands";
+import ManageColors from "./attributes/ManageColors";
+import ManageSizes from "./attributes/ManageSizes";
+import ManageCategories from "./categories/ManageCategories";
 import { useState, useEffect } from "react";
 import Sidebar from "./SideBar";
 
@@ -64,6 +68,12 @@ const DashBoard = () => {
 
             {/* Orders */}
             {activeMenu === "orderList" && <OrderList />}
+
+            {/* Attributes */}
+            {activeMenu === "manageBrands" && <ManageBrands />}
+            {activeMenu === "manageColors" && <ManageColors />}
+            {activeMenu === "manageSizes" && <ManageSizes />}
+            {activeMenu === "manageCategories" && <ManageCategories />}
 
 
             {/* Fallback for sub-menus that might not have a direct component mapped yet */}

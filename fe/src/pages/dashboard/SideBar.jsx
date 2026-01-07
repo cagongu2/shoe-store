@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { FaChevronDown, FaChevronRight, FaBoxOpen, FaUserFriends, FaBlog, FaShoppingBag, FaTachometerAlt, FaClipboardList } from "react-icons/fa";
+import { FaChevronDown, FaChevronRight, FaBoxOpen, FaUserFriends, FaBlog, FaShoppingBag, FaTachometerAlt, FaClipboardList, FaTags } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ activeMenu, onMenuSelect }) => {
   // State to manage expanded groups
   const [expandedGroups, setExpandedGroups] = useState(() => {
     const saved = localStorage.getItem("sidebarExpanded");
-    return saved ? JSON.parse(saved) : { ecommerce: true, users: false, blogs: false, orders: false };
+    return saved ? JSON.parse(saved) : { ecommerce: true, users: false, blogs: false, orders: false, attributes: false };
   });
 
   useEffect(() => {
@@ -28,13 +28,11 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
 
   // Helper to check if a group is active based on current selection
   const isGroupActive = (groupPrefix) => {
-    // Simple heuristic: if activeMenu starts with the group prefix or belongs to it
-    // This logic can be customized. 
-    // ecommerce -> productList, addProduct...
     if (groupPrefix === 'ecommerce') return ['dashboard', 'productList', 'addProduct', 'editProduct'].includes(activeMenu);
     if (groupPrefix === 'users') return ['userList', 'addUser'].includes(activeMenu);
     if (groupPrefix === 'blogs') return ['blogList', 'addBlog', 'editBlog'].includes(activeMenu);
     if (groupPrefix === 'orders') return ['orderList'].includes(activeMenu);
+    if (groupPrefix === 'attributes') return ['manageBrands', 'manageColors', 'manageSizes', 'manageCategories'].includes(activeMenu);
     return false;
   };
 
@@ -56,8 +54,8 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
           <button
             onClick={() => handleMenuItemClick("dashboard")}
             className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${activeMenu === 'dashboard'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'hover:bg-slate-800 hover:text-white'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'hover:bg-slate-800 hover:text-white'
               }`}
           >
             <div className="flex items-center gap-3">
@@ -129,6 +127,54 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
                   }`}
               >
                 Thêm mới
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Group: Attributes (Brands, Colors, Sizes, Categories) */}
+        <div className="space-y-1">
+          <button
+            onClick={() => toggleGroup("attributes")}
+            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('attributes') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
+              }`}
+          >
+            <div className="flex items-center gap-3">
+              <FaTags className={isGroupActive('attributes') ? 'text-purple-400' : 'text-slate-400 group-hover:text-white'} />
+              <span className="font-medium text-sm">Thuộc tính</span>
+            </div>
+            {expandedGroups["attributes"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+          </button>
+
+          {expandedGroups["attributes"] && (
+            <div className="pl-9 space-y-1">
+              <button
+                onClick={() => handleMenuItemClick("manageBrands")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageBrands' ? 'text-purple-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                Thương hiệu
+              </button>
+              <button
+                onClick={() => handleMenuItemClick("manageColors")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageColors' ? 'text-purple-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                Màu sắc
+              </button>
+              <button
+                onClick={() => handleMenuItemClick("manageSizes")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageSizes' ? 'text-purple-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                Kích cỡ
+              </button>
+              <button
+                onClick={() => handleMenuItemClick("manageCategories")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageCategories' ? 'text-purple-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                Danh mục
               </button>
             </div>
           )}

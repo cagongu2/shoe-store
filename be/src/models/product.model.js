@@ -30,6 +30,10 @@ const Product = sequelize.define("Product", {
     description: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    isDeleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
     tableName: "products",

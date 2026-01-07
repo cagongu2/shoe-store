@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import {
   useDeleteProductMutation,
   useFetchAllProductsQuery,
+  useToggleProductStatusMutation,
+  usePermanentlyDeleteProductMutation,
 } from "../../../redux/features/products/productsApi";
 import Loading from "../../../components/Loading";
 import { CiTrash } from "react-icons/ci";
 import { MdOutlineEdit } from "react-icons/md";
+import { FaToggleOn, FaToggleOff, FaTrashAlt } from "react-icons/fa";
 import { useFetchAllColorsQuery } from "../../../redux/features/colors/colorsApi";
 import { useFetchAllCategoriesQuery } from "../../../redux/features/categories/categoriesApi";
 import { useFetchAllBrandsQuery } from "../../../redux/features/brands/brandsApi";
@@ -15,13 +18,16 @@ import Swal from "sweetalert2";
 import { FaPlus } from "react-icons/fa";
 
 const ProductList = () => {
-  const { data: products = [], isLoading } = useFetchAllProductsQuery();
+  const { data: allProducts = [], isLoading } = useFetchAllProductsQuery({ all: true });
   const { data: categories = [] } = useFetchAllCategoriesQuery();
   const { data: colors = [] } = useFetchAllColorsQuery();
   const { data: brands = [] } = useFetchAllBrandsQuery();
   const { data: sizes = [] } = useFetchAllSizesQuery();
 
-  const totalProductsRow = products.reduce(
+  // Include all products for management view (including deleted)
+  const products = allProducts;
+
+  const totalProductsRow = allProducts.reduce(
     (total, product) => total + (product.stocks?.length || 0),
     0
   );
@@ -58,29 +64,62 @@ const ProductList = () => {
     return data.slice(start, start + itemsPerPage);
   };
 
-  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
+  const [toggleStatus] = useToggleProductStatusMutation();
+  const [permanentlyDelete] = usePermanentlyDeleteProductMutation();
 
-  const handleDeleteProduct = (productId) => {
-    Swal.fire({
-      title: "Bạn có chắc chắn?",
-      text: "Sản phẩm này sẽ bị xoá vĩnh viễn!",
+  const handleToggleStatus = async (productId, productName, isDeleted) => {
+    const action = isDeleted ? "kích hoạt" : "ẩn";
+    const result = await Swal.fire({
+      title: `${action.charAt(0).toUpperCase() + action.slice(1)} sản phẩm?`,
+      text: `Bạn muốn ${action} "${productName}"?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: isDeleted ? "#10b981" : "#f59e0b",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: action.charAt(0).toUpperCase() + action.slice(1),
+      cancelButtonText: "Hủy",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await toggleStatus(productId).unwrap();
+        Swal.fire(
+          "Thành công!",
+          `Đã ${action} sản phẩm.`,
+          "success"
+        );
+      } catch (error) {
+        console.error("Lỗi toggle status:", error);
+        Swal.fire("Lỗi!", `Không thể ${action} sản phẩm.`, "error");
+      }
+    }
+  };
+
+  const handlePermanentDelete = async (productId, productName) => {
+    const result = await Swal.fire({
+      title: "Xóa vĩnh viễn?",
+      html: `<p>Bạn có chắc chắn muốn <strong>xóa vĩnh viễn</strong> sản phẩm "${productName}"?</p><p class="text-red-600 mt-2">⚠️ Hành động này không thể hoàn tác và sẽ xóa cả ảnh!</p>`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Xoá ngay!",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Xóa vĩnh viễn",
       cancelButtonText: "Hủy",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await deleteProduct(productId).unwrap();
-          Swal.fire("Đã xoá!", "Sản phẩm đã bị xoá thành công.", "success");
-        } catch (error) {
-          console.error("Lỗi xoá sản phẩm:", error);
-          Swal.fire("Lỗi!", "Không thể xoá sản phẩm.", "error");
-        }
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        await permanentlyDelete(productId).unwrap();
+        Swal.fire(
+          "Đã xóa!",
+          "Sản phẩm đã bị xóa vĩnh viễn.",
+          "success"
+        );
+      } catch (error) {
+        console.error("Lỗi xóa vĩnh viễn:", error);
+        Swal.fire("Lỗi!", "Không thể xóa sản phẩm.", "error");
+      }
+    }
   };
 
   const setProductId = (id) => {
@@ -128,7 +167,7 @@ const ProductList = () => {
             </thead>
             <tbody>
               {paginateProducts(products, currentPageProducts).map(
-                ({ id, name, price, sale, hot, brand, stock }, index) => (
+                ({ id, name, price, sale, hot, brand, stock, isDeleted }, index) => (
                   <tr
                     key={`${id}-${index}`}
                     className="border-b border-gray-200"
@@ -141,19 +180,27 @@ const ProductList = () => {
                     <td className="p-3">{stock?.color?.name}</td>
                     <td className="p-3">{stock?.size?.name}</td>
                     <td className="p-3">{stock?.quantity}</td>
-                    <td className="p-3 flex gap-4 text-xl">
-                      {isDeleting ? (
-                        "Đang xoá..."
-                      ) : (
-                        <div>
-                          <button className="cursor-pointer">
-                            <MdOutlineEdit onClick={() => setProductId(id)} />
-                          </button>
-                          <button className="cursor-pointer">
-                            <CiTrash onClick={() => handleDeleteProduct(id)} />
-                          </button>
-                        </div>
-                      )}
+                    <td className="p-3 flex gap-3 text-xl items-center">
+                      <button
+                        className="cursor-pointer text-blue-600 hover:text-blue-800"
+                        title="Chỉnh sửa"
+                      >
+                        <MdOutlineEdit onClick={() => setProductId(id)} />
+                      </button>
+                      <button
+                        className={`cursor-pointer ${isDeleted ? 'text-green-600 hover:text-green-800' : 'text-orange-600 hover:text-orange-800'}`}
+                        title={isDeleted ? "Kích hoạt" : "Ẩn"}
+                        onClick={() => handleToggleStatus(id, name, isDeleted)}
+                      >
+                        {isDeleted ? <FaToggleOff /> : <FaToggleOn />}
+                      </button>
+                      <button
+                        className="cursor-pointer text-red-600 hover:text-red-800"
+                        title="Xóa vĩnh viễn"
+                        onClick={() => handlePermanentDelete(id, name)}
+                      >
+                        <FaTrashAlt />
+                      </button>
                     </td>
                   </tr>
                 )

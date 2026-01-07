@@ -3,7 +3,8 @@ const {
     getAllProducts,
     getProductById,
     createProduct,
-    deleteProduct,
+    toggleProductStatus,
+    permanentlyDeleteProduct,
     updateProduct
 } = require("../controllers/product.controller");
 const upload = require('../middleware/upload');
@@ -19,6 +20,8 @@ router.post("/", upload.array("images", 5), verifyAdminToken, createProduct);
 
 router.put("/:id", verifyAdminToken, updateProduct);
 
-router.delete("/:id", verifyAdminToken, deleteProduct);
+router.put("/:id/toggle-status", verifyAdminToken, toggleProductStatus);
+
+router.delete("/:id/permanent", verifyAdminToken, permanentlyDeleteProduct);
 
 module.exports = router;

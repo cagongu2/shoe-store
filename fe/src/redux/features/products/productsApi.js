@@ -17,9 +17,15 @@ const productsApi = createApi({
     reducerPath: 'productsApi',
     baseQuery,
     tagTypes: ['Products'],
-    endpoints: (builder) =>({
+    endpoints: (builder) => ({
         fetchAllProducts: builder.query({
-            query: () => "/",
+            query: (params) => {
+                // If "all" is true (passed from admin dash), append to URL
+                if (params?.all) {
+                    return "/?all=true";
+                }
+                return "/";
+            },
             providesTags: ["Products"]
         }),
         fetchProductById: builder.query({
@@ -35,7 +41,7 @@ const productsApi = createApi({
             invalidatesTags: ["Products"]
         }),
         updateProduct: builder.mutation({
-            query: ({id, ...rest}) => ({
+            query: ({ id, ...rest }) => ({
                 url: `/${id}`,
                 method: "PUT",
                 body: rest,
@@ -51,9 +57,31 @@ const productsApi = createApi({
                 method: "DELETE"
             }),
             invalidatesTags: ["Products"]
+        }),
+        toggleProductStatus: builder.mutation({
+            query: (id) => ({
+                url: `/${id}/toggle-status`,
+                method: "PUT"
+            }),
+            invalidatesTags: ["Products"]
+        }),
+        permanentlyDeleteProduct: builder.mutation({
+            query: (id) => ({
+                url: `/${id}/permanent`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ["Products"]
         })
     })
-  })
-  
-  export const {useFetchAllProductsQuery, useFetchProductByIdQuery, useAddProductMutation, useUpdateProductMutation, useDeleteProductMutation} = productsApi;
-  export default productsApi;
+})
+
+export const {
+    useFetchAllProductsQuery,
+    useFetchProductByIdQuery,
+    useAddProductMutation,
+    useUpdateProductMutation,
+    useDeleteProductMutation,
+    useToggleProductStatusMutation,
+    usePermanentlyDeleteProductMutation
+} = productsApi;
+export default productsApi;

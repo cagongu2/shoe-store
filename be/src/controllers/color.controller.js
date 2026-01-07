@@ -21,8 +21,8 @@ const getColorById = async (req, res) => {
     }
 }; const createColor = async (req, res) => {
     try {
-        const { name } = req.body;
-        const newColor = await Color.create({ name });
+        const { name, hex } = req.body;
+        const newColor = await Color.create({ name, hex });
         res.status(201).json(newColor);
     } catch (error) {
         res.status(500).json({ message: "Lỗi server", error });
@@ -32,14 +32,14 @@ const getColorById = async (req, res) => {
 const updateColor = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name } = req.body;
+        const { name, hex } = req.body;
 
         const color = await Color.findByPk(id);
         if (!color) {
             return res.status(404).json({ message: "Không tìm thấy màu" });
         }
 
-        await color.update({ name });
+        await color.update({ name, hex });
         res.status(200).json(color);
     } catch (error) {
         res.status(500).json({ message: "Lỗi server", error });
