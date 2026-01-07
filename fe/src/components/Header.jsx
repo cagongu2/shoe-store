@@ -15,11 +15,20 @@ import { useFetchUserByEmailQuery } from "../redux/features/users/userApi";
 import { useFetchCartByUserIdQuery } from "../redux/features/carts/cartsApi";
 import { useFetchAllBlogCategoriesQuery } from "../redux/features/blogCategories/blogCategoriesApi";
 
+import { getImgUrl } from "../util/getImageUrl";
+
 const Header = () => {
   const { currentUser, logout } = useAuth();
   const { data: userData } = useFetchUserByEmailQuery(currentUser?.email, {
     skip: !currentUser?.email,
   });
+
+  // Use userData (fresh) or currentUser (local storage)
+  const user = userData || currentUser;
+  // ... existing selectors
+
+
+
   const cartItemsFromStore = useSelector((state) => state.status.cartCount);
   const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
 
@@ -79,21 +88,26 @@ const Header = () => {
           <Marquee>Địa chỉ </Marquee>
         </div>
         <div className="flex items-center justify-end gap-3">
-          {currentUser ? (
+          {user ? (
             <div className="relative group z-50">
               <div className="flex items-center gap-2 cursor-pointer">
-                {currentUser.photo ? (
-                  <img src={currentUser.photo} alt="Avatar" className="w-6 h-6 rounded-full object-cover" />
+                {user.photo ? (
+                  <img
+                    src={getImgUrl(user.photo)}
+                    alt="Avatar"
+                    className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                    onError={(e) => e.target.src = "https://placehold.co/100?text=U"}
+                  />
                 ) : (
                   <FaUserCircle className="text-xl" />
                 )}
-                <span>{currentUser.username || currentUser.email}</span>
+                <span>{user.username || user.email}</span>
                 <IoIosArrowDown />
               </div>
 
               {/* Dropdown */}
               <div className="absolute right-0 top-full mt-1 w-48 bg-white text-gray-800 rounded-md shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                {currentUser.role === 'admin' && (
+                {user.role === 'admin' && (
                   <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-100">
                     Bảng điều khiển
                   </Link>

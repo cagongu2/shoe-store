@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { email } = req.params;
-        const { username, photo, role } = req.body;
+        const { username, role, phone, address } = req.body;
 
         const user = await User.findOne({ where: { email } });
 
@@ -72,7 +72,17 @@ const updateUser = async (req, res) => {
             return res.status(404).json({ message: "User không tồn tại" });
         }
 
-        await user.update({ username, photo, role });
+        // Handle photo upload
+        let photoPath = req.body.photo || user.photo; // Keep old photo if not provided
+        if (req.file) {
+            photoPath = `uploads/demo/${req.file.filename}`;
+        } else if (req.body.photo) {
+            // If explicit URL provided in body (fallback)
+            photoPath = req.body.photo;
+        }
+
+        // Note: Role update might need restriction, but keeping flexible as per existing code
+        await user.update({ username, photo: photoPath, role, phone, address });
 
         res.status(200).json(user);
     } catch (error) {
