@@ -53,9 +53,8 @@ const Sidebar = () => {
               toggleMenu("ecommerce");
               // handleClick("ecommerce");
             }}
-            className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${
-              activeMenu === "ecommerce" ? "bg-purple-100 text-blue-500" : ""
-            }`}
+            className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "ecommerce" ? "bg-purple-100 text-blue-500" : ""
+              }`}
           >
             <div className="flex items-center">
               <IoCartOutline />
@@ -69,9 +68,8 @@ const Sidebar = () => {
           {openMenus["ecommerce"] && (
             <ul className="ml-4 mt-1 space-y-1 text-gray-600 text-sm">
               <li
-                className={`p-2 rounded-lg hover:bg-gray-100 ${
-                  activeMenu === "dashboard" ? "bg-purple-100 text-blue-500" : ""
-                }`}
+                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "dashboard" ? "bg-purple-100 text-blue-500" : ""
+                  }`}
                 onClick={() => handleClick("dashboard")}
               >
                 Bảng điều khiển
@@ -82,9 +80,8 @@ const Sidebar = () => {
                     toggleMenu("products");
                     // handleClick("products");
                   }}
-                  className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${
-                    activeMenu === "products" ? "bg-purple-100 text-blue-500" : ""
-                  }`}
+                  className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "products" ? "bg-purple-100 text-blue-500" : ""
+                    }`}
                 >
                   <span>Sản phẩm</span>
                   <FaChevronDown
@@ -95,25 +92,22 @@ const Sidebar = () => {
                 {openMenus["products"] && (
                   <ul className="ml-4 mt-1 space-y-1 text-gray-600 text-sm">
                     <li
-                      className={`p-2 rounded-lg hover:bg-gray-100 ${
-                        activeMenu === "productList" ? "bg-purple-100 text-blue-500" : ""
-                      }`}
+                      className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "productList" ? "bg-purple-100 text-blue-500" : ""
+                        }`}
                       onClick={() => handleClick("productList")}
                     >
                       Danh sách sản phẩm
                     </li>
                     <li
-                      className={`p-2 rounded-lg hover:bg-gray-100 ${
-                        activeMenu === "addProduct" ? "bg-purple-100 text-blue-500" : ""
-                      }`}
+                      className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "addProduct" ? "bg-purple-100 text-blue-500" : ""
+                        }`}
                       onClick={() => handleClick("addProduct")}
                     >
                       Thêm sản phẩm
                     </li>
                     <li
-                      className={`p-2 rounded-lg hover:bg-gray-100 ${
-                        activeMenu === "editProduct" ? "bg-purple-100 text-blue-500" : ""
-                      }`}
+                      className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "editProduct" ? "bg-purple-100 text-blue-500" : ""
+                        }`}
                       onClick={() => handleClick("editProduct")}
                     >
                       Chỉnh sửa sản phẩm
@@ -132,16 +126,51 @@ const Sidebar = () => {
             </ul>
           )}
         </li>
-        {/* Users */}
+        {/* Blogs */}
+        <li>
+          <button
+            onClick={() => {
+              toggleMenu("blogs");
+            }}
+            className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "blogs" ? "bg-purple-100 text-blue-500" : ""
+              }`}
+          >
+            <div className="flex items-center">
+              <span className="material-icons-outlined text-lg w-5">article</span>
+              <span className="ml-2">Quản lý bài viết</span>
+            </div>
+            <FaChevronDown
+              className={`transition ${openMenus["blogs"] ? "rotate-180" : ""}`}
+              size={16}
+            />
+          </button>
+          {openMenus["blogs"] && (
+            <ul className="ml-4 mt-1 space-y-1 text-gray-600 text-sm">
+              <li
+                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "blogList" ? "bg-purple-100 text-blue-500" : ""
+                  }`}
+                onClick={() => handleClick("blogList")}
+              >
+                Danh sách bài viết
+              </li>
+              <li
+                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "addBlog" ? "bg-purple-100 text-blue-500" : ""
+                  }`}
+                onClick={() => handleClick("addBlog")}
+              >
+                Thêm bài viết
+              </li>
+            </ul>
+          )}
+        </li>
         <li>
           <button
             onClick={() => {
               toggleMenu("users");
               // handleClick("users");
             }}
-            className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${
-              activeMenu === "users" ? "bg-purple-100 text-blue-500" : ""
-            }`}
+            className={`flex justify-between items-center w-full p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "users" ? "bg-purple-100 text-blue-500" : ""
+              }`}
           >
             <div className="flex items-center">
               <FaRegUser />
@@ -155,17 +184,15 @@ const Sidebar = () => {
           {openMenus["users"] && (
             <ul className="ml-4 mt-1 space-y-1 text-gray-600 text-sm">
               <li
-                className={`p-2 rounded-lg hover:bg-gray-100 ${
-                  activeMenu === "userList" ? "bg-purple-100 text-blue-500" : ""
-                }`}
+                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "userList" ? "bg-purple-100 text-blue-500" : ""
+                  }`}
                 onClick={() => handleClick("userList")}
               >
                 Danh sách người dùng
               </li>
               <li
-                className={`p-2 rounded-lg hover:bg-gray-100 ${
-                  activeMenu === "addUser" ? "bg-purple-100 text-blue-500" : ""
-                }`}
+                className={`p-2 rounded-lg hover:bg-gray-100 ${activeMenu === "addUser" ? "bg-purple-100 text-blue-500" : ""
+                  }`}
                 onClick={() => handleClick("addUser")}
               >
                 Thêm người dùng

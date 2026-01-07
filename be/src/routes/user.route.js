@@ -14,10 +14,10 @@ router.post("/admin", async (req, res) => {
     try {
         const admin = await User.findOne({ where: { email } });
         if (!admin) {
-            res.status(404).send({ message: "Admin not found!" })
+            return res.status(404).send({ message: "Admin not found!" })
         }
         if (admin.password !== password) {
-            res.status(401).send({ message: "Invalid password!" })
+            return res.status(401).send({ message: "Invalid password!" })
         }
 
         const token = jwt.sign(

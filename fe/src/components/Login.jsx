@@ -21,7 +21,7 @@ const Login = () => {
       alert("Đăng nhập thành công");
       navigate("/");
     } catch (error) {
-      alert("Đăng nhập thành công");
+      alert("Đăng nhập thất bại");
       console.error(error);
     }
   };
@@ -32,7 +32,7 @@ const Login = () => {
       alert("Đăng nhập thành công");
       navigate("/");
     } catch (error) {
-      alert("Đăng nhập thành công");
+      alert("Đăng nhập Google thất bại");
       console.error(error);
     }
   };
@@ -74,10 +74,10 @@ const Login = () => {
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
             >
-               Mật khẩu
+              Mật khẩu
             </label>
             <input
-               {...register("password", {
+              {...register("password", {
                 required: "Mật khẩu không được để trống",
                 minLength: {
                   value: 6,
@@ -101,7 +101,7 @@ const Login = () => {
           )}
           <div>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded focus:outline-none">
-            Đăng nhập
+              Đăng nhập
             </button>
           </div>
         </form>
@@ -124,7 +124,7 @@ const Login = () => {
         </div>
 
         <p className="mt-5 text-center text-gray-500 text-xs">
-        ©2025 Cửa hàng giày.
+          ©2025 Cửa hàng giày.
         </p>
       </div>
     </div>

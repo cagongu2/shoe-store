@@ -26,6 +26,7 @@ const userRoutes = require("./src/routes/user.route");
 const cartsRoutes = require("./src/routes/cart.route");
 const momoRoutes = require("./src/routes/momo.routes")
 const ordersRotes = require("./src/routes/order.route")
+const blogRoutes = require("./src/routes/blog.route");
 
 
 
@@ -40,6 +41,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/carts", cartsRoutes);
 app.use("/api/v1/momo", momoRoutes);
 app.use("/api/v1/orders", ordersRotes);
+app.use("/api/v1/blogs", blogRoutes);
 
 
 

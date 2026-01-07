@@ -56,7 +56,7 @@ const usersApi = createApi({
     })
 })
 
-export const { 
+export const {
     useFetchUserByEmailQuery,
     useAddUserMutation,
     useUpdateUserMutation,
