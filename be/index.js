@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const cors = require("cors");
+const { DataTypes } = require("sequelize");
 
 require('dotenv').config()
 require("./src/models/associations");
@@ -47,9 +48,26 @@ app.use("/api/v1/blogs", blogRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "src/assets/uploads")));
 
-sequelize.sync({ alter: true })
-    .then(() => {
+sequelize.sync()
+    .then(async () => {
         console.log("Database Synchronized!");
+
+        // Manual check for 'status' column in 'orders' table to avoid 'alter: true' issues
+        try {
+            const tableDesc = await sequelize.getQueryInterface().describeTable('orders');
+            if (!tableDesc.status) {
+                console.log("Adding missing 'status' column to 'orders' table...");
+                await sequelize.getQueryInterface().addColumn('orders', 'status', {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                    defaultValue: "pending"
+                });
+                console.log("'status' column added successfully.");
+            }
+        } catch (error) {
+            console.error("Error checking/adding 'status' column:", error);
+        }
+
         app.listen(port, () => {
             console.log(`App listening on port ${port}`)
         })
