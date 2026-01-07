@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAddBlogMutation } from '../../../redux/features/blogs/blogsApi';
+import { useFetchAllBlogCategoriesQuery } from '../../../redux/features/blogCategories/blogCategoriesApi';
 
 const AddBlog = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const [addBlog, { isLoading }] = useAddBlogMutation();
+    const { data: categories = [], isLoading: categoriesLoading } = useFetchAllBlogCategoriesQuery();
     const [imagePreview, setImagePreview] = useState(null); // Assuming simple URL input or file handling later
     // For now, let's stick to URL input for simplicity as per existing logic, or basic text input
 
@@ -20,7 +22,7 @@ const AddBlog = () => {
                 image: data.image, // Assuming user inputs a URL path or filename
                 description: data.description,
                 content: data.content,
-                type: data.type,
+                categoryId: parseInt(data.categoryId),
                 author: data.author || "Admin",
                 tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : []
             };
@@ -65,19 +67,22 @@ const AddBlog = () => {
                     <p className="text-xs text-gray-500 mt-1">Nhập đường dẫn ảnh (ví dụ: uploads/blog/anh.jpg)</p>
                 </div>
 
-                {/* Type */}
+                {/* Category */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Danh mục</label>
                     <select
-                        {...register("type", { required: "Vui lòng chọn danh mục" })}
+                        {...register("categoryId", { required: "Vui lòng chọn danh mục" })}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+                        disabled={categoriesLoading}
                     >
                         <option value="">-- Chọn danh mục --</option>
-                        <option value="meo-vat">Mẹo vặt</option>
-                        <option value="tin-tuc">Tin tức</option>
-                        <option value="tu-van">Tư vấn</option>
+                        {categories.map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                                {cat.name}
+                            </option>
+                        ))}
                     </select>
-                    {errors.type && <p className="text-red-500 text-xs mt-1">{errors.type.message}</p>}
+                    {errors.categoryId && <p className="text-red-500 text-xs mt-1">{errors.categoryId.message}</p>}
                 </div>
 
                 {/* Author */}

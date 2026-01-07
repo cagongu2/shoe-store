@@ -80,7 +80,7 @@ const BlogList = () => {
                                     </td>
                                     <td className="py-3 px-6 text-center">
                                         <span className="bg-blue-200 text-blue-600 py-1 px-3 rounded-full text-xs">
-                                            {blog.type}
+                                            {blog.category?.name || 'N/A'}
                                         </span>
                                     </td>
                                     <td className="py-3 px-6 text-center">

@@ -24,10 +24,6 @@ const Blog = sequelize.define("Blog", {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    type: {
-        type: DataTypes.STRING, // e.g., 'meo-vat', 'tin-tuc'
-        allowNull: false
-    },
     author: {
         type: DataTypes.STRING,
         defaultValue: "Admin"

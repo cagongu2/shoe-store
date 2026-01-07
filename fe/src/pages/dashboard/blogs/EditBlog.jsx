@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFetchBlogByIdQuery, useUpdateBlogMutation } from '../../../redux/features/blogs/blogsApi';
+import { useFetchAllBlogCategoriesQuery } from '../../../redux/features/blogCategories/blogCategoriesApi';
 
 const EditBlog = () => {
     // We need to get the ID from somewhere. Since the dashboard structure uses local state/localStorage for routing, 
@@ -11,6 +12,7 @@ const EditBlog = () => {
     const { data: blog, isLoading: isFetching } = useFetchBlogByIdQuery(blogId, {
         skip: !blogId
     });
+    const { data: categories = [], isLoading: categoriesLoading } = useFetchAllBlogCategoriesQuery();
 
     const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -21,7 +23,7 @@ const EditBlog = () => {
             setValue('image', blog.image);
             setValue('description', blog.description);
             setValue('content', blog.content);
-            setValue('type', blog.type);
+            setValue('categoryId', blog.categoryId);
             setValue('author', blog.author);
             setValue('tags', blog.tags ? JSON.stringify(blog.tags).replace(/[\[\]"]/g, '') : '');
         }
@@ -35,7 +37,7 @@ const EditBlog = () => {
                 image: data.image,
                 description: data.description,
                 content: data.content,
-                type: data.type,
+                categoryId: parseInt(data.categoryId),
                 author: data.author,
                 tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : []
             };
@@ -79,18 +81,22 @@ const EditBlog = () => {
                     />
                 </div>
 
-                {/* Type */}
+                {/* Category */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Danh mục</label>
                     <select
-                        {...register("type", { required: "Vui lòng chọn danh mục" })}
+                        {...register("categoryId", { required: "Vui lòng chọn danh mục" })}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+                        disabled={categoriesLoading}
                     >
                         <option value="">-- Chọn danh mục --</option>
-                        <option value="meo-vat">Mẹo vặt</option>
-                        <option value="tin-tuc">Tin tức</option>
-                        <option value="tu-van">Tư vấn</option>
+                        {categories.map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                                {cat.name}
+                            </option>
+                        ))}
                     </select>
+                    {errors.categoryId && <p className="text-red-500 text-xs mt-1">{errors.categoryId.message}</p>}
                 </div>
 
                 {/* Author */}

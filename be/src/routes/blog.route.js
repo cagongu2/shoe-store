@@ -7,11 +7,12 @@ const {
     updateBlog,
     deleteBlog
 } = require("../controllers/blog.controller");
+const verifyAdminToken = require("../middleware/verifyAdminToken");
 
-router.post("/", createBlog);
+router.post("/", verifyAdminToken, createBlog);
 router.get("/", getAllBlogs);
 router.get("/:id", getBlogById);
-router.put("/:id", updateBlog);
-router.delete("/:id", deleteBlog);
+router.put("/:id", verifyAdminToken, updateBlog);
+router.delete("/:id", verifyAdminToken, deleteBlog);
 
 module.exports = router;

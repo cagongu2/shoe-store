@@ -1,19 +1,26 @@
 const Blog = require("../models/blog.model");
+const BlogCategory = require("../models/blogCategory.model");
 const { Op } = require("sequelize");
 
 const createBlog = async (req, res) => {
     try {
-        const { title, image, description, content, type, author, tags } = req.body;
+        const { title, image, description, content, categoryId, author, tags } = req.body;
         const newBlog = await Blog.create({
             title,
             image,
             description,
             content,
-            type,
+            categoryId,
             author,
             tags
         });
-        res.status(201).json(newBlog);
+
+        // Fetch with category info
+        const blogWithCategory = await Blog.findByPk(newBlog.id, {
+            include: [{ model: BlogCategory, as: 'category' }]
+        });
+
+        res.status(201).json(blogWithCategory);
     } catch (error) {
         console.error("Error creating blog:", error);
         res.status(500).json({ message: "Error creating blog", error: error.message });
@@ -22,11 +29,11 @@ const createBlog = async (req, res) => {
 
 const getAllBlogs = async (req, res) => {
     try {
-        const { type, search } = req.query;
+        const { categoryId, search } = req.query;
         let whereClause = {};
 
-        if (type) {
-            whereClause.type = type;
+        if (categoryId) {
+            whereClause.categoryId = categoryId;
         }
 
         if (search) {
@@ -35,6 +42,7 @@ const getAllBlogs = async (req, res) => {
 
         const blogs = await Blog.findAll({
             where: whereClause,
+            include: [{ model: BlogCategory, as: 'category' }],
             order: [['createdAt', 'DESC']]
         });
         res.status(200).json(blogs);
@@ -47,7 +55,9 @@ const getAllBlogs = async (req, res) => {
 const getBlogById = async (req, res) => {
     try {
         const { id } = req.params;
-        const blog = await Blog.findByPk(id);
+        const blog = await Blog.findByPk(id, {
+            include: [{ model: BlogCategory, as: 'category' }]
+        });
 
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
@@ -67,7 +77,7 @@ const getBlogById = async (req, res) => {
 const updateBlog = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, image, description, content, type, author, tags } = req.body;
+        const { title, image, description, content, categoryId, author, tags } = req.body;
 
         const blog = await Blog.findByPk(id);
         if (!blog) {
@@ -75,10 +85,15 @@ const updateBlog = async (req, res) => {
         }
 
         await blog.update({
-            title, image, description, content, type, author, tags
+            title, image, description, content, categoryId, author, tags
         });
 
-        res.status(200).json(blog);
+        // Fetch updated blog with category
+        const updatedBlog = await Blog.findByPk(id, {
+            include: [{ model: BlogCategory, as: 'category' }]
+        });
+
+        res.status(200).json(updatedBlog);
     } catch (error) {
         console.error("Error updating blog:", error);
         res.status(500).json({ message: "Error updating blog", error: error.message });

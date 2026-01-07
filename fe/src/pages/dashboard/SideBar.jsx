@@ -30,7 +30,7 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
   const isGroupActive = (groupPrefix) => {
     if (groupPrefix === 'ecommerce') return ['dashboard', 'productList', 'addProduct', 'editProduct'].includes(activeMenu);
     if (groupPrefix === 'users') return ['userList', 'addUser'].includes(activeMenu);
-    if (groupPrefix === 'blogs') return ['blogList', 'addBlog', 'editBlog'].includes(activeMenu);
+    if (groupPrefix === 'blogs') return ['blogList', 'addBlog', 'editBlog', 'manageBlogCategories'].includes(activeMenu);
     if (groupPrefix === 'orders') return ['orderList'].includes(activeMenu);
     if (groupPrefix === 'attributes') return ['manageBrands', 'manageColors', 'manageSizes', 'manageCategories'].includes(activeMenu);
     return false;
