@@ -4,10 +4,17 @@ const { Op } = require("sequelize");
 
 const createBlog = async (req, res) => {
     try {
-        const { title, image, description, content, categoryId, author, tags } = req.body;
+        const { title, description, content, categoryId, author, tags } = req.body;
+
+        // Handle image upload
+        let imagePath = req.body.image; // Fallback to URL if provided
+        if (req.file) {
+            imagePath = `uploads/demo/${req.file.filename}`;
+        }
+
         const newBlog = await Blog.create({
             title,
-            image,
+            image: imagePath,
             description,
             content,
             categoryId,
@@ -77,15 +84,23 @@ const getBlogById = async (req, res) => {
 const updateBlog = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, image, description, content, categoryId, author, tags } = req.body;
+        const { title, description, content, categoryId, author, tags } = req.body;
 
         const blog = await Blog.findByPk(id);
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
         }
 
+        // Handle image update
+        let imagePath = blog.image;
+        if (req.file) {
+            imagePath = `uploads/demo/${req.file.filename}`;
+        } else if (req.body.image) {
+            imagePath = req.body.image;
+        }
+
         await blog.update({
-            title, image, description, content, categoryId, author, tags
+            title, image: imagePath, description, content, categoryId, author, tags
         });
 
         // Fetch updated blog with category
@@ -103,10 +118,30 @@ const updateBlog = async (req, res) => {
 const deleteBlog = async (req, res) => {
     try {
         const { id } = req.params;
+        const fs = require('fs');
+        const path = require('path');
+
         const blog = await Blog.findByPk(id);
 
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
+        }
+
+        // Delete associated image from filesystem if exists and is a local path
+        if (blog.image && !blog.image.startsWith('http')) {
+            // Path construction: __dirname is src/controllers. 
+            // We need to resolve to src/assets.
+            // blog.image is like "uploads/demo/filename.ext"
+            const imagePath = path.join(__dirname, '../assets', blog.image);
+
+            if (fs.existsSync(imagePath)) {
+                try {
+                    fs.unlinkSync(imagePath);
+                    console.log(`Deleted blog image: ${imagePath}`);
+                } catch (err) {
+                    console.error(`Failed to delete blog image: ${err.message}`);
+                }
+            }
         }
 
         await blog.destroy();
