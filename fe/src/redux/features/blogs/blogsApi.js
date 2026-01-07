@@ -20,9 +20,9 @@ const blogsApi = createApi({
         fetchAllBlogs: builder.query({
             query: (params) => {
                 if (params) {
-                    const { type, search } = params;
+                    const { categoryId, search } = params;
                     let queryString = [];
-                    if (type) queryString.push(`type=${type}`);
+                    if (categoryId) queryString.push(`categoryId=${categoryId}`);
                     if (search) queryString.push(`search=${search}`);
                     return `/?${queryString.join('&')}`;
                 }
