@@ -1,3 +1,5 @@
+import ProductList from "./products/ProductList";
+import AddProduct from "./products/AddProduct";
 import EditProduct from "./products/EditProduct";
 import BlogList from "./blogs/BlogList";
 import AddBlog from "./blogs/AddBlog";
