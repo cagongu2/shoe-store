@@ -24,13 +24,14 @@ const createOrder = async (req, res) => {
             phone,
             totalPrice,
             addressId: existingAddress.id,
+            status: "pending"
         });
 
         await Cart.update(
             { orderId: newOrder.id, isPayed: true },
             { where: { id: { [Op.in]: carts } } }
         );
-        
+
         res.status(201).json({
             message: "Đơn hàng đã được tạo thành công!",
             order: newOrder,
@@ -41,7 +42,72 @@ const createOrder = async (req, res) => {
     }
 };
 
-module.exports = {
-    createOrder
+const getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.findAll({
+            order: [['createdAt', 'DESC']],
+            include: [
+                { model: Address, as: 'address' }
+            ]
+        });
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách đơn hàng:", error);
+        res.status(500).json({ message: "Lỗi server", error: error.message });
+    }
+};
+
+const getOrdersByEmail = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const orders = await Order.findAll({
+            where: { email },
+            order: [['createdAt', 'DESC']]
+        });
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error("Lỗi khi lấy đơn hàng của user:", error);
+        res.status(500).json({ message: "Lỗi server", error: error.message });
+    }
 }
 
+const updateOrderStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const order = await Order.findByPk(id);
+        if (!order) {
+            return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+        }
+
+        await order.update({ status });
+        res.status(200).json({ message: "Cập nhật trạng thái thành công", order });
+    } catch (error) {
+        console.error("Lỗi khi cập nhật đơn hàng:", error);
+        res.status(500).json({ message: "Lỗi server", error: error.message });
+    }
+};
+
+const deleteOrder = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const order = await Order.findByPk(id);
+        if (!order) {
+            return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+        }
+        await order.destroy();
+        res.status(200).json({ message: "Xóa đơn hàng thành công" });
+    } catch (error) {
+        console.error("Lỗi khi xóa đơn hàng:", error);
+        res.status(500).json({ message: "Lỗi server", error: error.message });
+    }
+};
+
+module.exports = {
+    createOrder,
+    getAllOrders,
+    getOrdersByEmail,
+    updateOrderStatus,
+    deleteOrder
+}

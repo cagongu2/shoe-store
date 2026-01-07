@@ -1,12 +1,21 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useAddUserMutation } from '../../../redux/features/users/userApi';
 
 const AddUser = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const [addUser, { isLoading }] = useAddUserMutation();
 
-    const onSubmit = (data) => {
-        console.log(data);
-        alert("Tính năng đang phát triển!");
+    const onSubmit = async (data) => {
+        try {
+            await addUser(data).unwrap();
+            alert("Thêm người dùng thành công!");
+            localStorage.setItem("activeMenu", "userList");
+            window.location.reload();
+        } catch (error) {
+            console.error("Failed to add user:", error);
+            alert("Lỗi khi thêm người dùng (Email có thể đã tồn tại)");
+        }
     };
 
     return (
@@ -23,10 +32,19 @@ const AddUser = () => {
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
                 </div>
                 <div>
+                    <label className="block text-sm font-medium text-gray-700">Tên hiển thị (Username)</label>
+                    <input
+                        type="text"
+                        {...register("username")}
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Có thể để trống"
+                    />
+                </div>
+                <div>
                     <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
                     <input
                         type="password"
-                        {...register("password", { required: "Mật khẩu là bắt buộc" })}
+                        {...register("password", { required: "Mật khẩu là bắt buộc", minLength: { value: 6, message: "Mật khẩu tối thiểu 6 ký tự" } })}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                     {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
@@ -52,7 +70,9 @@ const AddUser = () => {
                     >
                         Hủy bỏ
                     </button>
-                    <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Thêm người dùng</button>
+                    <button type="submit" disabled={isLoading} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50">
+                        {isLoading ? "Đang xử lý..." : "Thêm người dùng"}
+                    </button>
                 </div>
             </form>
         </div>

@@ -1,6 +1,11 @@
 const express = require("express");
 const {
-    createUser, updateUser, getUser, updateUserRole
+    createUser,
+    updateUser,
+    getUser,
+    updateUserRole,
+    getAllUsers,
+    deleteUser
 } = require("../controllers/user.controller");
 const User = require("../models/user.model");
 const router = express.Router();
@@ -30,6 +35,7 @@ router.post("/admin", async (req, res) => {
             message: "Authentication successful",
             token: token,
             user: {
+                id: admin.id,
                 email: admin.email,
                 role: admin.role
             }
@@ -41,9 +47,11 @@ router.post("/admin", async (req, res) => {
     }
 })
 
-router.get("/:email", getUser);
-router.post("/", createUser);
-// router.put("/", updateUser);
-router.put("/:email/role", updateUserRole);
+router.get("/", getAllUsers); // Get all users
+router.get("/:email", getUser); // Get user by Email
+router.post("/", createUser); // Add user // update logic to accept role if needed or separate endpoint? Controller handles it.
+router.put("/:email", updateUser); // Update user profile
+router.put("/:email/role", updateUserRole); // Update role specific route
+router.delete("/:id", deleteUser); // Delete user by ID
 
 module.exports = router;

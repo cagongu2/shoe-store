@@ -19,6 +19,11 @@ const Order = sequelize.define(
         totalPrice: {
             type: DataTypes.FLOAT,
             allowNull: false
+        },
+        status: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: "pending" // pending, processing, shipped, delivered, cancelled
         }
     },
     { tableName: "orders", timestamps: true }

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { FaChevronDown, FaChevronRight, FaBoxOpen, FaUserFriends, FaBlog, FaShoppingBag, FaTachometerAlt } from "react-icons/fa";
+import { FaChevronDown, FaChevronRight, FaBoxOpen, FaUserFriends, FaBlog, FaShoppingBag, FaTachometerAlt, FaClipboardList } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ activeMenu, onMenuSelect }) => {
   // State to manage expanded groups
   const [expandedGroups, setExpandedGroups] = useState(() => {
     const saved = localStorage.getItem("sidebarExpanded");
-    return saved ? JSON.parse(saved) : { ecommerce: true, users: false, blogs: false };
+    return saved ? JSON.parse(saved) : { ecommerce: true, users: false, blogs: false, orders: false };
   });
 
   useEffect(() => {
@@ -34,6 +34,7 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
     if (groupPrefix === 'ecommerce') return ['dashboard', 'productList', 'addProduct', 'editProduct'].includes(activeMenu);
     if (groupPrefix === 'users') return ['userList', 'addUser'].includes(activeMenu);
     if (groupPrefix === 'blogs') return ['blogList', 'addBlog', 'editBlog'].includes(activeMenu);
+    if (groupPrefix === 'orders') return ['orderList'].includes(activeMenu);
     return false;
   };
 
@@ -68,6 +69,34 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
 
         <div className="pt-4 pb-2">
           <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Quản lý</p>
+        </div>
+
+        {/* Group: Orders - Moved up for importance */}
+        <div className="space-y-1">
+          <button
+            onClick={() => toggleGroup("orders")}
+            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('orders') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
+              }`}
+          >
+            <div className="flex items-center gap-3">
+              <FaClipboardList className={isGroupActive('orders') ? 'text-orange-400' : 'text-slate-400 group-hover:text-white'} />
+              <span className="font-medium text-sm">Đơn hàng</span>
+            </div>
+            {expandedGroups["orders"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+          </button>
+
+          {/* Submenu */}
+          {expandedGroups["orders"] && (
+            <div className="pl-9 space-y-1">
+              <button
+                onClick={() => handleMenuItemClick("orderList")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'orderList' ? 'text-orange-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                Danh sách đơn hàng
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Group: E-Commerce (Products) */}

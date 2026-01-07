@@ -1,9 +1,8 @@
 const User = require("../models/user.model");
 
-
 const createUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, username, role } = req.body;
 
         const existingUser = await User.findOne({ where: { email } });
 
@@ -11,7 +10,7 @@ const createUser = async (req, res) => {
             return res.status(400).json({ message: "User đã tồn tại" });
         }
 
-        const newUser = await User.create({ email, password, role: "user" });
+        const newUser = await User.create({ email, password, username, role: role || "user" });
 
         res.status(201).json(newUser);
     } catch (error) {
@@ -21,7 +20,8 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const { email, username, photo } = req.body;
+        const { email } = req.params;
+        const { username, photo, role } = req.body;
 
         const user = await User.findOne({ where: { email } });
 
@@ -29,7 +29,7 @@ const updateUser = async (req, res) => {
             return res.status(404).json({ message: "User không tồn tại" });
         }
 
-        await user.update({ username, photo });
+        await user.update({ username, photo, role });
 
         res.status(200).json(user);
     } catch (error) {
@@ -51,6 +51,34 @@ const getUser = async (req, res) => {
         res.status(500).json({ message: "Lỗi server", error: error.message });
     }
 };
+
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.findAll({
+            order: [['createdAt', 'DESC']]
+        });
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi server", error: error.message });
+    }
+};
+
+const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        }
+
+        await user.destroy();
+        res.status(200).json({ message: "Xóa người dùng thành công" });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi server", error: error.message });
+    }
+};
+
 
 const updateUserRole = async (req, res) => {
     try {
@@ -75,4 +103,11 @@ const updateUserRole = async (req, res) => {
 };
 
 
-module.exports = { createUser, updateUser, getUser, updateUserRole };
+module.exports = {
+    createUser,
+    updateUser,
+    getUser,
+    getAllUsers,
+    deleteUser,
+    updateUserRole
+};

@@ -48,7 +48,7 @@ app.use("/api/v1/blogs", blogRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "src/assets/uploads")));
 
 app.listen(port, () => {
-    sequelize.sync()
+    sequelize.sync({ alter: true })
         .then(() => console.log("Database Synchronized!"))
         .catch(err => console.error("Error:", err));
     console.log(`App listening on port ${port}`)

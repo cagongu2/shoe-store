@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Sidebar from "./SideBar";
-import ProductList from "./products/ProductList";
-import AddProduct from "./products/AddProduct";
 import EditProduct from "./products/EditProduct";
 import BlogList from "./blogs/BlogList";
 import AddBlog from "./blogs/AddBlog";
 import EditBlog from "./blogs/EditBlog";
 import UserList from "./users/UserList";
 import AddUser from "./users/AddUser";
+import OrderList from "./orders/OrderList";
+import { useState, useEffect } from "react";
+import Sidebar from "./SideBar";
 
 const DashBoard = () => {
   const [activeMenu, setActiveMenu] = useState(
@@ -61,6 +59,9 @@ const DashBoard = () => {
             {/* Users */}
             {activeMenu === "userList" && <UserList />}
             {activeMenu === "addUser" && <AddUser />}
+
+            {/* Orders */}
+            {activeMenu === "orderList" && <OrderList />}
 
 
             {/* Fallback for sub-menus that might not have a direct component mapped yet */}

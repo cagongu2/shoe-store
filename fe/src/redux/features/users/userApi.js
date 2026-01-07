@@ -22,6 +22,10 @@ const usersApi = createApi({
             query: (email) => `/${email}`,
             providesTags: (result, error, email) => [{ type: "Users", id: email }],
         }),
+        fetchAllUsers: builder.query({
+            query: () => "/",
+            providesTags: ["Users"]
+        }),
         addUser: builder.mutation({
             query: (newUser) => ({
                 url: `/`,
@@ -31,10 +35,10 @@ const usersApi = createApi({
             invalidatesTags: ["Users"]
         }),
         updateUser: builder.mutation({
-            query: ({ email, username, photo }) => ({
+            query: ({ email, ...rest }) => ({
                 url: `/${email}`,
                 method: "PUT",
-                body: { username, photo },
+                body: rest,
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -51,14 +55,24 @@ const usersApi = createApi({
                 }
             }),
             invalidatesTags: ["Users"]
+        }),
+        deleteUser: builder.mutation({
+            query: (id) => ({
+                url: `/${id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ["Users"]
         })
-
     })
 })
 
 export const {
     useFetchUserByEmailQuery,
+    useFetchAllUsersQuery,
     useAddUserMutation,
     useUpdateUserMutation,
-    useUpdateUserRoleMutation } = usersApi;
+    useUpdateUserRoleMutation,
+    useDeleteUserMutation
+} = usersApi;
+
 export default usersApi;
