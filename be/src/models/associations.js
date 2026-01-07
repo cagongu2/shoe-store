@@ -33,3 +33,9 @@ Cart.belongsTo(Order, { foreignKey: "orderId", as: "order" });
 
 Order.belongsTo(Address, { foreignKey: "addressId", as: "address" });
 Order.hasMany(Cart, { foreignKey: "orderId", as: "carts" })
+
+const Blog = require("./blog.model");
+const BlogCategory = require("./blogCategory.model");
+
+Blog.belongsTo(BlogCategory, { foreignKey: "categoryId", as: "category" });
+BlogCategory.hasMany(Blog, { foreignKey: "categoryId", as: "blogs" });

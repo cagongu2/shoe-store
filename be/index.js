@@ -43,9 +43,11 @@ app.use("/api/v1/carts", cartsRoutes);
 app.use("/api/v1/momo", momoRoutes);
 app.use("/api/v1/orders", ordersRotes);
 app.use("/api/v1/blogs", blogRoutes);
+const blogCategoryRoutes = require("./src/routes/blogCategory.route");
+app.use("/api/v1/blog-categories", blogCategoryRoutes);
 
 
-
+// Serve uploaded files
 app.use("/uploads", express.static(path.join(__dirname, "src/assets/uploads")));
 
 sequelize.sync({ alter: true })
@@ -62,10 +64,10 @@ sequelize.sync({ alter: true })
             if (!admin) {
                 await User.create({
                     email: adminEmail,
-                    password: adminPassword, // Note: In production, hash this!
+                    password: adminPassword,
                     role: "admin",
                     username: "Admin",
-                    photo: "" // Default or empty
+                    photo: ""
                 });
                 console.log(`Admin account created: ${adminEmail} / ${adminPassword}`);
             } else {
@@ -73,6 +75,26 @@ sequelize.sync({ alter: true })
             }
         } catch (error) {
             console.error("Error seeding admin:", error);
+        }
+
+        // Seed Blog Categories
+        const BlogCategory = require("./src/models/blogCategory.model");
+        try {
+            const categories = [
+                { name: "Mẹo vặt", slug: "meo-vat", description: "Các mẹo vặt hữu ích" },
+                { name: "Tin tức", slug: "tin-tuc", description: "Tin tức mới nhất" },
+                { name: "Sự kiện", slug: "su-kien", description: "Các sự kiện nổi bật" }
+            ];
+
+            for (const cat of categories) {
+                const existing = await BlogCategory.findOne({ where: { slug: cat.slug } });
+                if (!existing) {
+                    await BlogCategory.create(cat);
+                    console.log(`Seeded category: ${cat.name}`);
+                }
+            }
+        } catch (error) {
+            console.error("Error seeding blog categories:", error);
         }
 
         // Manual check for 'status' column in 'orders' table to avoid 'alter: true' issues (kept as fallback though alter: true handles most)

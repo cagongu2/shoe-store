@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { useAuth } from "../context/AuthContext";
 import { useFetchUserByEmailQuery } from "../redux/features/users/userApi";
 import { useFetchCartByUserIdQuery } from "../redux/features/carts/cartsApi";
+import { useFetchAllBlogCategoriesQuery } from "../redux/features/blogCategories/blogCategoriesApi";
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
@@ -46,7 +47,12 @@ const Header = () => {
     logout();
   };
 
-  const newsTypes = [
+  const { data: blogCategories = [] } = useFetchAllBlogCategoriesQuery();
+
+  const newsTypes = blogCategories.length > 0 ? blogCategories.map(cat => ({
+    type: cat.slug,
+    label: cat.name
+  })) : [
     { type: "meo-vat", label: "Mẹo vặt" },
     { type: "tin-tuc", label: "Tin tức" },
     { type: "su-kien", label: "Sự kiện" },

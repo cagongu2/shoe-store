@@ -11,6 +11,7 @@ import ManageBrands from "./attributes/ManageBrands";
 import ManageColors from "./attributes/ManageColors";
 import ManageSizes from "./attributes/ManageSizes";
 import ManageCategories from "./categories/ManageCategories";
+import ManageBlogCategories from "./blogs/categories/ManageBlogCategories";
 import { useState, useEffect } from "react";
 import Sidebar from "./SideBar";
 
@@ -61,6 +62,7 @@ const DashBoard = () => {
             {activeMenu === "blogList" && <BlogList />}
             {activeMenu === "addBlog" && <AddBlog />}
             {activeMenu === "editBlog" && <EditBlog />}
+            {activeMenu === "manageBlogCategories" && <ManageBlogCategories />}
 
             {/* Users */}
             {activeMenu === "userList" && <UserList />}

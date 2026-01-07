@@ -210,6 +210,13 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
               >
                 Viết bài mới
               </button>
+              <button
+                onClick={() => handleMenuItemClick("manageBlogCategories")}
+                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageBlogCategories' ? 'text-pink-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                Danh mục blog
+              </button>
             </div>
           )}
         </div>
