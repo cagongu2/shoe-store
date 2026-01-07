@@ -1,4 +1,7 @@
 const User = require("../models/user.model");
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET_KEY || "your_jwt_secret_key"; // Fallback or env
 
 const createUser = async (req, res) => {
     try {
@@ -15,6 +18,44 @@ const createUser = async (req, res) => {
         res.status(201).json(newUser);
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi tạo user", error });
+    }
+};
+
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found!" });
+        }
+
+        // Simple password check (plaintext as per existing code)
+        // In production, use bcrypt!
+        if (user.password !== password) {
+            return res.status(401).json({ message: "Invalid password!" });
+        }
+
+        const token = jwt.sign(
+            { id: user.id, email: user.email, role: user.role },
+            JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        res.status(200).json({
+            message: "Authentication successful",
+            token: token,
+            user: {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+                photo: user.photo
+            }
+        });
+    } catch (error) {
+        console.error("Login failed", error);
+        res.status(500).json({ message: "Login failed", error: error.message });
     }
 };
 
@@ -105,6 +146,7 @@ const updateUserRole = async (req, res) => {
 
 module.exports = {
     createUser,
+    loginUser,
     updateUser,
     getUser,
     getAllUsers,

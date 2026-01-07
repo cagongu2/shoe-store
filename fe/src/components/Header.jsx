@@ -330,14 +330,15 @@ const Header = () => {
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {brands.map((brand) => (
-                <Link
-                  key={`${brand.name}`}
-                  to={`/san-pham?brand=${brand.name}`}
-                >
-                  <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                    {brand.name}
-                  </li>
-                </Link>
+                <li key={`${brand.name}`}>
+                  <Link
+                    to={`/san-pham?brand=${brand.name}`}
+                  >
+                    <div className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                      {brand.name}
+                    </div>
+                  </Link>
+                </li>
               ))}
             </ul>
           </li>
@@ -350,14 +351,15 @@ const Header = () => {
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {accessories.map((item) => (
-                <Link
-                  key={`accessory-${item.type}`}
-                  to={`/san-pham?category=${item.type}`}
-                >
-                  <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                    {item.label}
-                  </li>
-                </Link>
+                <li key={`accessory-${item.type}`}>
+                  <Link
+                    to={`/san-pham?category=${item.type}`}
+                  >
+                    <div className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                      {item.label}
+                    </div>
+                  </Link>
+                </li>
               ))}
             </ul>
           </li>
@@ -372,14 +374,15 @@ const Header = () => {
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {newsTypes.map((item) => (
-                <Link
-                  key={`newsTypes-${item.type}`}
-                  to={`/bai-viet?type=${item.type}`}
-                >
-                  <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
-                    {item.label}
-                  </li>
-                </Link>
+                <li key={`newsTypes-${item.type}`}>
+                  <Link
+                    to={`/bai-viet?type=${item.type}`}
+                  >
+                    <div className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                      {item.label}
+                    </div>
+                  </Link>
+                </li>
               ))}
             </ul>
           </li>

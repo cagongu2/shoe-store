@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
   const [message, setMessage] = useState("");
-  const { registerUser, signInWithGoogle } = useAuth();
+  const { registerUser } = useAuth();
   const navigate = useNavigate();
   const {
     register,
@@ -16,23 +15,20 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      await registerUser(data.email, data.password);
+      // Assuming registerUser now takes (email, password, username) or can handle a user object
+      // But looking at the backend, username is optional or can be derived from email.
+      // Let's pass username as email prefix or adding a username field if UI had it.
+      // Current UI only has Email and Password. Backend accepts `username`.
+      // I'll default username to email part for now to ensure backend satisfaction if needed.
+      const username = data.email.split('@')[0];
+
+      await registerUser(data.email, data.password, username);
       alert("Đăng ký tài khoản thành công!");
       navigate("/dang-nhap");
     } catch (error) {
-      setMessage("Vui lòng nhập email và mật khẩu hợp lệ");
+      const serverMessage = error.response?.data?.message;
+      setMessage(serverMessage || "Đăng ký thất bại. Vui lòng thử lại.");
       console.log(error);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-      alert("Đăng nhập thành công");
-      navigate("/");
-    } catch (error) {
-      setMessage("Vui lòng nhập email và mật khẩu hợp lệ");
-      console.error(error);
     }
   };
 
@@ -111,17 +107,6 @@ const Register = () => {
             đăng nhập
           </Link>
         </p>
-
-        {/* Đăng nhập với Google */}
-        <div className="mt-4">
-          <button
-            onClick={handleGoogleSignIn}
-            className="w-full flex flex-wrap gap-1 items-center justify-center bg-blue-950 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none"
-          >
-            <FaGoogle className="mr-2" />
-            Đăng nhập bằng Google
-          </button>
-        </div>
 
         <p className="mt-5 text-center text-gray-500 text-xs">
           ©2025 Cửa hàng giày.

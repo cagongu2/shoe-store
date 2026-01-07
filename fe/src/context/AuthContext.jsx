@@ -1,17 +1,6 @@
-import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
-import { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebase/firebase.config";
-import {
-  useAddUserMutation,
-  useFetchUserByEmailQuery,
-} from "../redux/features/users/userApi";
+import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
+import getBaseUrl from "../util/baseUrl";
 
 const AuthContext = createContext();
 
@@ -19,79 +8,79 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-const googleProvider = new GoogleAuthProvider();
-
 export const AuthProvide = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [addUser] = useAddUserMutation();
-  const { data: userChecked } = useFetchUserByEmailQuery(currentUser?.email, {
-    skip: !currentUser?.email,
-  });
 
-  const registerUser = async (email, password) => {
-    try {
-      const res = await addUser({ email, password }).unwrap();
-      console.log("User created successfully:", res);
-    } catch (error) {
-      console.error("Error creating user:", error);
+  // Initialize user from local storage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+
+    if (storedUser && storedToken) {
+      try {
+        setCurrentUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Failed to parse stored user", e);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      }
     }
+    setLoading(false);
+  }, []);
 
-    return await createUserWithEmailAndPassword(auth, email, password);
+  const registerUser = async (email, password, username) => {
+    try {
+      const response = await axios.post(`${getBaseUrl()}/api/v1/users/register`, {
+        email,
+        password,
+        username
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const loginUser = async (email, password) => {
-    return await signInWithEmailAndPassword(auth, email, password);
-  };
+    try {
+      const response = await axios.post(`${getBaseUrl()}/api/v1/users/login`, {
+        email,
+        password,
+      });
 
-  const signInWithGoogle = async () => {
-    return await signInWithPopup(auth, googleProvider);
+      const { token, user } = response.data;
+
+      // Save to local storage
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      setCurrentUser(user);
+      return user;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    return signOut(auth);
+    setCurrentUser(null);
   };
 
-  useEffect(() => {
-    if (!auth) return;
-
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-
-      if (user) {
-        const { email, displayName, photoURL } = user;
-        const userData = {
-          email,
-          username: displayName,
-          photo: photoURL,
-        };
-
-        if (email) {
-          if (!userChecked) {
-            try {
-              const res = await addUser({ email }).unwrap();
-              console.log("User created successfully:", res);
-            } catch (error) {
-              console.error("Error creating user:", error);
-            }
-          }
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, [addUser, userChecked]);
+  // Provide a placeholder for google sign in to avoid breaking components immediately, 
+  // though it will throw an error or do nothing if called.
+  const signInWithGoogle = async () => {
+    throw new Error("Google Sign-In is temporarily disabled.");
+  };
 
   const value = {
     currentUser,
+    loading,
     registerUser,
     loginUser,
-    signInWithGoogle,
     logout,
-    loading,
+    signInWithGoogle
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

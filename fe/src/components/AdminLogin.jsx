@@ -9,11 +9,11 @@ import getBaseUrl from "../util/baseUrl";
 const AdminLogin = () => {
   const [message, setMessage] = useState("");
   const {
-     register,
-     handleSubmit,
-     watch,
-     formState: { errors },
-   } = useForm();
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
 
   const navigate = useNavigate();
 
@@ -42,7 +42,8 @@ const AdminLogin = () => {
       alert("Admin Login successful!");
       navigate("/dashboard");
     } catch (error) {
-      setMessage("Please provide a valid email and password");
+      const serverMessage = error.response?.data?.message;
+      setMessage(serverMessage || "Please provide a valid email and password");
       console.error(error);
     }
   };

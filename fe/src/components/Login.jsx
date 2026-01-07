@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [message, setMessage] = useState("");
-  const { loginUser, signInWithGoogle } = useAuth();
+  const { loginUser } = useAuth();
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
@@ -21,21 +19,12 @@ const Login = () => {
       alert("Đăng nhập thành công");
       navigate("/");
     } catch (error) {
-      alert("Đăng nhập thất bại");
+      const serverMessage = error.response?.data?.message;
+      setMessage(serverMessage || "Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu.");
       console.error(error);
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-      alert("Đăng nhập thành công");
-      navigate("/");
-    } catch (error) {
-      alert("Đăng nhập Google thất bại");
-      console.error(error);
-    }
-  };
   return (
     <div className="h-[calc(100vh-120px)] flex justify-center items-center ">
       <div className="w-full max-w-sm mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -111,17 +100,6 @@ const Login = () => {
             Đăng ký
           </Link>
         </p>
-
-        {/* google sign in */}
-        <div className="mt-4">
-          <button
-            onClick={handleGoogleSignIn}
-            className="w-full flex flex-wrap gap-1 items-center justify-center bg-blue-950 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none"
-          >
-            <FaGoogle className="mr-2" />
-            Đăng nhập bằng Google
-          </button>
-        </div>
 
         <p className="mt-5 text-center text-gray-500 text-xs">
           ©2025 Cửa hàng giày.
