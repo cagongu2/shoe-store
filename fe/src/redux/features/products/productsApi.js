@@ -19,13 +19,10 @@ const productsApi = createApi({
     tagTypes: ['Products'],
     endpoints: (builder) => ({
         fetchAllProducts: builder.query({
-            query: (params) => {
-                // If "all" is true (passed from admin dash), append to URL
-                if (params?.all) {
-                    return "/?all=true";
-                }
-                return "/";
-            },
+            query: (params) => ({
+                url: "/",
+                params: params, // This will automatically convert {brand: 'nike'} to ?brand=nike
+            }),
             providesTags: ["Products"]
         }),
         fetchProductById: builder.query({

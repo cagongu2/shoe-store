@@ -14,9 +14,9 @@ export const suggestionsApi = createApi({
             }),
         }),
         getBlogRecommendations: builder.query({
-            query: ({ type, email }) => ({
+            query: ({ type, email, productId }) => ({
                 url: '/blogs',
-                params: { type, email },
+                params: { type, email, productId },
             }),
         }),
     }),

@@ -199,19 +199,7 @@ const Product = () => {
                               className={`pl-[10px] w-full ${categoryParam?.toLowerCase() === category.toLowerCase() ? 'text-orange-500 font-bold' : ''}`}
                             >
                               <span className="mr-2.5"></span>
-                              {(() => {
-                                switch (category) {
-                                  case "vo":
-                                    return "Vớ";
-
-                                  case "giay":
-                                    return "Giày";
-                                  case "dung-dich-ve-sinh-giay":
-                                    return "Dung dịch vệ sinh giày";
-                                  default:
-                                    return category;
-                                }
-                              })()}
+                              {category}
                               <span className="ml-2.5 text-gray-400">
                                 ({count})
                               </span>

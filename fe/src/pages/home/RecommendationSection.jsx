@@ -21,29 +21,47 @@ const RecommendationSection = ({ type, productId, title, subtitle }) => {
     if (recommendedProducts.length === 0) return null;
 
     return (
-        <div className="py-16 bg-white">
-            <div className="px-12 text-center mb-10">
-                <h2 className="text-3xl font-black text-[#345DA7] mb-2">{title}</h2>
-                <p className="text-gray-400 uppercase text-xs font-bold tracking-widest">{subtitle}</p>
+        <div className="py-24 bg-white overflow-hidden">
+            <div className="px-6 md:px-12 flex flex-col items-center text-center mb-16 relative">
+                <div className="absolute -top-10 text-[100px] font-black text-gray-50 select-none -z-0 uppercase">Explore</div>
+                <h2 className="text-4xl md:text-5xl font-black text-[#345DA7] mb-4 relative z-10">{title}</h2>
+                <div className="w-20 h-1.5 bg-[#3B8AC4] rounded-full mb-4"></div>
+                <p className="text-gray-400 uppercase text-xs font-black tracking-[0.3em] relative z-10">{subtitle}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-12">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 px-6 md:px-12 max-w-7xl mx-auto">
                 {recommendedProducts.map(product => (
-                    <div key={product.id} className="group bg-white rounded-3xl p-4 border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                        <Link to={`/san-pham/${product.id}`}>
-                            <div className="relative overflow-hidden rounded-2xl aspect-square mb-4">
+                    <div key={product.id} className="group relative">
+                        <Link to={`/san-pham/${product.id}`} className="block">
+                            <div className="relative overflow-hidden rounded-[2.5rem] bg-[#f8faff] aspect-[4/5] mb-6 border border-gray-50 transition-all duration-500 group-hover:shadow-[0_20px_50px_rgba(52,93,167,0.15)] group-hover:border-[#345DA7]/10">
                                 <img
                                     src={getImgUrl(product.images?.[0]?.link)}
                                     alt={product.name}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    className="w-full h-full object-cover mix-blend-multiply transition-transform duration-1000 group-hover:scale-110"
                                 />
+
                                 {product.sale && (
-                                    <span className="absolute top-4 left-4 bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter shadow-lg">Sale</span>
+                                    <div className="absolute top-6 left-6 bg-gradient-to-br from-red-500 to-orange-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg transform -rotate-12">
+                                        Sale
+                                    </div>
                                 )}
+
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#345DA7]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                                    <span className="text-white text-xs font-bold uppercase tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform duration-500 mb-2">Xem chi tiết</span>
+                                    <div className="w-10 h-1 bg-white rounded-full translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100"></div>
+                                </div>
                             </div>
-                            <h3 className="text-sm font-black text-gray-800 line-clamp-1 mb-2 group-hover:text-[#345DA7] transition-colors">{product.name}</h3>
-                            <div className="flex justify-between items-center">
-                                <span className="text-[#3B8AC4] font-black text-xs">{product.price.toLocaleString()} VNĐ</span>
-                                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">{product.brand?.name}</span>
+
+                            <div className="px-2">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-[10px] font-black text-[#3B8AC4] bg-[#3B8AC4]/10 px-2 py-0.5 rounded-md uppercase tracking-wider">{product.brand?.name}</span>
+                                    {product.hot && <span className="text-[10px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Trending</span>}
+                                </div>
+                                <h3 className="text-lg font-black text-gray-800 line-clamp-1 group-hover:text-[#345DA7] transition-colors duration-300">{product.name}</h3>
+                                <div className="mt-3 flex items-center gap-4">
+                                    <span className="text-xl font-black text-[#345DA7]">{product.price.toLocaleString()}đ</span>
+                                    <span className="text-sm text-gray-300 line-through">{(product.price * 1.2).toLocaleString()}đ</span>
+                                </div>
                             </div>
                         </Link>
                     </div>

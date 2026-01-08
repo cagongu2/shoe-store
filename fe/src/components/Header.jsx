@@ -13,6 +13,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFetchUserByEmailQuery } from "../redux/features/users/userApi";
 import { useFetchCartByUserIdQuery } from "../redux/features/carts/cartsApi";
 import { useFetchAllBlogCategoriesQuery } from "../redux/features/blogCategories/blogCategoriesApi";
+import { useFetchAllBrandsQuery } from "../redux/features/brands/brandsApi";
+import { useFetchAllCategoriesQuery } from "../redux/features/categories/categoriesApi";
 import { logout } from "../redux/features/auth/authSlice";
 
 import { getImgUrl } from "../util/getImageUrl";
@@ -59,6 +61,8 @@ const Header = () => {
   };
 
   const { data: blogCategories = [] } = useFetchAllBlogCategoriesQuery();
+  const { data: brandsData = [] } = useFetchAllBrandsQuery();
+  const { data: categoriesData = [] } = useFetchAllCategoriesQuery();
 
   const newsTypes = blogCategories.length > 0 ? blogCategories.map(cat => ({
     type: cat.slug,
@@ -69,18 +73,15 @@ const Header = () => {
     { type: "su-kien", label: "Sự kiện" },
   ];
 
-  const accessories = [
-    { type: "vo", label: "Vớ" },
-    { type: "giay", label: "Giày" },
-    { type: "dung-dich-ve-sinh", label: "Dung dịch vệ sinh" },
-  ];
+  const brands = brandsData.map(b => ({
+    name: b.name.toLowerCase(),
+    label: b.name.toUpperCase()
+  }));
 
-  const brands = [
-    { name: "nike", label: "NIKE" },
-    { name: "addidas", label: "ADIDAS" },
-    { name: "new-balance", label: "NEW BALANCE" },
-    { name: "puma", label: "PUMA" },
-  ];
+  const accessories = categoriesData.map(c => ({
+    type: c.name.toLowerCase(),
+    label: c.name
+  }));
 
   return (
     <header className="fixed top-0 w-full bg-white shadow-md z-50">
@@ -194,7 +195,7 @@ const Header = () => {
             </li>
             <li className="relative group py-[30px] px-[20px]">
               <Link
-                to="/san-pham?brand=nike"
+                to="/san-pham"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 Thương hiệu
@@ -219,7 +220,7 @@ const Header = () => {
             </li>
             <li className="relative group py-[30px] px-[20px]">
               <Link
-                to="/san-pham?type=vo"
+                to="/san-pham"
                 className="flex items-center hover:text-blue-500 transition"
               >
                 phụ kiện
@@ -356,7 +357,7 @@ const Header = () => {
                   sản phẩm hot
                 </li>
               </Link>
-              <Link to="/san-pham?hot=true">
+              <Link to="/san-pham?sale=true">
                 <li className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
                   sản phẩm sale
                 </li>

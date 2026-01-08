@@ -18,16 +18,23 @@ const { syncProduct, deleteProductRDF, logView } = require("../utils/rdfHelper")
  */
 const getAllProducts = async (req, res) => {
     try {
-        const { all } = req.query;
-        // If "all" query param is present and true (e.g. from admin), show everything.
-        // Otherwise, filter where isDeleted is false or null.
-        const whereClause = (all === 'true') ? {} : { isDeleted: false };
+        const { all, brand, category, hot, sale } = req.query;
+        let whereClause = (all === 'true') ? {} : { isDeleted: false };
+
+        if (hot === 'true') whereClause.hot = true;
+        if (sale === 'true') whereClause.sale = true;
 
         const products = await Product.findAll({
             where: whereClause,
             include: [
-                { model: Brand, as: "brand" },
-                { model: Category, as: "category" },
+                {
+                    model: Brand, as: "brand",
+                    where: brand ? { name: brand } : undefined
+                },
+                {
+                    model: Category, as: "category",
+                    where: category ? { name: category } : undefined
+                },
                 { model: Image, as: "images" },
                 {
                     model: ProductStock,
