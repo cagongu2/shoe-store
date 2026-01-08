@@ -64,14 +64,10 @@ const Header = () => {
   const { data: brandsData = [] } = useFetchAllBrandsQuery();
   const { data: categoriesData = [] } = useFetchAllCategoriesQuery();
 
-  const newsTypes = blogCategories.length > 0 ? blogCategories.map(cat => ({
+  const newsTypes = blogCategories.map(cat => ({
     type: cat.slug,
     label: cat.name
-  })) : [
-    { type: "meo-vat", label: "Mẹo vặt" },
-    { type: "tin-tuc", label: "Tin tức" },
-    { type: "su-kien", label: "Sự kiện" },
-  ];
+  }));
 
   const brands = brandsData.map(b => ({
     name: b.name.toLowerCase(),

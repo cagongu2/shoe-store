@@ -109,10 +109,10 @@ const Product = () => {
           <div className="px-3 xl:col-span-3 col-span-12 md:col-span-5 lg:col-span-4">
             <div>
               {/* brand */}
-              <div className="mb-4 drop-shadow-xl rounded bg-white">
+              <div className="mb-6 bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
                 <div>
                   <div>
-                    <div className="bg-blue-300 w-full rounded text-white inline-flex items-center justify-between h-15">
+                    <div className="bg-blue-300 w-full text-white inline-flex items-center justify-between h-15">
                       <button className="px-7.5 text-xl inline-flex items-center">
                         Thương hiệu
                       </button>
@@ -143,10 +143,10 @@ const Product = () => {
                 </div>
               </div>
               {/* feature */}
-              <div className="mb-4 drop-shadow-xl rounded bg-white">
+              <div className="mb-6 bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
                 <div>
                   <div>
-                    <div className="bg-blue-300 w-full rounded text-white inline-flex items-center justify-between h-15">
+                    <div className="bg-blue-300 w-full text-white inline-flex items-center justify-between h-15">
                       <button className="px-7.5 text-xl inline-flex items-center">
                         Đặc điểm
                       </button>
@@ -176,10 +176,10 @@ const Product = () => {
                 </div>
               </div>
               {/* Accessories Categories */}
-              <div className="mb-4 drop-shadow-xl rounded bg-white">
+              <div className="mb-6 bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
                 <div>
                   <div>
-                    <div className="bg-blue-300 w-full rounded text-white inline-flex items-center justify-between h-15">
+                    <div className="bg-blue-300 w-full text-white inline-flex items-center justify-between h-15">
                       <button className="px-7.5 text-xl inline-flex items-center">
                         Phụ kiện
                       </button>
@@ -257,39 +257,35 @@ const Product = () => {
                     currentProducts.map((product) => (
                       <div
                         key={product.id}
-                        className="px-3 col-span-12 sm:col-span-6 md:col-span-12 rounded lg:col-span-6 xl:col-span-4"
+                        className="px-3 col-span-12 sm:col-span-6 md:col-span-12 lg:col-span-6 xl:col-span-4"
                       >
-                        <div className="mb-7.5 bg-white rounded drop-shadow-lg">
+                        <div className="mb-8 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group">
                           {/* img */}
-                          <div className="mb-5 rounded border-gray-200 overflow-hidden">
+                          <div className="relative overflow-hidden aspect-square">
                             <Link to={`/san-pham/${product.id}`}>
                               <img
                                 src={`${getImgUrl(product.images?.[0]?.link)}`}
                                 alt={product.name}
-                                className="w-full h-[240px] object-cover rounded hover:scale-[120%] transition-all duration-500"
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                               />
                             </Link>
                           </div>
                           {/* details */}
-                          <div className="rounded">
+                          <div className="p-6">
                             <Link to={`/san-pham/${product.id}`}>
-                              <div>
-                                <p className="px-2 mb-2 text-center text-lg font-normal">
-                                  {product.name}
-                                </p>
-                              </div>
+                              <h3 className="text-lg font-bold text-gray-800 line-clamp-1 mb-2 group-hover:text-[#345DA7] transition-colors">
+                                {product.name}
+                              </h3>
                             </Link>
-                            <div>
-                              <p className="pr-[15px] text-center text-lg font-normal">
-                                {product.price} VNĐ
+                            <div className="flex items-center justify-between mt-4">
+                              <p className="text-xl font-black text-[#345DA7]">
+                                {product.price.toLocaleString()} VNĐ
                               </p>
-                            </div>
-                            <div className="flex justify-center">
                               <Link
                                 to={`/san-pham/${product.id}`}
-                                className="text-base bg-orange-500 rounded text-white inline-flex py-[6px] px-4 my-4 hover:-translate-y-0.5 transition-all duration-500"
+                                className="bg-orange-500 text-white p-3 rounded-2xl hover:bg-orange-600 transition-colors shadow-md"
                               >
-                                Mua ngay
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg>
                               </Link>
                             </div>
                           </div>

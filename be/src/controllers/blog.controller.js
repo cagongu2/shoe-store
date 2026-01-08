@@ -46,7 +46,7 @@ const createBlog = async (req, res) => {
 
 const getAllBlogs = async (req, res) => {
     try {
-        const { categoryId, search } = req.query;
+        const { categoryId, search, limit, sort } = req.query;
         let whereClause = {};
 
         if (categoryId) {
@@ -57,10 +57,16 @@ const getAllBlogs = async (req, res) => {
             whereClause.title = { [Op.like]: `%${search}%` };
         }
 
+        let order = [['createdAt', 'DESC']]; // default order
+        if (sort === 'popular') {
+            order = [['viewed', 'DESC']];
+        }
+
         const blogs = await Blog.findAll({
             where: whereClause,
             include: [{ model: BlogCategory, as: 'category' }],
-            order: [['createdAt', 'DESC']]
+            order: order,
+            limit: limit ? parseInt(limit) : undefined
         });
         res.status(200).json(blogs);
     } catch (error) {

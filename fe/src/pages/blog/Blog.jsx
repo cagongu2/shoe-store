@@ -8,14 +8,7 @@ import { useFetchAllBlogsQuery } from "../../redux/features/blogs/blogsApi";
 import { useFetchAllBlogCategoriesQuery } from "../../redux/features/blogCategories/blogCategoriesApi";
 import Loading from "../../components/Loading";
 
-// Mock data cho bài viết phổ biến (theo yêu cầu)
-const mockPopularBlogs = [
-  { id: 101, title: "Top 10 giày chạy bộ tốt nhất 2024", image: "", date: "2024-01-15", viewed: 1250 },
-  { id: 102, title: "Cách vệ sinh giày Sneaker trắng", image: "", date: "2024-02-20", viewed: 980 },
-  { id: 103, title: "Phân biệt Nike Real và Fake", image: "", date: "2024-03-10", viewed: 850 },
-  { id: 104, title: "Xu hướng giày mùa hè năm nay", image: "", date: "2024-04-05", viewed: 720 },
-  { id: 105, title: "Chọn size giày chuẩn nhất", image: "", date: "2024-05-12", viewed: 640 },
-];
+
 
 const Blog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,6 +29,12 @@ const Blog = () => {
   const { data: blogs = [], isLoading: isBlogsLoading, isError } = useFetchAllBlogsQuery({
     categoryId: selectedCategory ? selectedCategory.id : undefined,
     search: searchTerm
+  });
+
+  // 4. Fetch Popular Blogs (Dynamic)
+  const { data: popularBlogs = [], isLoading: isPopularLoading } = useFetchAllBlogsQuery({
+    limit: 5,
+    sort: 'popular'
   });
 
   // Handle Search Submit
@@ -82,7 +81,7 @@ const Blog = () => {
                 <div className="text-center py-10 text-red-500">Có lỗi khi tải bài viết.</div>
               ) : blogs.length > 0 ? (
                 blogs.map((blog) => (
-                  <div key={blog.id} className="mb-4 border-solid border-1 rounded-xl border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                  <div key={blog.id} className="mb-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
                     <div className="grid grid-cols-12">
                       <div className="md:col-span-5 col-span-12">
                         <Link to={`/bai-viet/${blog.id}`}>
@@ -205,38 +204,45 @@ const Blog = () => {
                   </ul>
                 </div>
 
-                {/* popular blog - MOCK DATA */}
+                {/* popular blog - Dynamic */}
                 <div>
                   <p className="mb-2 text-[18px] font-semibold text-gray-800 border-l-4 border-orange-500 pl-3">Bài viết phổ biến</p>
                   <div className="mb-4 mt-2 w-full border-b border-gray-200"></div>
 
-                  {mockPopularBlogs.map((blog) => (
-                    <div key={blog.id} className="mb-4">
-                      <div className="flex gap-3">
-                        <div className="w-[80px] h-[80px] flex-shrink-0">
-                          <Link to="#">
-                            <img
-                              src={blog.image || "https://placehold.co/150x150?text=Popular"}
-                              className="h-full w-full object-cover rounded-md border border-gray-200"
-                              alt={blog.title}
-                            />
-                          </Link>
-                        </div>
-                        <div className="flex flex-col justify-between py-1">
-                          <Link to="#">
-                            <p className="text-sm font-semibold text-gray-700 hover:text-orange-500 line-clamp-2 leading-snug transition-colors">
-                              {blog.title}
-                            </p>
-                          </Link>
+                  {isPopularLoading ? (
+                    <div className="py-4 text-center text-gray-500">Đang tải...</div>
+                  ) : popularBlogs.length > 0 ? (
+                    popularBlogs.map((blog) => (
+                      <div key={blog.id} className="mb-4">
+                        <div className="flex gap-3">
+                          <div className="w-[80px] h-[80px] flex-shrink-0">
+                            <Link to={`/bai-viet/${blog.id}`}>
+                              <img
+                                src={getImgUrl(blog.image)}
+                                onError={(e) => { e.target.src = "https://placehold.co/150x150?text=Popular" }}
+                                className="h-full w-full object-cover rounded-md border border-gray-200"
+                                alt={blog.title}
+                              />
+                            </Link>
+                          </div>
+                          <div className="flex flex-col justify-between py-1">
+                            <Link to={`/bai-viet/${blog.id}`}>
+                              <p className="text-sm font-semibold text-gray-700 hover:text-orange-500 line-clamp-2 leading-snug transition-colors">
+                                {blog.title}
+                              </p>
+                            </Link>
 
-                          <div className="flex gap-3 text-xs text-gray-400 mt-1">
-                            <span>{new Date(blog.date).toLocaleDateString('vi-VN')}</span>
-                            <span className="flex items-center gap-1"><FaEye /> {blog.viewed}</span>
+                            <div className="flex gap-3 text-xs text-gray-400 mt-1">
+                              <span>{new Date(blog.createdAt).toLocaleDateString('vi-VN')}</span>
+                              <span className="flex items-center gap-1"><FaEye /> {blog.viewed}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <div className="py-4 text-center text-gray-400 text-sm">Chưa có bài viết phổ biến.</div>
+                  )}
                 </div>
 
                 {/* tag - Static Demo */}

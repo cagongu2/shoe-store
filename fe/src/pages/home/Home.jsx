@@ -18,7 +18,7 @@ const Home = () => {
           title="Đang thịnh hành"
           subtitle="Dựa trên lượt xem và mức độ quan tâm"
         />
-        <Collection />
+        {/* <Collection /> */}
         <RecommendationSection
           type="collaborative"
           title="Dành riêng cho bạn"
@@ -30,7 +30,7 @@ const Home = () => {
           subtitle="Xu hướng được cộng đồng yêu thích"
         />
         <Brand />
-        <News />
+        {/* <News /> */}
       </div>
     </>
   );

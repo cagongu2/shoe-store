@@ -42,7 +42,7 @@ const BlogRecommendationSection = ({ type, title, subtitle, productId }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 px-6 md:px-12 max-w-7xl mx-auto relative z-10">
                 {recommendedBlogs.map(blog => (
-                    <div key={blog.id} className="group bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-[0_30px_60px_-15px_rgba(52,93,167,0.2)] transition-all duration-500 hover:-translate-y-2 border border-white">
+                    <div key={blog.id} className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border border-gray-100">
                         <Link to={`/bai-viet/${blog.id}`}>
                             <div className="relative h-64 overflow-hidden">
                                 <img

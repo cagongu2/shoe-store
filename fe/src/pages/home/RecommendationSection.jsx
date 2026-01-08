@@ -25,7 +25,7 @@ const RecommendationSection = ({ type, productId, title, subtitle }) => {
             <div className="px-6 md:px-12 flex flex-col items-center text-center mb-16 relative">
                 <div className="absolute -top-10 text-[100px] font-black text-gray-50 select-none -z-0 uppercase">Explore</div>
                 <h2 className="text-4xl md:text-5xl font-black text-[#345DA7] mb-4 relative z-10">{title}</h2>
-                <div className="w-20 h-1.5 bg-[#3B8AC4] rounded-full mb-4"></div>
+                <div className="w-20 h-1.5 bg-[#3B8AC4]  mb-4"></div>
                 <p className="text-gray-400 uppercase text-xs font-black tracking-[0.3em] relative z-10">{subtitle}</p>
             </div>
 
@@ -33,7 +33,7 @@ const RecommendationSection = ({ type, productId, title, subtitle }) => {
                 {recommendedProducts.map(product => (
                     <div key={product.id} className="group relative">
                         <Link to={`/san-pham/${product.id}`} className="block">
-                            <div className="relative overflow-hidden rounded-[2.5rem] bg-[#f8faff] aspect-[4/5] mb-6 border border-gray-50 transition-all duration-500 group-hover:shadow-[0_20px_50px_rgba(52,93,167,0.15)] group-hover:border-[#345DA7]/10">
+                            <div className="relative overflow-hidden rounded-3xl bg-white aspect-[4/5] mb-6 border border-gray-100 transition-all duration-500 shadow-sm group-hover:shadow-xl group-hover:border-[#345DA7]/10">
                                 <img
                                     src={getImgUrl(product.images?.[0]?.link)}
                                     alt={product.name}
@@ -41,14 +41,14 @@ const RecommendationSection = ({ type, productId, title, subtitle }) => {
                                 />
 
                                 {product.sale && (
-                                    <div className="absolute top-6 left-6 bg-gradient-to-br from-red-500 to-orange-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg transform -rotate-12">
+                                    <div className="absolute top-6 left-6 bg-gradient-to-br from-red-500 to-orange-500 text-white text-[10px] font-black px-4 py-1.5  uppercase tracking-widest shadow-lg transform -rotate-12">
                                         Sale
                                     </div>
                                 )}
 
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#345DA7]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
                                     <span className="text-white text-xs font-bold uppercase tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform duration-500 mb-2">Xem chi tiết</span>
-                                    <div className="w-10 h-1 bg-white rounded-full translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100"></div>
+                                    <div className="w-10 h-1 bg-white  translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100"></div>
                                 </div>
                             </div>
 
