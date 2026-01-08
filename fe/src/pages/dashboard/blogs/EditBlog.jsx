@@ -106,8 +106,8 @@ const EditBlog = () => {
                 // For now, assume keeping old image is default behavior.
             }
 
-            // Call API with { id, data: formData } structure we updated
-            await updateBlog({ id: blogId, data: formData }).unwrap();
+            // Call API with { id, body: formData } structure we updated
+            await updateBlog({ id: blogId, body: formData }).unwrap();
 
             Swal.fire({
                 icon: 'success',

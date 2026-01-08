@@ -1,7 +1,14 @@
 const Blog = require("../models/blog.model");
 const BlogCategory = require("../models/blogCategory.model");
 const { Op } = require("sequelize");
+const { syncBlog, logBlogView } = require("../utils/rdfHelper");
 
+/**
+ * @openapi
+ * /api/v1/blogs:
+ *   get:
+ *     summary: Lấy danh sách bài viết
+ */
 const createBlog = async (req, res) => {
     try {
         const { title, description, content, categoryId, author, tags } = req.body;
@@ -21,6 +28,9 @@ const createBlog = async (req, res) => {
             author,
             tags
         });
+
+        // Sync to RDF
+        await syncBlog(newBlog);
 
         // Fetch with category info
         const blogWithCategory = await Blog.findByPk(newBlog.id, {
@@ -59,9 +69,21 @@ const getAllBlogs = async (req, res) => {
     }
 };
 
+/**
+ * @openapi
+ * /api/v1/blogs/{id}:
+ *   get:
+ *     summary: Chi tiết bài viết
+ *     parameters:
+ *       - in: query
+ *         name: email
+ *         schema:
+ *           type: string
+ */
 const getBlogById = async (req, res) => {
     try {
         const { id } = req.params;
+        const { email } = req.query;
         const blog = await Blog.findByPk(id, {
             include: [{ model: BlogCategory, as: 'category' }]
         });
@@ -69,6 +91,9 @@ const getBlogById = async (req, res) => {
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
         }
+
+        // Log view to RDF
+        logBlogView(email, id);
 
         // Increment view count
         blog.viewed += 1;
@@ -84,6 +109,9 @@ const getBlogById = async (req, res) => {
 const updateBlog = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log("Update Blog ID:", id);
+        console.log("Req Body:", req.body);
+        console.log("Req File:", req.file);
         const { title, description, content, categoryId, author, tags } = req.body;
 
         const blog = await Blog.findByPk(id);
@@ -102,6 +130,9 @@ const updateBlog = async (req, res) => {
         await blog.update({
             title, image: imagePath, description, content, categoryId, author, tags
         });
+
+        // Sync to RDF
+        await syncBlog(blog);
 
         // Fetch updated blog with category
         const updatedBlog = await Blog.findByPk(id, {
@@ -129,18 +160,12 @@ const deleteBlog = async (req, res) => {
 
         // Delete associated image from filesystem if exists and is a local path
         if (blog.image && !blog.image.startsWith('http')) {
-            // Path construction: __dirname is src/controllers. 
-            // We need to resolve to src/assets.
-            // blog.image is like "uploads/demo/filename.ext"
             const imagePath = path.join(__dirname, '../assets', blog.image);
 
             if (fs.existsSync(imagePath)) {
                 try {
                     fs.unlinkSync(imagePath);
-                    console.log(`Deleted blog image: ${imagePath}`);
-                } catch (err) {
-                    console.error(`Failed to delete blog image: ${err.message}`);
-                }
+                } catch (err) { }
             }
         }
 

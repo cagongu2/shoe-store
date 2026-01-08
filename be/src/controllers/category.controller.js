@@ -1,4 +1,5 @@
 const Category = require("../models/category.model");
+const { syncCategory } = require("../utils/rdfHelper");
 
 const getAllCategories = async (req, res) => {
     try {
@@ -25,6 +26,7 @@ const createCategory = async (req, res) => {
     try {
         const { name } = req.body;
         const newCategory = await Category.create({ name });
+        await syncCategory(newCategory);
         res.status(201).json(newCategory);
     } catch (error) {
         res.status(500).json({ message: "Lỗi server", error });
@@ -42,6 +44,7 @@ const updateCategory = async (req, res) => {
         }
 
         await category.update({ name });
+        await syncCategory(category);
         res.status(200).json(category);
     } catch (error) {
         res.status(500).json({ message: "Lỗi server", error });

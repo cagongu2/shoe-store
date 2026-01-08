@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const Address = require("../models/address.model");
 const Order = require("../models/order.model");
 const Cart = require("../models/cart.model");
+const { syncOrder } = require("../utils/rdfHelper");
 
 const createOrder = async (req, res) => {
     try {
@@ -27,10 +28,18 @@ const createOrder = async (req, res) => {
             status: "pending"
         });
 
+        // Get cart items with product IDs for RDF sync
+        const cartItems = await Cart.findAll({
+            where: { id: { [Op.in]: carts } }
+        });
+
         await Cart.update(
             { orderId: newOrder.id, isPayed: true },
             { where: { id: { [Op.in]: carts } } }
         );
+
+        // Sync order to RDF
+        await syncOrder(newOrder, cartItems);
 
         res.status(201).json({
             message: "Đơn hàng đã được tạo thành công!",

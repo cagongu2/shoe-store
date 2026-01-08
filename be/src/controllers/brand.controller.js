@@ -1,4 +1,5 @@
 const Brand = require("../models/brand.model");
+const { syncBrand } = require("../utils/rdfHelper");
 
 const getAllBrands = async (req, res) => {
     try {
@@ -25,6 +26,7 @@ const createBrand = async (req, res) => {
     try {
         const { name } = req.body;
         const newBrand = await Brand.create({ name });
+        await syncBrand(newBrand);
         res.status(201).json(newBrand);
     } catch (error) {
         res.status(500).json({ message: "Lỗi server", error });
@@ -42,6 +44,7 @@ const updateBrand = async (req, res) => {
         }
 
         await brand.update({ name });
+        await syncBrand(brand);
         res.status(200).json(brand);
     } catch (error) {
         res.status(500).json({ message: "Lỗi server", error });

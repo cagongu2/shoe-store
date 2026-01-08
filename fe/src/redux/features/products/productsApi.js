@@ -29,8 +29,12 @@ const productsApi = createApi({
             providesTags: ["Products"]
         }),
         fetchProductById: builder.query({
-            query: (id) => `/${id}`,
-            providesTags: (result, error, id) => [{ type: "Products", id }],
+            query: ({ id, email }) => {
+                let url = `/${id}`;
+                if (email) url += `?email=${encodeURIComponent(email)}`;
+                return url;
+            },
+            providesTags: (result, error, { id }) => [{ type: "Products", id }],
         }),
         addProduct: builder.mutation({
             query: (newProduct) => ({
@@ -41,13 +45,10 @@ const productsApi = createApi({
             invalidatesTags: ["Products"]
         }),
         updateProduct: builder.mutation({
-            query: ({ id, ...rest }) => ({
+            query: ({ id, body }) => ({
                 url: `/${id}`,
                 method: "PUT",
-                body: rest,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                body: body
             }),
             invalidatesTags: ["Products"]
         }),

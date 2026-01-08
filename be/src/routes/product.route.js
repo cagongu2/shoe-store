@@ -18,7 +18,7 @@ router.get("/:id", getProductById);
 
 router.post("/", upload.array("images", 5), verifyAdminToken, createProduct);
 
-router.put("/:id", verifyAdminToken, updateProduct);
+router.put("/:id", upload.array("images", 5), verifyAdminToken, updateProduct);
 
 router.put("/:id/toggle-status", verifyAdminToken, toggleProductStatus);
 

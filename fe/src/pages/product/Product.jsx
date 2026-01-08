@@ -11,6 +11,7 @@ import { getImgUrl } from "../../util/getImageUrl";
 import { Link, useSearchParams } from "react-router-dom";
 import { useFetchAllProductsQuery } from "../../redux/features/products/productsApi";
 import Loading from "../../components/Loading";
+import RecommendationSection from "../home/RecommendationSection";
 
 const Product = () => {
   const { data: products = [], isLoading } = useFetchAllProductsQuery();
@@ -327,8 +328,8 @@ const Product = () => {
                     onClick={() => paginate(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className={`px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg flex items-center justify-center text-base ${currentPage === 1
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : "bg-gray-100 hover:bg-gray-200"
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-100 hover:bg-gray-200"
                       }`}
                   >
                     <FaAngleLeft />
@@ -339,8 +340,8 @@ const Product = () => {
                       key={i + 1}
                       onClick={() => paginate(i + 1)}
                       className={`px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg flex items-center justify-center text-base ${currentPage === i + 1
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-100 hover:bg-gray-200"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-100 hover:bg-gray-200"
                         }`}
                     >
                       {i + 1}
@@ -351,8 +352,8 @@ const Product = () => {
                     onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
                     className={`px-3 py-1.5 w-10 h-10 rounded-full drop-shadow-lg flex items-center justify-center text-base ${currentPage === totalPages
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : "bg-gray-100 hover:bg-gray-200"
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-100 hover:bg-gray-200"
                       }`}
                   >
                     <FaAngleRight />
@@ -364,90 +365,11 @@ const Product = () => {
         </div>
       </div>
 
-      {/* --- ACCESSORIES SECTION (Đã chỉnh sửa logic lọc) --- */}
-      <div className="px-12">
-        {/* title */}
-        <div className="mx-[-12px]">
-          <div className="px-3">
-            <div className="mb-12.5 text-center">
-              <p className="text-3xl mb-2">Phụ kiện</p>
-              <p className="text-gray-600 text-base">
-                Phụ kiện hoàn hảo cho đôi giày của bạn - cùng shop khám phá ngay
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* item */}
-        <div className="mb-12">
-          {accessoryProducts.length > 0 ? (
-            <Swiper
-              slidesPerView={1}
-              loop={accessoryProducts.length > 4} // Chỉ loop nếu đủ item
-              spaceBetween={15}
-              freeMode={true}
-              grabCursor={true}
-              breakpoints={{
-                640: {
-                  slidesPerView: 2,
-                  spaceBetween: 15,
-                },
-                768: {
-                  slidesPerView: 3,
-                  spaceBetween: 15,
-                },
-                1024: {
-                  slidesPerView: 4,
-                  spaceBetween: 15,
-                },
-              }}
-              modules={[FreeMode]}
-              className="mySwiper"
-            >
-              {accessoryProducts.map((product, index) => (
-                <SwiperSlide key={index}>
-                  <div className="text-center rounded">
-                    {/* img */}
-                    <div>
-                      <Link to={`/san-pham/${product.id}`}>
-                        <img
-                          className="rounded w-full h-[200px] object-cover"
-                          src={`${getImgUrl(product.images?.[0]?.link)}`}
-                          alt={product.name}
-                        />
-                      </Link>
-                    </div>
-                    {/* content */}
-                    <div className="rounded">
-                      <Link to={`/san-pham/${product.id}`}>
-                        <p className="line-clamp-1 px-2 mt-[15px] mb-2 text-sm font-[500] uppercase">
-                          {product.name}
-                        </p>
-                      </Link>
-                      <div>
-                        <p className="mb-2 text-sm font-[500] uppercase">
-                          {product.price} VNĐ
-                        </p>
-                      </div>
-                      <div className="">
-                        <Link
-                          to={`/san-pham/${product.id}`}
-                          className="px-4 py-1.5 mb-4 bg-orange-500 text-white inline-flex rounded hover:-translate-y-0.5 duration-500 transition-all"
-                        >
-                          Mua ngay
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          ) : (
-            <p className="text-center text-gray-500 italic pb-8">
-              Chưa có sản phẩm phụ kiện nào.
-            </p>
-          )}
-        </div>
-      </div>
+      <RecommendationSection
+        type="content-based"
+        title="Gợi ý dành cho bạn"
+        subtitle="Các sản phẩm tương hợp dựa trên xu hướng"
+      />
     </>
   );
 };

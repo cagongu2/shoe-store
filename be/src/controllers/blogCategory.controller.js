@@ -1,22 +1,26 @@
 const BlogCategory = require("../models/blogCategory.model");
+const { syncBlogCategory } = require("../utils/rdfHelper");
 
 const createCategory = async (req, res) => {
     try {
         const { name, description } = req.body;
 
-        // Simple slug generation
         const slug = name.toLowerCase()
-            .normalize('NFD') // Decompose combined accents
-            .replace(/[\u0300-\u036f]/g, '') // Remove separate accents
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
             .replace(/đ/g, 'd')
-            .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
-            .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
 
         const newCategory = await BlogCategory.create({
             name,
             slug,
             description
         });
+
+        // Sync to RDF
+        await syncBlogCategory(newCategory);
+
         res.status(201).json(newCategory);
     } catch (error) {
         console.error("Error creating blog category:", error);
@@ -61,7 +65,6 @@ const updateCategory = async (req, res) => {
             return res.status(404).json({ message: "Category not found" });
         }
 
-        // Helper slug generation for update
         const slug = name.toLowerCase()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
@@ -70,6 +73,10 @@ const updateCategory = async (req, res) => {
             .replace(/^-+|-+$/g, '');
 
         await category.update({ name, slug, description });
+
+        // Sync to RDF
+        await syncBlogCategory(category);
+
         res.status(200).json(category);
     } catch (error) {
         console.error("Error updating category:", error);

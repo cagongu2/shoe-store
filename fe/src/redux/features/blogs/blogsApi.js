@@ -43,10 +43,10 @@ const blogsApi = createApi({
             invalidatesTags: ['Blogs']
         }),
         updateBlog: builder.mutation({
-            query: ({ id, data }) => ({
+            query: ({ id, body }) => ({
                 url: `/${id}`,
                 method: 'PUT',
-                body: data
+                body: body
             }),
             invalidatesTags: ['Blogs', (result, error, { id }) => ({ type: 'Blogs', id })]
         }),

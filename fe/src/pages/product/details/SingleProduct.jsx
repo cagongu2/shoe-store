@@ -24,6 +24,8 @@ import { useFetchProductByIdQuery } from "../../../redux/features/products/produ
 import { useFetchUserByEmailQuery } from "../../../redux/features/users/userApi";
 import { useAddCartMutation } from "../../../redux/features/carts/cartsApi";
 import { setCartCount } from "../../../redux/features/status/statusSlice"
+import RecommendationSection from "../../home/RecommendationSection";
+import BlogRecommendationSection from "../../home/BlogRecommendationSection";
 
 const SingleProduct = () => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -51,7 +53,7 @@ const SingleProduct = () => {
   ];
 
   const { id } = useParams();
-  const { data: product = {} } = useFetchProductByIdQuery(id);
+  const { data: product = {} } = useFetchProductByIdQuery({ id, email: currentUser?.email });
   const { data: userData } = useFetchUserByEmailQuery(currentUser?.email, { skip: !currentUser?.email });
   const [addToCart] = useAddCartMutation();
   const currentCartCount = useSelector((state) => state.status.cartCount);
@@ -494,6 +496,18 @@ const SingleProduct = () => {
                 </div>
               </div>
             </div>
+            <RecommendationSection
+              type="content-based"
+              productId={id}
+              title="Sản phẩm tương tự"
+              subtitle="Dành riêng cho phong cách của bạn"
+            />
+            <BlogRecommendationSection
+              type="related-to-product"
+              productId={id}
+              title="Bài viết liên quan"
+              subtitle="Khám phá thêm về sản phẩm này"
+            />
           </div>
         </div>
       </div>

@@ -39,3 +39,19 @@ const BlogCategory = require("./blogCategory.model");
 
 Blog.belongsTo(BlogCategory, { foreignKey: "categoryId", as: "category" });
 BlogCategory.hasMany(Blog, { foreignKey: "categoryId", as: "blogs" });
+
+module.exports = {
+    Address,
+    Brand,
+    Cart,
+    Category,
+    Color,
+    Image,
+    Order,
+    Product,
+    User,
+    ProductStock,
+    Size,
+    Blog,
+    BlogCategory
+};

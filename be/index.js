@@ -33,6 +33,8 @@ const blogRoutes = require("./src/routes/blog.route");
 
 const blogCategoryRoutes = require("./src/routes/blogCategory.route");
 const adminRoutes = require("./src/routes/admin.route");
+const suggestionRoutes = require("./src/routes/suggestion.route");
+const { swaggerUi, specs } = require("./src/utils/swagger");
 
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/brands", brandRoutes);
@@ -48,6 +50,9 @@ app.use("/api/v1/orders", ordersRotes);
 app.use("/api/v1/blogs", blogRoutes);
 app.use("/api/v1/blog-categories", blogCategoryRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/suggestions", suggestionRoutes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 
 // Serve uploaded files
