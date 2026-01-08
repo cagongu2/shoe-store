@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../../context/AuthContext';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import getBaseUrl from '../../util/baseUrl';
 import { getImgUrl } from '../../util/getImageUrl';
+import { setUser } from '../../redux/features/auth/authSlice';
 
 const Profile = () => {
-    const { currentUser, loginUser } = useAuth(); // loginUser placeholder logic if context refresh needed
+    const dispatch = useDispatch();
+    const { user: currentUser, token } = useSelector((state) => state.auth);
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
@@ -68,20 +70,12 @@ const Profile = () => {
             });
 
             setMessage('Cập nhật hồ sơ thành công!');
-
-            // Update local storage to reflect changes immediately without reload if possible
-            // Ideally Context should be updated. 
-            // For now, update LS and reload.
-            const updatedUser = response.data; // Backend returns updated user object
-
-            // Note: response.data might be just the object.
-            // Update LS key 'user' used by Context?
-            // AuthContext implementation varies. Usually it reads from LS on init.
-            localStorage.setItem('user', JSON.stringify(updatedUser)); // Assuming 'user' key key
+            const updatedUser = response.data;
+            dispatch(setUser({ user: updatedUser, token }));
 
             setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+                setMessage('');
+            }, 3000);
 
         } catch (error) {
             console.error('Error updating profile:', error);

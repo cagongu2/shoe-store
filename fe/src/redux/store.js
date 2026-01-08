@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import cartReducer from "./features/carts/cartSlice"
 import favoriteReducer from "./features/favorites/favoriteSlice"
 import statusReducer from "./features/status/statusSlice"
+import authReducer from "./features/auth/authSlice"
 
 import categoriesApi from './features/categories/categoriesApi'
 import colorsApi from './features/colors/colorsApi'
@@ -13,6 +14,7 @@ import cartsApi from './features/carts/cartsApi'
 import ordersApi from './features/orders/ordersApi'
 import blogsApi from './features/blogs/blogsApi'
 import blogCategoriesApi from './features/blogCategories/blogCategoriesApi'
+import { authApi } from './features/auth/authApi'
 
 
 export const store = configureStore({
@@ -20,6 +22,7 @@ export const store = configureStore({
         cart: cartReducer,
         favorite: favoriteReducer,
         status: statusReducer,
+        auth: authReducer,
         [categoriesApi.reducerPath]: categoriesApi.reducer,
         [colorsApi.reducerPath]: colorsApi.reducer,
         [sizesApi.reducerPath]: sizesApi.reducer,
@@ -30,6 +33,7 @@ export const store = configureStore({
         [ordersApi.reducerPath]: ordersApi.reducer,
         [blogsApi.reducerPath]: blogsApi.reducer,
         [blogCategoriesApi.reducerPath]: blogCategoriesApi.reducer,
+        [authApi.reducerPath]: authApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -43,5 +47,6 @@ export const store = configureStore({
             ordersApi.middleware,
             blogsApi.middleware,
             blogCategoriesApi.middleware,
+            authApi.middleware,
         ),
 })

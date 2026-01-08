@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../context/AuthContext";
+import { useDispatch } from "react-redux";
+import { useLoginMutation } from "../redux/features/auth/authApi";
+import { setUser } from "../redux/features/auth/authSlice";
 
 const Login = () => {
   const [message, setMessage] = useState("");
-  const { loginUser } = useAuth();
+  const [login] = useLoginMutation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -15,11 +18,12 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      await loginUser(data.email, data.password);
+      const response = await login(data).unwrap();
+      dispatch(setUser({ user: response.user, token: response.token }));
       alert("Đăng nhập thành công");
       navigate("/");
     } catch (error) {
-      const serverMessage = error.response?.data?.message;
+      const serverMessage = error.data?.message;
       setMessage(serverMessage || "Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu.");
       console.error(error);
     }

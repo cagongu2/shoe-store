@@ -10,7 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useAuth } from "../../context/AuthContext";
+
 import {
   useDeleteCartMutation,
   useFetchCartByUserIdQuery,
@@ -18,10 +18,8 @@ import {
 import { setCartCount } from "../../redux/features/status/statusSlice";
 
 const Cart = () => {
-  const { currentUser } = useAuth();
-
-  const userData = JSON.parse(localStorage.getItem("user"));
-  const userId = userData?.id;
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const userId = currentUser?.id;
 
   const { data: cartItemsFromDB = [] } = useFetchCartByUserIdQuery(userId);
   const [deleteCart] = useDeleteCartMutation();

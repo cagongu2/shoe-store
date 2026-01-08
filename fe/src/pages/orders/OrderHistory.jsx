@@ -1,32 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import getBaseUrl from '../../util/baseUrl';
-import { useAuth } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
+import { useGetOrderByEmailQuery } from '../../redux/features/orders/ordersApi';
+import Loading from '../../components/Loading';
 
 const OrderHistory = () => {
-    const { currentUser } = useAuth();
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { user: currentUser } = useSelector((state) => state.auth);
+    const { data: orders = [], isLoading: loading } = useGetOrderByEmailQuery(currentUser?.email, {
+        skip: !currentUser?.email
+    });
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            if (!currentUser) return;
-            try {
-                // Assuming there is an endpoint to get orders by user email or ID
-                // Check backend routes: order.route.js -> router.get("/email/:email", getOrderByEmail);
-                const response = await axios.get(`${getBaseUrl()}/api/v1/orders/email/${currentUser.email}`);
-                setOrders(response.data);
-            } catch (error) {
-                console.error("Error fetching orders:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchOrders();
-    }, [currentUser]);
-
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Loading />;
 
     return (
         <div className="container mx-auto mt-10 p-5">
@@ -52,8 +34,8 @@ const OrderHistory = () => {
                                     <td className="py-2 px-4 border-b text-center">{order.totalPrice?.toLocaleString()} VND</td>
                                     <td className="py-2 px-4 border-b text-center">
                                         <span className={`px-2 py-1 rounded text-sm ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-gray-100 text-gray-800'
+                                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-gray-100 text-gray-800'
                                             }`}>
                                             {order.status}
                                         </span>

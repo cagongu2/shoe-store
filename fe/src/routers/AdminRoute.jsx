@@ -1,27 +1,40 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useSelector } from 'react-redux';
+import { useFetchUserByEmailQuery } from '../redux/features/users/userApi';
 import Loading from '../components/Loading';
 
 const AdminRoute = ({ children }) => {
-  const { currentUser, loading } = useAuth();
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const { data: userData, isLoading: queryLoading } = useFetchUserByEmailQuery(currentUser?.email, {
+    skip: !currentUser?.email,
+  });
 
-  if (loading) return <Loading />;
 
-  console.log("AdminRoute checking access...");
-  console.log("Loading status:", loading);
-  console.log("Current User:", currentUser);
-  console.log("User Role (raw):", currentUser?.role);
-  console.log("User Role (stringified):", JSON.stringify(currentUser?.role));
-  console.log("Type of Role:", typeof currentUser?.role);
-  console.log("Check result:", currentUser?.role === 'admin');
 
-  if (!currentUser || currentUser.role !== 'admin') {
-    console.warn("Access denied: Redirecting to login");
+  // If not logged in at all, redirect
+  if (!currentUser) {
     return <Navigate to="/dang-nhap" replace />;
   }
 
-  return children ? children : <Outlet />;
+  // 1. Optimistic Check: If local storage says Admin, allow access immediately.
+  if (currentUser.role === 'admin') {
+    return children ? children : <Outlet />;
+  }
+
+  // 2. Server Check: If local says 'user', but server might say 'admin', wait for query.
+  if (queryLoading) {
+    return <Loading />;
+  }
+
+  // 3. Final Verification: If server data confirms Admin, allow access.
+  if (userData?.role === 'admin') {
+    return children ? children : <Outlet />;
+  }
+
+  // Otherwise, access denied
+  console.warn("Access denied: Redirecting to login");
+  return <Navigate to="/dang-nhap" replace />;
 };
 
 export default AdminRoute;

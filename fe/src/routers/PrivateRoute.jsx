@@ -1,14 +1,11 @@
 import React from 'react'
-import { useAuth } from '../context/AuthContext';
+import { useSelector } from 'react-redux';
 import Loading from '../components/Loading';
 import { Navigate } from 'react-router-dom';
 
 export const PrivateRoute = ({ children }) => {
-    const { currentUser, loading } = useAuth();
+    const { user: currentUser } = useSelector((state) => state.auth);
 
-    if (loading) {
-        return <Loading />
-    }
     if (currentUser) {
         return children;
     }

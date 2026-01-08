@@ -21,12 +21,12 @@ import {
   removeFromFavorite,
 } from "../../../redux/features/favorites/favoriteSlice";
 import { useFetchProductByIdQuery } from "../../../redux/features/products/productsApi";
-import { useAuth } from "../../../context/AuthContext";
 import { useFetchUserByEmailQuery } from "../../../redux/features/users/userApi";
 import { useAddCartMutation } from "../../../redux/features/carts/cartsApi";
-import {setCartCount} from "../../../redux/features/status/statusSlice"
+import { setCartCount } from "../../../redux/features/status/statusSlice"
 
 const SingleProduct = () => {
+  const { user: currentUser } = useSelector((state) => state.auth);
   const policies = [
     {
       title: "Chính sách thanh toán",
@@ -52,14 +52,11 @@ const SingleProduct = () => {
 
   const { id } = useParams();
   const { data: product = {} } = useFetchProductByIdQuery(id);
-  console.log(product);
-  const { currentUser } = useAuth();
-  const { data: userData } = useFetchUserByEmailQuery(currentUser?.email);
+  const { data: userData } = useFetchUserByEmailQuery(currentUser?.email, { skip: !currentUser?.email });
   const [addToCart] = useAddCartMutation();
   const currentCartCount = useSelector((state) => state.status.cartCount);
-
-  const dispatch = useDispatch();
   const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
+  const dispatch = useDispatch();
 
   const handleAddToFavorite = () => {
     const cartItem = {
@@ -228,11 +225,10 @@ const SingleProduct = () => {
                         {/* small img */}
                         <img
                           className={`max-w-[180px] max-h-[180px] min-w-30 min-h-30 rounded border-1 border-gray-200 object-contain
-                          ${
-                            selectedImage === image.link
+                          ${selectedImage === image.link
                               ? "opacity-100"
                               : "opacity-20"
-                          }
+                            }
                           `}
                           src={`${getImgUrl(image.link)}`}
                           alt=""
@@ -280,14 +276,12 @@ const SingleProduct = () => {
                         <label
                           htmlFor=""
                           tabIndex="0"
-                          className={`${
-                            productStock?.color?.name.toLowerCase() === "black"
-                          } ? bg-black : bg-${productStock?.color?.name.toLowerCase()}-500 rounded-full w-7.5 h-7.5 border-1 block ${
-                            selectedColor ===
-                            productStock?.color?.name.toLowerCase()
+                          className={`${productStock?.color?.name.toLowerCase() === "black"
+                            } ? bg-black : bg-${productStock?.color?.name.toLowerCase()}-500 rounded-full w-7.5 h-7.5 border-1 block ${selectedColor ===
+                              productStock?.color?.name.toLowerCase()
                               ? "border-orange-500"
                               : "border-black"
-                          }`}
+                            }`}
                           onClick={() =>
                             setSelectedColor(
                               productStock?.color?.name.toLowerCase()
@@ -316,11 +310,10 @@ const SingleProduct = () => {
                         <label
                           htmlFor={`size-${productStock?.size?.name}`}
                           className={`cursor-pointer px-6 py-1.5 border rounded-md text-center block transition-all 
-            ${
-              selectedSize === productStock?.size?.name
-                ? "border-orange-500 text-orange-500 font-bold"
-                : "border-gray-400 text-gray-700 hover:border-black"
-            }`}
+            ${selectedSize === productStock?.size?.name
+                              ? "border-orange-500 text-orange-500 font-bold"
+                              : "border-gray-400 text-gray-700 hover:border-black"
+                            }`}
                           onClick={() =>
                             setSelectedSize(productStock?.size?.name)
                           }
@@ -424,9 +417,8 @@ const SingleProduct = () => {
                   {policies.map((policy, index) => (
                     <div key={index} className="border-b border-gray-300">
                       <button
-                        className={`w-full text-left px-4 py-3 flex justify-between items-center transition-all ${
-                          openIndex === index ? "bg-blue-100" : ""
-                        }`}
+                        className={`w-full text-left px-4 py-3 flex justify-between items-center transition-all ${openIndex === index ? "bg-blue-100" : ""
+                          }`}
                         onClick={() => toggleAccordion(index)}
                       >
                         <span className="text-base">{policy.title}</span>
@@ -439,11 +431,10 @@ const SingleProduct = () => {
                         </span>
                       </button>
                       <div
-                        className={`overflow-hidden transition-all duration-750 ${
-                          openIndex === index
-                            ? "max-h-40 opacity-100 translate-y-0"
-                            : "max-h-0 opacity-0 -translate-y-2"
-                        }`}
+                        className={`overflow-hidden transition-all duration-750 ${openIndex === index
+                          ? "max-h-40 opacity-100 translate-y-0"
+                          : "max-h-0 opacity-0 -translate-y-2"
+                          }`}
                       >
                         <div className="px-4 py-2 bg-gray-50 text-sm text-gray-700">
                           {policy.content}

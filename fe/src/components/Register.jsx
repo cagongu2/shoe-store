@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../context/AuthContext";
+import { useRegisterMutation } from "../redux/features/auth/authApi";
 
 const Register = () => {
   const [message, setMessage] = useState("");
-  const { registerUser } = useAuth();
+  const [registerAccount] = useRegisterMutation();
   const navigate = useNavigate();
   const {
     register,
@@ -15,18 +15,12 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Assuming registerUser now takes (email, password, username) or can handle a user object
-      // But looking at the backend, username is optional or can be derived from email.
-      // Let's pass username as email prefix or adding a username field if UI had it.
-      // Current UI only has Email and Password. Backend accepts `username`.
-      // I'll default username to email part for now to ensure backend satisfaction if needed.
       const username = data.email.split('@')[0];
-
-      await registerUser(data.email, data.password, username);
+      await registerAccount({ ...data, username }).unwrap();
       alert("Đăng ký tài khoản thành công!");
       navigate("/dang-nhap");
     } catch (error) {
-      const serverMessage = error.response?.data?.message;
+      const serverMessage = error.data?.message;
       setMessage(serverMessage || "Đăng ký thất bại. Vui lòng thử lại.");
       console.log(error);
     }

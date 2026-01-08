@@ -1,13 +1,14 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-
+import { useDispatch } from "react-redux";
+import { useLoginMutation } from "../redux/features/auth/authApi";
+import { setUser } from "../redux/features/auth/authSlice";
 
 const AdminLogin = () => {
   const [message, setMessage] = useState("");
-  const { loginUser } = useAuth();
+  const [login] = useLoginMutation();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -16,17 +17,14 @@ const AdminLogin = () => {
 
   const navigate = useNavigate();
 
-
   const onSubmit = async (data) => {
     try {
-      await loginUser(data.email, data.password);
-      // alert("Admin Login successful!"); // Removing alert to check if it interferes
-      console.log("Login finished, navigating in 500ms...");
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 500);
+      const response = await login(data).unwrap();
+      dispatch(setUser({ user: response.user, token: response.token }));
+      console.log("Admin Login finished, navigating...");
+      navigate("/dashboard");
     } catch (error) {
-      const serverMessage = error.response?.data?.message;
+      const serverMessage = error.data?.message;
       setMessage(serverMessage || "Please provide a valid email and password");
       console.error(error);
     }

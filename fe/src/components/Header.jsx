@@ -9,16 +9,17 @@ import { FaShopware } from "react-icons/fa";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useAuth } from "../context/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
 import { useFetchUserByEmailQuery } from "../redux/features/users/userApi";
 import { useFetchCartByUserIdQuery } from "../redux/features/carts/cartsApi";
 import { useFetchAllBlogCategoriesQuery } from "../redux/features/blogCategories/blogCategoriesApi";
+import { logout } from "../redux/features/auth/authSlice";
 
 import { getImgUrl } from "../util/getImageUrl";
 
 const Header = () => {
-  const { currentUser, logout } = useAuth();
+  const dispatch = useDispatch();
+  const { user: currentUser } = useSelector((state) => state.auth);
   const { data: userData } = useFetchUserByEmailQuery(currentUser?.email, {
     skip: !currentUser?.email,
   });
@@ -53,7 +54,7 @@ const Header = () => {
   }, [userData, unpaidCartItems, cartItemsFromStore]);
 
   const handleLogOut = () => {
-    logout();
+    dispatch(logout());
     window.location.href = "/"; // Force redirect to Home and reload state
   };
 
