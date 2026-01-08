@@ -3,7 +3,6 @@ import { FaChevronDown, FaChevronRight, FaBoxOpen, FaUserFriends, FaBlog, FaShop
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ activeMenu, onMenuSelect }) => {
-  // State to manage expanded groups
   const [expandedGroups, setExpandedGroups] = useState(() => {
     const saved = localStorage.getItem("sidebarExpanded");
     return saved ? JSON.parse(saved) : { ecommerce: true, users: false, blogs: false, orders: false, attributes: false };
@@ -26,7 +25,6 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
     }
   };
 
-  // Helper to check if a group is active based on current selection
   const isGroupActive = (groupPrefix) => {
     if (groupPrefix === 'ecommerce') return ['dashboard', 'productList', 'addProduct', 'editProduct'].includes(activeMenu);
     if (groupPrefix === 'users') return ['userList', 'addUser'].includes(activeMenu);
@@ -37,61 +35,67 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
   };
 
   return (
-    <aside className="w-64 bg-slate-900 text-slate-300 h-full flex flex-col transition-all duration-300 shadow-xl z-20 font-sans">
+    <aside className="w-72 bg-[#345DA7] text-white h-full flex flex-col transition-all duration-500 shadow-2xl z-20 font-sans border-r border-white/10">
       {/* Brand / Logo */}
-      <div className="h-16 flex items-center justify-center border-b border-slate-700 bg-slate-950">
-        <Link to="/" className="flex items-center gap-2 font-bold text-xl text-white hover:text-blue-400 transition-colors">
-          <FaShoppingBag className="text-blue-500" />
-          <span>SHOESTORE<span className="text-blue-500">.</span></span>
+      <div className="h-24 flex items-center px-8 bg-[#345DA7] border-b border-white/5 mx-2">
+        <Link to="/" className="flex items-center gap-3 font-black text-2xl tracking-tighter hover:scale-105 transition-transform">
+          <div className="w-10 h-10 bg-[#4BB4DE] rounded-xl flex items-center justify-center shadow-lg shadow-[#4BB4DE]/20">
+            <FaShoppingBag className="text-white text-xl" />
+          </div>
+          <span className="flex flex-col leading-none">
+            <span className="text-white">SHOESTORE</span>
+            <span className="text-[#4BB4DE] text-[10px] tracking-[0.3em] ml-1 mt-1 font-bold">ADMIN PANEL</span>
+          </span>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
+      <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-2 custom-scrollbar">
 
         {/* Dashboard Item */}
         <div>
           <button
             onClick={() => handleMenuItemClick("dashboard")}
-            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${activeMenu === 'dashboard'
-              ? 'bg-blue-600 text-white shadow-md'
-              : 'hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-300 group ${activeMenu === 'dashboard'
+              ? 'bg-gradient-to-r from-[#3B8AC4] to-[#4BB4DE] text-white shadow-lg shadow-[#3B8AC4]/40 scale-[1.02]'
+              : 'hover:bg-white/5 text-[#EFDBCB]/80 hover:text-white'
               }`}
           >
-            <div className="flex items-center gap-3">
-              <FaTachometerAlt className={activeMenu === 'dashboard' ? 'text-white' : 'text-slate-400 group-hover:text-white'} />
-              <span className="font-medium text-sm">Dashboard</span>
+            <div className="flex items-center gap-4">
+              <FaTachometerAlt className={`text-lg transition-colors ${activeMenu === 'dashboard' ? 'text-white' : 'text-[#4BB4DE] group-hover:text-white'}`} />
+              <span className="font-bold text-sm tracking-wide">Bảng điều khiển</span>
             </div>
           </button>
         </div>
 
-        <div className="pt-4 pb-2">
-          <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Quản lý</p>
+        <div className="pt-6 pb-2 px-4">
+          <p className="text-[10px] font-black text-[#EFDBCB]/40 uppercase tracking-[0.2em]">Hệ thống quản lý</p>
         </div>
 
-        {/* Group: Orders - Moved up for importance */}
+        {/* Group: Orders */}
         <div className="space-y-1">
           <button
             onClick={() => toggleGroup("orders")}
-            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('orders') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-300 group ${isGroupActive('orders') ? 'bg-white/5 text-white' : 'hover:bg-white/5 text-[#EFDBCB]/80 hover:text-white'
               }`}
           >
-            <div className="flex items-center gap-3">
-              <FaClipboardList className={isGroupActive('orders') ? 'text-orange-400' : 'text-slate-400 group-hover:text-white'} />
-              <span className="font-medium text-sm">Đơn hàng</span>
+            <div className="flex items-center gap-4">
+              <FaClipboardList className={`text-lg ${isGroupActive('orders') ? 'text-[#4BB4DE]' : 'text-[#4BB4DE]/60 group-hover:text-white'}`} />
+              <span className="font-bold text-sm">Đơn hàng</span>
             </div>
-            {expandedGroups["orders"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+            <div className={`transition-transform duration-300 ${expandedGroups["orders"] ? 'rotate-180' : ''}`}>
+              <FaChevronDown size={12} className="opacity-40" />
+            </div>
           </button>
 
-          {/* Submenu */}
           {expandedGroups["orders"] && (
-            <div className="pl-9 space-y-1">
+            <div className="ml-4 pl-8 border-l border-white/10 space-y-1 animate-slideDown">
               <button
                 onClick={() => handleMenuItemClick("orderList")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'orderList' ? 'text-orange-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-semibold transition-all ${activeMenu === 'orderList' ? 'text-white bg-[#3B8AC4]' : 'text-[#EFDBCB]/60 hover:text-white hover:bg-white/5'
                   }`}
               >
-                Danh sách đơn hàng
+                Danh sách vận đơn
               </button>
             </div>
           )}
@@ -101,81 +105,65 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
         <div className="space-y-1">
           <button
             onClick={() => toggleGroup("ecommerce")}
-            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('ecommerce') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-300 group ${isGroupActive('ecommerce') ? 'bg-white/5 text-white' : 'hover:bg-white/5 text-[#EFDBCB]/80 hover:text-white'
               }`}
           >
-            <div className="flex items-center gap-3">
-              <FaBoxOpen className={isGroupActive('ecommerce') ? 'text-blue-400' : 'text-slate-400 group-hover:text-white'} />
-              <span className="font-medium text-sm">Sản phẩm</span>
+            <div className="flex items-center gap-4">
+              <FaBoxOpen className={`text-lg ${isGroupActive('ecommerce') ? 'text-[#4BB4DE]' : 'text-[#4BB4DE]/60 group-hover:text-white'}`} />
+              <span className="font-bold text-sm">Kho hàng</span>
             </div>
-            {expandedGroups["ecommerce"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+            <div className={`transition-transform duration-300 ${expandedGroups["ecommerce"] ? 'rotate-180' : ''}`}>
+              <FaChevronDown size={12} className="opacity-40" />
+            </div>
           </button>
 
-          {/* Submenu */}
           {expandedGroups["ecommerce"] && (
-            <div className="pl-9 space-y-1">
+            <div className="ml-4 pl-8 border-l border-white/10 space-y-1 animate-slideDown">
               <button
                 onClick={() => handleMenuItemClick("productList")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'productList' ? 'text-blue-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-semibold transition-all ${activeMenu === 'productList' ? 'text-white bg-[#3B8AC4]' : 'text-[#EFDBCB]/60 hover:text-white hover:bg-white/5'
                   }`}
               >
-                Danh sách
+                Tất cả sản phẩm
               </button>
               <button
                 onClick={() => handleMenuItemClick("addProduct")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'addProduct' ? 'text-blue-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-semibold transition-all ${activeMenu === 'addProduct' ? 'text-white bg-[#3B8AC4]' : 'text-[#EFDBCB]/60 hover:text-white hover:bg-white/5'
                   }`}
               >
-                Thêm mới
+                Nhập kho mới
               </button>
             </div>
           )}
         </div>
 
-        {/* Group: Attributes (Brands, Colors, Sizes, Categories) */}
+        {/* Group: Attributes */}
         <div className="space-y-1">
           <button
             onClick={() => toggleGroup("attributes")}
-            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('attributes') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-300 group ${isGroupActive('attributes') ? 'bg-white/5 text-white' : 'hover:bg-white/5 text-[#EFDBCB]/80 hover:text-white'
               }`}
           >
-            <div className="flex items-center gap-3">
-              <FaTags className={isGroupActive('attributes') ? 'text-purple-400' : 'text-slate-400 group-hover:text-white'} />
-              <span className="font-medium text-sm">Thuộc tính</span>
+            <div className="flex items-center gap-4">
+              <FaTags className={`text-lg ${isGroupActive('attributes') ? 'text-[#4BB4DE]' : 'text-[#4BB4DE]/60 group-hover:text-white'}`} />
+              <span className="font-bold text-sm">Phân loại</span>
             </div>
-            {expandedGroups["attributes"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+            <div className={`transition-transform duration-300 ${expandedGroups["attributes"] ? 'rotate-180' : ''}`}>
+              <FaChevronDown size={12} className="opacity-40" />
+            </div>
           </button>
 
           {expandedGroups["attributes"] && (
-            <div className="pl-9 space-y-1">
-              <button
-                onClick={() => handleMenuItemClick("manageBrands")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageBrands' ? 'text-purple-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-              >
-                Thương hiệu
-              </button>
-              <button
-                onClick={() => handleMenuItemClick("manageColors")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageColors' ? 'text-purple-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-              >
-                Màu sắc
-              </button>
-              <button
-                onClick={() => handleMenuItemClick("manageSizes")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageSizes' ? 'text-purple-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-              >
-                Kích cỡ
-              </button>
-              <button
-                onClick={() => handleMenuItemClick("manageCategories")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageCategories' ? 'text-purple-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-              >
-                Danh mục
-              </button>
+            <div className="ml-4 pl-8 border-l border-white/10 space-y-1 animate-slideDown">
+              {['manageBrands', 'manageColors', 'manageSizes', 'manageCategories'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => handleMenuItemClick(item)}
+                  className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-semibold capitalize transition-all ${activeMenu === item ? 'text-white bg-[#3B8AC4]' : 'text-[#EFDBCB]/60 hover:text-white hover:bg-white/5'}`}
+                >
+                  {item.replace('manage', '')}
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -184,38 +172,33 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
         <div className="space-y-1">
           <button
             onClick={() => toggleGroup("blogs")}
-            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('blogs') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-300 group ${isGroupActive('blogs') ? 'bg-white/5 text-white' : 'hover:bg-white/5 text-[#EFDBCB]/80 hover:text-white'
               }`}
           >
-            <div className="flex items-center gap-3">
-              <FaBlog className={isGroupActive('blogs') ? 'text-pink-400' : 'text-slate-400 group-hover:text-white'} />
-              <span className="font-medium text-sm">Bài viết</span>
+            <div className="flex items-center gap-4">
+              <FaBlog className={`text-lg ${isGroupActive('blogs') ? 'text-[#4BB4DE]' : 'text-[#4BB4DE]/60 group-hover:text-white'}`} />
+              <span className="font-bold text-sm">Nội dung</span>
             </div>
-            {expandedGroups["blogs"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+            <div className={`transition-transform duration-300 ${expandedGroups["blogs"] ? 'rotate-180' : ''}`}>
+              <FaChevronDown size={12} className="opacity-40" />
+            </div>
           </button>
 
           {expandedGroups["blogs"] && (
-            <div className="pl-9 space-y-1">
+            <div className="ml-4 pl-8 border-l border-white/10 space-y-1 animate-slideDown">
               <button
                 onClick={() => handleMenuItemClick("blogList")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'blogList' ? 'text-pink-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-semibold transition-all ${activeMenu === 'blogList' ? 'text-white bg-[#3B8AC4]' : 'text-[#EFDBCB]/60 hover:text-white hover:bg-white/5'
                   }`}
               >
-                Danh sách tin
+                Bài viết
               </button>
               <button
                 onClick={() => handleMenuItemClick("addBlog")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'addBlog' ? 'text-pink-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-semibold transition-all ${activeMenu === 'addBlog' ? 'text-white bg-[#3B8AC4]' : 'text-[#EFDBCB]/60 hover:text-white hover:bg-white/5'
                   }`}
               >
-                Viết bài mới
-              </button>
-              <button
-                onClick={() => handleMenuItemClick("manageBlogCategories")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'manageBlogCategories' ? 'text-pink-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-              >
-                Danh mục blog
+                Soạn bài
               </button>
             </div>
           )}
@@ -225,31 +208,26 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
         <div className="space-y-1">
           <button
             onClick={() => toggleGroup("users")}
-            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 group ${isGroupActive('users') ? 'text-white' : 'hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-300 group ${isGroupActive('users') ? 'bg-white/5 text-white' : 'hover:bg-white/5 text-[#EFDBCB]/80 hover:text-white'
               }`}
           >
-            <div className="flex items-center gap-3">
-              <FaUserFriends className={isGroupActive('users') ? 'text-green-400' : 'text-slate-400 group-hover:text-white'} />
-              <span className="font-medium text-sm">Người dùng</span>
+            <div className="flex items-center gap-4">
+              <FaUserFriends className={`text-lg ${isGroupActive('users') ? 'text-[#4BB4DE]' : 'text-[#4BB4DE]/60 group-hover:text-white'}`} />
+              <span className="font-bold text-sm">Thành viên</span>
             </div>
-            {expandedGroups["users"] ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+            <div className={`transition-transform duration-300 ${expandedGroups["users"] ? 'rotate-180' : ''}`}>
+              <FaChevronDown size={12} className="opacity-40" />
+            </div>
           </button>
 
           {expandedGroups["users"] && (
-            <div className="pl-9 space-y-1">
+            <div className="ml-4 pl-8 border-l border-white/10 space-y-1 animate-slideDown">
               <button
                 onClick={() => handleMenuItemClick("userList")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'userList' ? 'text-green-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-semibold transition-all ${activeMenu === 'userList' ? 'text-white bg-[#3B8AC4]' : 'text-[#EFDBCB]/60 hover:text-white hover:bg-white/5'
                   }`}
               >
-                Danh sách User
-              </button>
-              <button
-                onClick={() => handleMenuItemClick("addUser")}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-colors ${activeMenu === 'addUser' ? 'text-green-400 font-semibold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-              >
-                Thêm User
+                Danh sách người dùng
               </button>
             </div>
           )}
@@ -257,17 +235,20 @@ const Sidebar = ({ activeMenu, onMenuSelect }) => {
 
       </nav>
 
-      {/* User / Logout */}
-      <div className="p-4 border-t border-slate-700 bg-slate-950">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+      {/* Footer Profile */}
+      <div className="p-6 bg-black/10 border-t border-white/5 m-4 rounded-3xl">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-[#4BB4DE] flex items-center justify-center text-white font-black text-xl shadow-inner shadow-black/10">
             A
           </div>
-          <div>
-            <p className="text-sm font-semibold text-white">Admin</p>
-            <Link to="/" className="text-xs text-slate-400 hover:text-slate-200">Đăng xuất</Link>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-black text-white truncate">Administrator</p>
+            <p className="text-[10px] text-[#EFDBCB]/40 font-bold uppercase tracking-tight">Vị trí: Giám đốc</p>
           </div>
         </div>
+        <button onClick={() => window.location.href = '/'} className="w-full mt-4 py-2 bg-white/5 hover:bg-red-500/10 text-[#EFDBCB]/60 hover:text-red-400 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+          Thoát hệ thống
+        </button>
       </div>
     </aside>
   );

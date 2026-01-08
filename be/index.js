@@ -31,6 +31,9 @@ const blogRoutes = require("./src/routes/blog.route");
 
 
 
+const blogCategoryRoutes = require("./src/routes/blogCategory.route");
+const adminRoutes = require("./src/routes/admin.route");
+
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/brands", brandRoutes);
 app.use("/api/v1/categories", categoryRoutes);
@@ -43,8 +46,8 @@ app.use("/api/v1/carts", cartsRoutes);
 app.use("/api/v1/momo", momoRoutes);
 app.use("/api/v1/orders", ordersRotes);
 app.use("/api/v1/blogs", blogRoutes);
-const blogCategoryRoutes = require("./src/routes/blogCategory.route");
 app.use("/api/v1/blog-categories", blogCategoryRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 
 // Serve uploaded files

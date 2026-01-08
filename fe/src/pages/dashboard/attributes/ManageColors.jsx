@@ -94,53 +94,58 @@ const ManageColors = () => {
     if (loading) return <div className="flex justify-center items-center h-64">Đang tải...</div>;
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Quản lý Màu sắc</h1>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#3B8AC4]/10 animate-fadeIn overflow-hidden">
+            <div className="flex justify-between items-center mb-8 bg-gradient-to-r from-white to-[#EFDBCB]/10 p-4 rounded-2xl">
+                <div>
+                    <h1 className="text-2xl font-black text-[#345DA7] tracking-tight">Quản lý Màu sắc</h1>
+                    <p className="text-xs text-gray-400 mt-1 uppercase font-bold tracking-widest">Bảng mã màu sản phẩm</p>
+                </div>
                 <button
                     onClick={openModalForAdd}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
+                    className="bg-[#345DA7] text-white px-6 py-3 rounded-2xl flex items-center gap-3 hover:bg-[#3B8AC4] transition-all shadow-lg shadow-[#345DA7]/20 hover:scale-105"
                 >
-                    <FaPlus /> Thêm màu sắc
+                    <FaPlus className="text-xs" /> <span className="font-bold text-sm">Thêm màu mới</span>
                 </button>
             </div>
 
             <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã màu</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Xem trước</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                <table className="min-w-full text-left">
+                    <thead>
+                        <tr className="bg-[#345DA7]/5">
+                            <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider">Mã HEX</th>
+                            <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider">Tên màu</th>
+                            <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider">Hiển thị</th>
+                            <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider text-center">Hành động</th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="divide-y divide-[#3B8AC4]/5">
                         {colors.filter(color => !color.isDeleted).map((color) => (
-                            <tr key={color.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{color.id}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{color.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{color.hex || '-'}{color.isDeleted ? ' (Deleted)' : ''}</td>
+                            <tr key={color.id} className="hover:bg-[#EFDBCB]/10 transition-colors group">
+                                <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-400 uppercase tracking-widest">{color.hex || 'N/A'}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className="text-sm font-black text-gray-800 group-hover:text-[#345DA7] transition-colors">{color.name}</span>
+                                </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div
-                                        className="w-10 h-10 rounded border border-gray-300"
+                                        className="w-12 h-6 rounded-full border border-white shadow-sm ring-1 ring-gray-100"
                                         style={{ backgroundColor: color.hex || '#000000' }}
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button
-                                        onClick={() => openModalForEdit(color)}
-                                        className="text-blue-600 hover:text-blue-900 mr-3"
-                                    >
-                                        <FaEdit />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(color.id)}
-                                        className="text-red-600 hover:text-red-900"
-                                    >
-                                        <FaTrash />
-                                    </button>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                    <div className="flex justify-center gap-3">
+                                        <button
+                                            onClick={() => openModalForEdit(color)}
+                                            className="p-2.5 bg-[#3B8AC4]/10 text-[#3B8AC4] rounded-xl hover:bg-[#3B8AC4] hover:text-white transition-all transform hover:rotate-12"
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(color.id)}
+                                            className="p-2.5 bg-red-100 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all transform hover:-rotate-12"
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -150,57 +155,65 @@ const ManageColors = () => {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 backdrop-blur-sm bg-gray-900/20 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h2 className="text-xl font-bold mb-4">
-                            {editingColor ? 'Sửa màu sắc' : 'Thêm màu sắc'}
-                        </h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
-                                    Tên màu
+                <div className="fixed inset-0 backdrop-blur-md bg-[#345DA7]/20 flex items-center justify-center z-50 animate-fadeIn">
+                    <div className="bg-white rounded-[2rem] p-10 w-full max-w-md shadow-2xl border border-white/20 animate-slideDown">
+                        <div className="mb-8">
+                            <h2 className="text-2xl font-black text-[#345DA7] tracking-tight mb-2">
+                                {editingColor ? 'Cập nhật màu' : 'Thêm màu sắc'}
+                            </h2>
+                            <div className="h-1 w-12 bg-[#4BB4DE] rounded-full"></div>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label className="block text-[#345DA7] text-[10px] font-black uppercase tracking-widest mb-2 ml-1">
+                                    Tên màu hiển thị
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#3B8AC4] font-bold text-gray-700 transition-all placeholder:font-normal"
+                                    placeholder="Ví dụ: Ocean Blue, Sand..."
                                     required
                                 />
                             </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
-                                    Mã màu (Hex)
+                            <div>
+                                <label className="block text-[#345DA7] text-[10px] font-black uppercase tracking-widest mb-2 ml-1">
+                                    Chọn mã màu
                                 </label>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="color"
-                                        value={formData.hex}
-                                        onChange={(e) => setFormData({ ...formData, hex: e.target.value })}
-                                        className="h-10 w-20 border border-gray-300 rounded-md cursor-pointer"
-                                    />
+                                <div className="flex gap-4">
+                                    <div className="relative w-16 h-14 overflow-hidden rounded-2xl shadow-inner bg-gray-100">
+                                        <input
+                                            type="color"
+                                            value={formData.hex}
+                                            onChange={(e) => setFormData({ ...formData, hex: e.target.value })}
+                                            className="absolute inset-0 w-[150%] h-[150%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
+                                        />
+                                    </div>
                                     <input
                                         type="text"
                                         value={formData.hex}
                                         onChange={(e) => setFormData({ ...formData, hex: e.target.value })}
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="flex-1 px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#3B8AC4] font-mono font-bold text-[#3B8AC4] uppercase tracking-widest transition-all"
                                         placeholder="#000000"
                                     />
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-2">
+                            <div className="flex justify-end gap-3 pt-4">
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                                    className="px-6 py-4 bg-gray-100 text-gray-500 rounded-2xl hover:bg-gray-200 font-bold text-xs uppercase tracking-widest transition-all"
                                 >
-                                    Hủy
+                                    Hủy bỏ
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                    disabled={submitting}
+                                    className="px-8 py-4 bg-[#345DA7] text-white rounded-2xl hover:bg-[#3B8AC4] font-bold text-xs uppercase tracking-widest shadow-lg shadow-[#345DA7]/20 transition-all disabled:opacity-50"
                                 >
-                                    {editingColor ? 'Cập nhật' : 'Thêm'}
+                                    {editingColor ? 'Lưu thay đổi' : 'Xác nhận tạo'}
                                 </button>
                             </div>
                         </form>
