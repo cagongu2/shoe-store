@@ -62,7 +62,7 @@ const Header = () => {
 
   const { data: blogCategories = [] } = useFetchAllBlogCategoriesQuery();
   const { data: brandsData = [] } = useFetchAllBrandsQuery();
-  const { data: categoriesData = [] } = useFetchAllCategoriesQuery();
+  const { data: categoriesData = [] } = useFetchAllCategoriesQuery({ tree: true });
 
   const newsTypes = blogCategories.map(cat => ({
     type: cat.slug,
@@ -76,7 +76,8 @@ const Header = () => {
 
   const accessories = categoriesData.map(c => ({
     type: c.name.toLowerCase(),
-    label: c.name
+    label: c.name,
+    children: c.children || []
   }));
 
   return (
@@ -219,22 +220,39 @@ const Header = () => {
                 to="/san-pham"
                 className="flex items-center hover:text-blue-500 transition"
               >
-                phụ kiện
+                loại giày
                 <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
               </Link>
               {/* Dropdown menu */}
-              <ul className="absolute left-0 top-[80px] w-48 bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+              <ul className="absolute left-0 top-[80px] min-w-[200px] bg-orange-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 shadow-xl">
                 {accessories.map((item) => (
                   <li
                     key={`item-${item.type}`}
-                    className="border-b border-white hover:bg-orange-400"
+                    className="relative group/sub border-b border-white/20 hover:bg-orange-400"
                   >
                     <Link
                       to={`/san-pham?category=${item.type}`}
-                      className="block px-4 py-2 text-white"
+                      className="flex justify-between items-center px-4 py-3 text-white text-sm"
                     >
                       {item.label}
+                      {item.children.length > 0 && <IoIosArrowDown className="-rotate-90 text-[10px]" />}
                     </Link>
+
+                    {/* Submenu con */}
+                    {item.children.length > 0 && (
+                      <ul className="absolute left-full top-0 w-48 bg-orange-400 opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 shadow-xl border-l border-white/20">
+                        {item.children.map(child => (
+                          <li key={child.id} className="border-b border-white/10 hover:bg-orange-500">
+                            <Link
+                              to={`/san-pham?category=${child.name.toLowerCase()}`}
+                              className="block px-4 py-2 text-white text-[13px]"
+                            >
+                              {child.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -385,20 +403,31 @@ const Header = () => {
           <li className="relative group ">
             <div className="flex justify-between">
               <button className="py-2 font-semibold w-full text-left uppercase relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-[2px] before:bg-orange-500 before:scale-x-0 before:transition-transform before:duration-300 group-hover:before:scale-x-100">
-                phụ kiện
+                loại giày
               </button>
               <IoIosArrowDown className="ml-1 transition-transform duration-300 group-hover:rotate-180" />
             </div>
             <ul className="bg-orange-300 rounded-lg mt-2 hidden group-hover:block uppercase">
               {accessories.map((item) => (
-                <li key={`accessory-${item.type}`}>
-                  <Link
-                    to={`/san-pham?category=${item.type}`}
-                  >
-                    <div className="px-4 py-2 text-white hover:bg-orange-400 hover:rounded-lg m-[2px]">
+                <li key={`accessory-${item.type}`} className="border-b border-white/10 last:border-0">
+                  <Link to={`/san-pham?category=${item.type}`}>
+                    <div className="px-4 py-2 text-white hover:bg-orange-400 font-bold">
                       {item.label}
                     </div>
                   </Link>
+                  {item.children.length > 0 && (
+                    <ul className="pl-4 bg-orange-400/30">
+                      {item.children.map(child => (
+                        <li key={child.id}>
+                          <Link to={`/san-pham?category=${child.name.toLowerCase()}`}>
+                            <div className="px-4 py-2 text-white/80 hover:text-white hover:bg-orange-500 text-xs transition-colors">
+                              - {child.name}
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>

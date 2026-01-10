@@ -17,9 +17,12 @@ const categoriesApi = createApi({
     reducerPath: 'categoriesApi',
     baseQuery,
     tagTypes: ['Categories'],
-    endpoints: (builder) =>({
+    endpoints: (builder) => ({
         fetchAllCategories: builder.query({
-            query: () => "/",
+            query: (params) => ({
+                url: "/",
+                params
+            }),
             providesTags: ["Categories"]
         }),
         fetchCategoryById: builder.query({
@@ -35,7 +38,7 @@ const categoriesApi = createApi({
             invalidatesTags: ["Categories"]
         }),
         updateCategory: builder.mutation({
-            query: ({id, ...rest}) => ({
+            query: ({ id, ...rest }) => ({
                 url: `/${id}`,
                 method: "PUT",
                 body: rest,
@@ -53,7 +56,7 @@ const categoriesApi = createApi({
             invalidatesTags: ["Categories"]
         })
     })
-  })
-  
-  export const {useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useAddCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation} = categoriesApi;
-  export default categoriesApi;
+})
+
+export const { useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useAddCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation } = categoriesApi;
+export default categoriesApi;

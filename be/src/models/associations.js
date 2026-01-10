@@ -16,6 +16,9 @@ Product.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
 Product.hasMany(Image, { foreignKey: "productId", as: "images" });
 Product.hasMany(ProductStock, { foreignKey: "productId", as: "stocks" });
 
+Category.belongsTo(Category, { foreignKey: "parentId", as: "parent" });
+Category.hasMany(Category, { foreignKey: "parentId", as: "children" });
+
 Image.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 ProductStock.belongsTo(Product, { foreignKey: "productId", as: "product" });

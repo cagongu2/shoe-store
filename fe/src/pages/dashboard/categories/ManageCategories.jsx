@@ -10,7 +10,7 @@ const ManageCategories = () => {
     const [submitting, setSubmitting] = React.useState(false);
     const [showModal, setShowModal] = React.useState(false);
     const [editingCategory, setEditingCategory] = React.useState(null);
-    const [formData, setFormData] = React.useState({ name: '', description: '' });
+    const [formData, setFormData] = React.useState({ name: '', description: '', parentId: '' });
 
     React.useEffect(() => {
         fetchCategories();
@@ -75,20 +75,24 @@ const ManageCategories = () => {
 
     const openModalForAdd = () => {
         setEditingCategory(null);
-        setFormData({ name: '', description: '' });
+        setFormData({ name: '', description: '', parentId: '' });
         setShowModal(true);
     };
 
     const openModalForEdit = (category) => {
         setEditingCategory(category);
-        setFormData({ name: category.name, description: category.description || '' });
+        setFormData({
+            name: category.name,
+            description: category.description || '',
+            parentId: category.parentId || ''
+        });
         setShowModal(true);
     };
 
     const closeModal = () => {
         setShowModal(false);
         setEditingCategory(null);
-        setFormData({ name: '', description: '' });
+        setFormData({ name: '', description: '', parentId: '' });
     };
 
     if (loading) return <div className="flex justify-center items-center h-64">Đang tải...</div>;
@@ -114,6 +118,7 @@ const ManageCategories = () => {
                         <tr className="bg-[#345DA7]/5">
                             <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider">Mã ID</th>
                             <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider">Tên danh mục</th>
+                            <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider">Danh mục cha</th>
                             <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider">Mô tả chi tiết</th>
                             <th className="px-6 py-4 text-xs font-black text-[#345DA7] uppercase tracking-wider text-center">Hành động</th>
                         </tr>
@@ -124,6 +129,11 @@ const ManageCategories = () => {
                                 <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-400">#{String(category.id).slice(0, 8)}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className="text-sm font-black text-gray-800 group-hover:text-[#345DA7] transition-colors">{category.name}</span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
+                                        {categories.find(c => c.id === category.parentId)?.name || 'Gốc'}
+                                    </span>
                                 </td>
                                 <td className="px-6 py-4 text-sm text-gray-400 italic">
                                     {category.description || 'Chưa có mô tả'}
@@ -174,6 +184,24 @@ const ManageCategories = () => {
                                     placeholder="Ví dụ: Giày thể thao, Sandals..."
                                     required
                                 />
+                            </div>
+                            <div>
+                                <label className="block text-[#345DA7] text-[10px] font-black uppercase tracking-widest mb-2 ml-1">
+                                    Danh mục cha
+                                </label>
+                                <select
+                                    value={formData.parentId}
+                                    onChange={(e) => setFormData({ ...formData, parentId: e.target.value })}
+                                    className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#3B8AC4] font-bold text-gray-700 transition-all appearance-none"
+                                >
+                                    <option value="">-- Không có (Danh mục gốc) --</option>
+                                    {categories
+                                        .filter(c => c.id !== editingCategory?.id && !c.parentId)
+                                        .map(c => (
+                                            <option key={c.id} value={c.id}>{c.name}</option>
+                                        ))
+                                    }
+                                </select>
                             </div>
                             <div>
                                 <label className="block text-[#345DA7] text-[10px] font-black uppercase tracking-widest mb-2 ml-1">

@@ -20,10 +20,10 @@ const seedData = async () => {
         const reebok = await Brand.create({ name: 'Reebok' });
         console.log('Brands created.');
 
-        // 2. Create Categories
-        const sneakers = await Category.create({ name: 'Sneakers' });
-        const running = await Category.create({ name: 'Running Shoes' });
-        const basketball = await Category.create({ name: 'Basketball Shoes' });
+        // 2. Create Categories (Hierarchical)
+        const sportsShoes = await Category.create({ name: 'Sneakers' });
+        const running = await Category.create({ name: 'Running Shoes', parentId: sportsShoes.id });
+        const basketball = await Category.create({ name: 'Basketball Shoes', parentId: sportsShoes.id });
         const accessories = await Category.create({ name: 'Accessories' });
         console.log('Categories created.');
 
@@ -93,7 +93,7 @@ const seedData = async () => {
             sale: false,
             description: 'Retro-future design with tech-inspired details.',
             brandId: puma.id,
-            categoryId: sneakers.id
+            categoryId: sportsShoes.id
         });
 
         const p4 = await Product.create({
@@ -103,7 +103,7 @@ const seedData = async () => {
             sale: false,
             description: 'Nike Big Air unit meets modern styling for comfort.',
             brandId: nike.id,
-            categoryId: sneakers.id
+            categoryId: sportsShoes.id
         });
 
         const p5 = await Product.create({
@@ -113,7 +113,7 @@ const seedData = async () => {
             sale: true,
             description: 'Clean, classic look with a soft leather upper.',
             brandId: reebok.id,
-            categoryId: sneakers.id
+            categoryId: sportsShoes.id
         });
         console.log('Products created.');
 
