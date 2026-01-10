@@ -2,6 +2,8 @@ const { Op } = require("sequelize");
 const Address = require("../models/address.model");
 const Order = require("../models/order.model");
 const Cart = require("../models/cart.model");
+const Product = require("../models/product.model");
+const Image = require("../models/image.model");
 const { syncOrder } = require("../utils/rdfHelper");
 
 const createOrder = async (req, res) => {
@@ -71,7 +73,21 @@ const getOrdersByEmail = async (req, res) => {
         const { email } = req.params;
         const orders = await Order.findAll({
             where: { email },
-            order: [['createdAt', 'DESC']]
+            order: [['createdAt', 'DESC']],
+            include: [
+                { model: Address, as: 'address' },
+                {
+                    model: Cart,
+                    as: 'carts',
+                    include: [
+                        {
+                            model: Product,
+                            as: 'product',
+                            include: [{ model: Image, as: 'images' }]
+                        }
+                    ]
+                }
+            ]
         });
         res.status(200).json(orders);
     } catch (error) {
