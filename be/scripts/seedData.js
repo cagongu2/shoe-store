@@ -45,21 +45,21 @@ const seedData = async () => {
         // 5. Create Users
         const admin = await User.create({
             email: 'admin@gmail.com',
-            password: 'admin',
+            password: 'admin123',
             username: 'Administrator',
             role: 'admin'
         });
 
         const user1 = await User.create({
             email: 'user1@gmail.com',
-            password: 'user1',
+            password: 'user123',
             username: 'The Sneakerhead',
             role: 'user'
         });
 
         const user2 = await User.create({
             email: 'user2@gmail.com',
-            password: 'user2',
+            password: 'user123',
             username: 'Running Fan',
             role: 'user'
         });
