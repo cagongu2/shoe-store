@@ -8,7 +8,7 @@ import { CgMenuBoxed } from "react-icons/cg";
 import { FaShopware } from "react-icons/fa";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useFetchUserByEmailQuery } from "../redux/features/users/userApi";
 import { useFetchCartByUserIdQuery } from "../redux/features/carts/cartsApi";
@@ -20,6 +20,7 @@ import { logout } from "../redux/features/auth/authSlice";
 import { getImgUrl } from "../util/getImageUrl";
 
 const Header = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
   const { data: userData } = useFetchUserByEmailQuery(currentUser?.email, {
@@ -36,6 +37,18 @@ const Header = () => {
   const favoriteItems = useSelector((state) => state.favorite.favoriteItems);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" || e.type === "click") {
+      if (searchQuery.trim()) {
+        navigate(`/san-pham?search=${encodeURIComponent(searchQuery.trim())}`);
+        setIsSearchOpen(false);
+        setSearchQuery("");
+      }
+    }
+  };
 
   const { data: cartItemsFromDB = [] } = useFetchCartByUserIdQuery(
     userData?.id,
@@ -306,7 +319,23 @@ const Header = () => {
         <div className="menu-cart order-last">
           {/* Icons */}
           <div className="flex items-center space-x-4">
-            <IoIosSearch className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />
+            <div className="relative flex items-center">
+              {isSearchOpen && (
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm giày, danh mục..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearch}
+                  autoFocus
+                  className="absolute right-10 bg-white border border-blue-400 rounded-full px-4 py-1.5 text-sm w-48 lg:w-64 focus:outline-none shadow-lg animate-fadeIn"
+                />
+              )}
+              <IoIosSearch
+                className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500 transition-colors"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+              />
+            </div>
             <div className="relative">
               <Link to="/san-pham-yeu-thich">
                 <IoHeartOutline className="cursor-pointer text-2xl text-gray-700 hover:text-blue-500" />

@@ -133,7 +133,41 @@ const getBlogRecommendations = async (req, res) => {
     }
 };
 
+const searchProducts = async (req, res) => {
+    try {
+        const { query } = req.query;
+        if (!query) return res.status(200).json([]);
+
+        const sparql = `
+            SELECT DISTINCT ?product
+            WHERE {
+              {
+                ?product rdf:type ex:Product .
+                ?product ex:name ?name .
+                FILTER(CONTAINS(LCASE(?name), LCASE("${query}")))
+              } UNION {
+                ?product ex:category ?cat .
+                ?cat rdfs:subClassOf* ?parentCat .
+                ?parentCat ex:name ?catName .
+                FILTER(CONTAINS(LCASE(?catName), LCASE("${query}")))
+              } UNION {
+                ?product ex:brand ?brand .
+                ?brand ex:name ?brandName .
+                FILTER(CONTAINS(LCASE(?brandName), LCASE("${query}")))
+              }
+            }
+        `;
+        const results = await queryStore(sparql);
+        const productIds = results.map(r => r.product.value.split('/').pop());
+        res.status(200).json(productIds);
+    } catch (error) {
+        console.error("Error in searchProducts:", error);
+        res.status(500).json({ message: "Error in semantic search", error: error.message });
+    }
+};
+
 module.exports = {
     getProductRecommendations,
-    getBlogRecommendations
+    getBlogRecommendations,
+    searchProducts
 };

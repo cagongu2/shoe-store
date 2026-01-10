@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getProductRecommendations, getBlogRecommendations } = require("../controllers/suggestion.controller");
+const { getProductRecommendations, getBlogRecommendations, searchProducts } = require("../controllers/suggestion.controller");
 
 /**
  * @openapi
@@ -49,5 +49,6 @@ router.get("/products", getProductRecommendations);
  *         description: Danh sách ID bài viết gợi ý
  */
 router.get("/blogs", getBlogRecommendations);
+router.get("/search", searchProducts);
 
 module.exports = router;

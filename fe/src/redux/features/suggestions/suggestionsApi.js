@@ -19,7 +19,13 @@ export const suggestionsApi = createApi({
                 params: { type, email, productId },
             }),
         }),
+        searchProducts: builder.query({
+            query: (query) => ({
+                url: '/search',
+                params: { query },
+            }),
+        }),
     }),
 });
 
-export const { useGetProductRecommendationsQuery, useGetBlogRecommendationsQuery } = suggestionsApi;
+export const { useGetProductRecommendationsQuery, useGetBlogRecommendationsQuery, useSearchProductsQuery } = suggestionsApi;

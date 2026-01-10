@@ -12,6 +12,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useFetchAllProductsQuery } from "../../redux/features/products/productsApi";
 import Loading from "../../components/Loading";
 import RecommendationSection from "../home/RecommendationSection";
+import { useSearchProductsQuery } from "../../redux/features/suggestions/suggestionsApi";
 
 const Product = () => {
   const { data: products = [], isLoading } = useFetchAllProductsQuery();
@@ -26,15 +27,32 @@ const Product = () => {
   const brandParam = searchParams.get("brand");
   const hotParam = searchParams.get("hot");
   const saleParam = searchParams.get("sale");
+  const searchParam = searchParams.get("search");
+
+  // --- SEMANTIC SEARCH ---
+  const { data: searchResultIds = [] } = useSearchProductsQuery(searchParam, {
+    skip: !searchParam
+  });
 
   // Reset trang về 1 khi params thay đổi
   useEffect(() => {
     setCurrentPage(1);
-  }, [categoryParam, brandParam, hotParam, saleParam]);
+  }, [categoryParam, brandParam, hotParam, saleParam, searchParam]);
 
   // --- LOGIC LỌC CHÍNH (CLIENT-SIDE) ---
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
+      // Lọc theo Semantic Search (Ontology)
+      if (searchParam) {
+        // Nếu có kết quả từ RDF store, chỉ hiện những SP đó
+        if (searchResultIds.length > 0) {
+          if (!searchResultIds.includes(String(product.id))) return false;
+        } else {
+          // Fallback lọc đơn giản theo tên nếu RDF không trả kết quả hoặc đang load
+          if (!product.name.toLowerCase().includes(searchParam.toLowerCase())) return false;
+        }
+      }
+
       // Lọc theo Brand
       if (brandParam && product.brand?.name?.toLowerCase() !== brandParam.toLowerCase()) {
         return false;
@@ -53,7 +71,7 @@ const Product = () => {
       }
       return true;
     });
-  }, [products, categoryParam, brandParam, hotParam, saleParam]);
+  }, [products, categoryParam, brandParam, hotParam, saleParam, searchParam, searchResultIds]);
 
 
   // --- LOGIC PHÂN TRANG (Dựa trên filteredProducts) ---
@@ -237,9 +255,10 @@ const Product = () => {
             </div>
 
             {/* Show filter status */}
-            {(brandParam || categoryParam || hotParam || saleParam) && (
+            {(brandParam || categoryParam || hotParam || saleParam || searchParam) && (
               <div className="mb-4 text-gray-600 font-medium">
                 Đang hiển thị {filteredProducts.length} sản phẩm
+                {searchParam && <> cho từ khóa <span className="text-blue-500 uppercase">"{searchParam}"</span></>}
                 {brandParam && <> thương hiệu <span className="text-orange-500 uppercase">"{brandParam}"</span></>}
                 {categoryParam && <> danh mục <span className="text-orange-500 uppercase">"{categoryParam}"</span></>}
                 {hotParam && <> <span className="text-red-500 font-bold">HOT</span></>}
