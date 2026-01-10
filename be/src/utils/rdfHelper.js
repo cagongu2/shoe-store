@@ -54,8 +54,34 @@ const syncProduct = async (product) => {
             ex:brand brand:${product.brandId} ;
             ex:category category:${product.categoryId} .
     `;
+    // For Fuseki update, we need to be careful. DELETE WHERE { ?s ?p ?o } is too broad if we only want to update specific properties.
+    // However, here we are replacing the entire product node description.
+
+    // IMPORTANT: When 'product.hot' comes from form-data (multipart), it might be string "false" or "true".
+    // We need to ensure we treat string "false" as boolean false.
+    const isHot = (String(product.hot) === 'true');
+    const isSale = (String(product.sale) === 'true');
+
+    console.log(`[RDF Sync] Product ${product.id} - Raw Hot: ${product.hot}, IsHot: ${isHot}`);
+    console.log(`[RDF Sync] Product ${product.id} - Raw Sale: ${product.sale}, IsSale: ${isSale}`);
+
+    const turtleCorrected = `
+        product:${product.id} rdf:type ex:Product ;
+            ex:name "${product.name.replace(/"/g, '\\"')}" ;
+            ex:price ${product.price} ;
+            ex:hot ${isHot} ;
+            ex:sale ${isSale} ;
+            ex:brand brand:${product.brandId} ;
+            ex:category category:${product.categoryId} .
+    `;
+
+    console.log('[RDF Sync] Generated Turtle:', turtleCorrected);
+
     const deleteOld = `${PREFIXES} DELETE WHERE { product:${product.id} ?p ?o }`;
-    const insertNew = `${PREFIXES} INSERT DATA { ${turtle} }`;
+    const insertNew = `${PREFIXES} INSERT DATA { ${turtleCorrected} }`;
+
+    await updateStore(deleteOld);
+    await updateStore(insertNew);
 
     await updateStore(deleteOld);
     await updateStore(insertNew);

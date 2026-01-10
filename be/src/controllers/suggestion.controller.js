@@ -1,14 +1,14 @@
 const { queryStore } = require("../utils/rdfHelper");
 
 const getProductRecommendations = async (req, res) => {
-    try {
-        const { type, productId, email } = req.query;
-        let results = [];
+  try {
+    const { type, productId, email } = req.query;
+    let results = [];
 
-        if (type === 'collaborative' && email) {
-            // Collaborative Filtering: People also bought
-            const userUri = `user:${email.replace(/[@.]/g, '_')}`;
-            const sparql = `
+    if (type === 'collaborative' && email) {
+      // Collaborative Filtering: People also bought
+      const userUri = `user:${email.replace(/[@.]/g, '_')}`;
+      const sparql = `
                 SELECT DISTINCT ?recommendedProduct
                 WHERE {
                   ${userUri} ex:purchased ?purchasedProduct .
@@ -19,11 +19,11 @@ const getProductRecommendations = async (req, res) => {
                 }
                 LIMIT 4
             `;
-            results = await queryStore(sparql);
-        } else if (type === 'view-based' || (type === 'trending')) {
-            // Trending: Most views or just general popular products (hot/sale)
-            // If productId is provided, it's more "Similar Products"
-            const sparql = productId ? `
+      results = await queryStore(sparql);
+    } else if (type === 'view-based' || (type === 'trending')) {
+      // Trending: Most views or just general popular products (hot/sale)
+      // If productId is provided, it's more "Similar Products"
+      const sparql = productId ? `
                 SELECT DISTINCT ?recommendedProduct
                 WHERE {
                   product:${productId} ex:category ?cat .
@@ -40,14 +40,15 @@ const getProductRecommendations = async (req, res) => {
                   ?recommendedProduct rdf:type ex:Product .
                   ?recommendedProduct ex:hot ?hot .
                   ?recommendedProduct ex:sale ?sale .
+                  FILTER (?hot = true || ?sale = true)
                 }
                 ORDER BY DESC(?hot) DESC(?sale)
                 LIMIT 4
             `;
-            results = await queryStore(sparql);
-        } else if (type === 'content-based' && productId) {
-            // Content-based: Similar attributes (brand/category)
-            const sparql = `
+      results = await queryStore(sparql);
+    } else if (type === 'content-based' && productId) {
+      // Content-based: Similar attributes (brand/category)
+      const sparql = `
                 SELECT DISTINCT ?recommendedProduct
                 WHERE {
                   product:${productId} ex:brand ?brand ;
@@ -58,35 +59,35 @@ const getProductRecommendations = async (req, res) => {
                 }
                 LIMIT 4
             `;
-            results = await queryStore(sparql);
-        }
+      results = await queryStore(sparql);
+    }
 
-        // If still no results or unhandled type, fallback to any products
-        if (results.length === 0) {
-            const fallbackSparql = `
+    // If still no results or unhandled type, fallback to any products
+    if (results.length === 0) {
+      const fallbackSparql = `
                 SELECT DISTINCT ?recommendedProduct WHERE {
                   ?recommendedProduct rdf:type ex:Product .
                 } LIMIT 4
             `;
-            results = await queryStore(fallbackSparql);
-        }
-
-        const productIds = results.map(r => r.recommendedProduct.value.split('/').pop());
-        res.status(200).json(productIds);
-    } catch (error) {
-        console.error("Error in getProductRecommendations:", error);
-        res.status(500).json({ message: "Error getting recommendations", error: error.message });
+      results = await queryStore(fallbackSparql);
     }
+
+    const productIds = results.map(r => r.recommendedProduct.value.split('/').pop());
+    res.status(200).json(productIds);
+  } catch (error) {
+    console.error("Error in getProductRecommendations:", error);
+    res.status(500).json({ message: "Error getting recommendations", error: error.message });
+  }
 };
 
 const getBlogRecommendations = async (req, res) => {
-    try {
-        const { type, email, productId } = req.query;
-        let results = [];
+  try {
+    const { type, email, productId } = req.query;
+    let results = [];
 
-        if (type === 'related-to-product') {
-            // Blogs related to the specific product (match by brand or tags)
-            const sparql = productId ? `
+    if (type === 'related-to-product') {
+      // Blogs related to the specific product (match by brand or tags)
+      const sparql = productId ? `
                 SELECT DISTINCT ?blog
                 WHERE {
                   product:${productId} ex:brand ?brand .
@@ -102,11 +103,11 @@ const getBlogRecommendations = async (req, res) => {
                 }
                 LIMIT 3
             ` : `SELECT DISTINCT ?blog WHERE { ?blog rdf:type ex:Blog } LIMIT 3`;
-            results = await queryStore(sparql);
-        } else if (type === 'purchase-pattern') {
-            // Blogs read by people with similar purchase patterns
-            const userUri = `user:${email ? email.replace(/[@.]/g, '_') : 'anonymous'}`;
-            const sparql = `
+      results = await queryStore(sparql);
+    } else if (type === 'purchase-pattern') {
+      // Blogs read by people with similar purchase patterns
+      const userUri = `user:${email ? email.replace(/[@.]/g, '_') : 'anonymous'}`;
+      const sparql = `
                 SELECT DISTINCT ?blog
                 WHERE {
                   ${userUri} ex:purchased ?p .
@@ -116,29 +117,29 @@ const getBlogRecommendations = async (req, res) => {
                 }
                 LIMIT 3
             `;
-            results = await queryStore(sparql);
-        }
-
-        // Fallback to latest blogs if no targeted blogs found
-        if (results.length === 0) {
-            const fallbackSparql = `SELECT DISTINCT ?blog WHERE { ?blog rdf:type ex:Blog } LIMIT 3`;
-            results = await queryStore(fallbackSparql);
-        }
-
-        const blogIds = results.map(r => r.blog.value.split('/').pop());
-        res.status(200).json(blogIds);
-    } catch (error) {
-        console.error("Error in getBlogRecommendations:", error);
-        res.status(500).json({ message: "Error getting blog recommendations", error: error.message });
+      results = await queryStore(sparql);
     }
+
+    // Fallback to latest blogs if no targeted blogs found
+    if (results.length === 0) {
+      const fallbackSparql = `SELECT DISTINCT ?blog WHERE { ?blog rdf:type ex:Blog } LIMIT 3`;
+      results = await queryStore(fallbackSparql);
+    }
+
+    const blogIds = results.map(r => r.blog.value.split('/').pop());
+    res.status(200).json(blogIds);
+  } catch (error) {
+    console.error("Error in getBlogRecommendations:", error);
+    res.status(500).json({ message: "Error getting blog recommendations", error: error.message });
+  }
 };
 
 const searchProducts = async (req, res) => {
-    try {
-        const { query } = req.query;
-        if (!query) return res.status(200).json([]);
+  try {
+    const { query } = req.query;
+    if (!query) return res.status(200).json([]);
 
-        const sparql = `
+    const sparql = `
             SELECT DISTINCT ?product
             WHERE {
               {
@@ -157,17 +158,17 @@ const searchProducts = async (req, res) => {
               }
             }
         `;
-        const results = await queryStore(sparql);
-        const productIds = results.map(r => r.product.value.split('/').pop());
-        res.status(200).json(productIds);
-    } catch (error) {
-        console.error("Error in searchProducts:", error);
-        res.status(500).json({ message: "Error in semantic search", error: error.message });
-    }
+    const results = await queryStore(sparql);
+    const productIds = results.map(r => r.product.value.split('/').pop());
+    res.status(200).json(productIds);
+  } catch (error) {
+    console.error("Error in searchProducts:", error);
+    res.status(500).json({ message: "Error in semantic search", error: error.message });
+  }
 };
 
 module.exports = {
-    getProductRecommendations,
-    getBlogRecommendations,
-    searchProducts
+  getProductRecommendations,
+  getBlogRecommendations,
+  searchProducts
 };
