@@ -50,6 +50,7 @@ WHERE {
   ?recommendedProduct rdf:type ex:Product .
   ?recommendedProduct ex:hot ?hot .
   ?recommendedProduct ex:sale ?sale .
+  FILTER (?hot = true || ?sale = true)
 }
 ORDER BY DESC(?hot) DESC(?sale)
 LIMIT 4
